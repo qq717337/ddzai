@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\DealCards">
+      <UniqueIdentifier>{837dbd66-9bd3-4d9f-9e30-f394d9e4e80b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\HandCards">
+      <UniqueIdentifier>{f6a004e3-90d1-43e0-8a66-edd4441e791f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Robot">
+      <UniqueIdentifier>{46335473-fd56-4112-81ba-57bf9c22128d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DealCards">
+      <UniqueIdentifier>{fa1886f5-60fb-49e0-a09d-bfa8707f757d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\HandCards">
+      <UniqueIdentifier>{20813b87-c572-471c-b87d-66f898318fe6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CardConst.h">
+      <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+    <ClInclude Include="CardSet.h">
+      <Filter>头文件\DealCards</Filter>
+    </ClInclude>
+    <ClInclude Include="HandCardsFlag.h">
+      <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+    <ClInclude Include="HandCards.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CardStyle.h">
+      <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DDZ_AI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CardSet.cpp">
+      <Filter>源文件\DealCards</Filter>
+    </ClCompile>
+    <ClCompile Include="HandCardsFlag.cpp">
+      <Filter>源文件\HandCards</Filter>
+    </ClCompile>
+    <ClCompile Include="HandCards.cpp">
+      <Filter>源文件\HandCards</Filter>
+    </ClCompile>
+    <ClCompile Include="CardStyle.cpp">
+      <Filter>源文件\HandCards</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
