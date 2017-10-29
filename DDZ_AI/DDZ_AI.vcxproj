@@ -146,17 +146,31 @@
     <ClInclude Include="CardConst.h" />
     <ClInclude Include="CardSet.h" />
     <ClInclude Include="CardStyle.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="common_algorithm.h" />
+    <ClInclude Include="DecorateDealStrategy.h" />
     <ClInclude Include="HandCards.h" />
     <ClInclude Include="HandCardsFlag.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="Recorder.h" />
+    <ClInclude Include="OptimizedCard.h" />
+    <ClInclude Include="random.h" />
+    <ClInclude Include="Range.h" />
+    <ClInclude Include="SplitType.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CardConst.cpp" />
     <ClCompile Include="CardSet.cpp" />
     <ClCompile Include="CardStyle.cpp" />
     <ClCompile Include="DDZ_AI.cpp" />
+    <ClCompile Include="DecorateDealStrategy.cpp" />
     <ClCompile Include="HandCards.cpp" />
     <ClCompile Include="HandCardsFlag.cpp" />
+    <ClCompile Include="Recorder.cpp" />
+    <ClCompile Include="OptimizedCard.cpp" />
+    <ClCompile Include="SplitType.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

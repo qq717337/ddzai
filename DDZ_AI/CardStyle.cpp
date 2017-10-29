@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CardStyle.h"
 #include "HandCardsFlag.h"
+#include"common_algorithm.h"
 
 CardStyle::CardStyle()
 {
@@ -13,12 +14,17 @@ CardStyle::CardStyle()
 CardStyle::~CardStyle()
 {
 }
+CardStyle::CardStyle(int style, uint8_t startValue)
+{
+	Style = style;
+	StartValue = startValue;
+	EndValue = startValue;
+}
 CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue)
 {
 	Style = style;
 	StartValue = startValue;
 	EndValue = endValue;
-	Extra = std::vector<uint8_t>();
 }
 CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t extra)
 {
@@ -27,14 +33,21 @@ CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t ex
 	EndValue = endValue;
 	Extra = { extra };
 }
-CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, std::vector<uint8_t>& extra)
+CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
 {
 	Style = style;
 	StartValue = startValue;
 	EndValue = endValue;
 	Extra = extra;
 }
-std::vector<uint8_t>CardStyle::GetCardsIndex() {
+CardStyle::CardStyle(int style, uint8_t startValue, const std::vector<uint8_t>& extra)
+{
+	Style = style;
+	StartValue = startValue;
+	EndValue = startValue;
+	Extra = extra;
+}
+std::vector<uint8_t>CardStyle::Index() {
 	std::vector<uint8_t> r;
 	switch (Style) {
 	case ECardStyle::Single:
@@ -121,22 +134,7 @@ int  CardStyle::GetCardsCount() {
 	return 0;
 }
 
-
-std::map<uint8_t, int> CardCountMap(std::vector<uint8_t>& cardIndex) {
-	std::map<uint8_t, int>m;
-	for (auto &v : cardIndex) {
-		std::map<uint8_t, int>::iterator iter = m.find(v);
-		if (iter == m.end()) {
-			m.insert(std::make_pair(v, 1));
-		}
-		else {
-			m[v]++;
-		}
-	}
-	return m;
-}
-
-CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
+CardStyle CardStyle::GetCardStyleByCardsValue(const std::vector<uint8_t>&cards) {
 	size_t length = cards.size();
 	std::vector<uint8_t> indexCards(length);
 	auto be = indexCards.begin();
@@ -155,7 +153,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 		}
 		else {
 			if (cards[0] + cards[1] == 3) {
-				return Const_CardStyle_JokerBoomCardStyle;
+				return Const_CardStyle_JokerBoom;
 			}
 			else {
 				//logger.Error("无效的2张牌")
@@ -173,7 +171,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 		break;
 	}
 	case 4: {
-		auto  m = CardCountMap(indexCards);
+		auto  m = cardCountMap(indexCards);
 		size_t mLen = m.size();
 		if (mLen == 1) {
 			int v = indexCards[3];
@@ -203,7 +201,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 		break;
 	}
 	case 6: {
-		auto m = CardCountMap(indexCards);
+		auto m = cardCountMap(indexCards);
 		size_t mLen = m.size();
 		if (mLen == 2) {
 			std::vector<uint8_t> chain;
@@ -238,7 +236,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 		return CardStyle(ECardStyle::Double_Chain, indexCards[0], indexCards[6]);
 	}
 			else {
-				auto m = CardCountMap(indexCards);
+				auto m = cardCountMap(indexCards);
 				size_t mLen = m.size();
 				if (mLen >= 2) {
 					std::vector<uint8_t> value;
@@ -278,7 +276,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 	}
 
 	case 10: {
-		auto m = CardCountMap(indexCards);
+		auto m = cardCountMap(indexCards);
 
 		int tripleCount = 0;
 
@@ -310,7 +308,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 
 	}
 	case 12: {
-		auto m = CardCountMap(indexCards);
+		auto m = cardCountMap(indexCards);
 		size_t mLen = m.size();
 		int tripleCount = 0;
 
@@ -345,7 +343,7 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 	}
 	case 15:
 	{
-		auto m = CardCountMap(indexCards);
+		auto m = cardCountMap(indexCards);
 		size_t mLen = m.size();
 		int tripleCount = 0;
 
@@ -381,6 +379,67 @@ CardStyle CardStyle::GetCardsStyleByCardsValue(std::vector<uint8_t>&cards) {
 
 	return CardStyle();
 }
+
+CardStyle CardStyle::SingleStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Single, value);
+}
+
+CardStyle CardStyle::DoubleStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Double, value);
+}
+
+CardStyle CardStyle::TripleZeroStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Triple_Zero, value);
+}
+
+CardStyle CardStyle::TripleOneStyle(uint8_t value, const std::vector<uint8_t>&extra)
+{
+	return CardStyle(ECardStyle::Triple_One, value, value, extra);
+}
+
+CardStyle CardStyle::TripleTwoStyle(uint8_t value, const std::vector<uint8_t>& extra)
+{
+	return CardStyle(ECardStyle::Triple_Two, value, value, extra);
+}
+
+CardStyle CardStyle::BoomStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Boom, value);
+}
+
+CardStyle CardStyle::QuadTwoStyle(uint8_t value, const std::vector<uint8_t>& extra)
+{
+	return CardStyle(ECardStyle::Quad_Two, value, value, extra);
+}
+
+CardStyle CardStyle::SingleChainStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Single_Chain, startValue, endValue);
+}
+
+CardStyle CardStyle::DoubleChainStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Double_Chain, startValue, endValue);
+}
+
+CardStyle CardStyle::TripleChainZeroStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Triple_Chain_Zero, startValue, endValue);
+}
+
+CardStyle CardStyle::TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
+{
+	return CardStyle(ECardStyle::Triple_Chain_One, startValue, endValue, extra);
+}
+
+CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
+{
+	return CardStyle(ECardStyle::Triple_Chain_Two, startValue, endValue);
+}
+
 
 int CardStyle::Compare(const CardStyle & style)
 {
@@ -437,4 +496,71 @@ int CardStyle::Compare(const CardStyle & style)
 		}
 	}
 	return 0;
+}
+std::string CardStyle::StyleString() {
+	switch (Style)
+	{
+	case ECardStyle::Invalid:
+		return ("Invalid");
+	case ECardStyle::Boom:
+		return("Boom");
+	case ECardStyle::Triple_Zero:
+		return("Triple_Zero");
+	case ECardStyle::Triple_Two:
+		return("Triple_Two");
+	case ECardStyle::Triple_One:
+		return("Triple_One");
+	case ECardStyle::Double:
+		return("Double");
+	case ECardStyle::Double_Chain:
+		return("Double_Chain");
+	case ECardStyle::Single:
+		return("Single");
+	case ECardStyle::Single_Chain:
+		return("Single_Chain");
+	case ECardStyle::Triple_Chain_Zero:
+		return("Triple_Chain_Zero");
+	case ECardStyle::Triple_Chain_One:
+		return("Triple_Chain_One");
+	case ECardStyle::Triple_Chain_Two:
+		return("Triple_Chain_Two");
+	case ECardStyle::Quad_Two:
+		return("Quad_Two");
+	default:
+		break;
+	}
+	return "";
+}
+std::string CardStyle::ToString() {
+	if (Style == ECardStyle::Boom && StartValue > CardIndex_2) {
+		return "Joker Boom";
+	}
+	std::string r(StyleString());
+	
+	r.push_back(' ');
+	if (EndValue == StartValue) {
+		r.append(CardNameTable[StartValue]);
+	}
+	else {
+		r.append(CardNameTable[StartValue]);
+		r.append(" - ");
+		r.append(CardNameTable[EndValue]);
+	}
+	if (Extra.size() == 0)
+		return r;
+	r.append("  [");
+	for (auto &v : Extra) {
+		r.append(CardNameTable[v]);
+	}
+	r.push_back(']');
+	return r;
+}
+
+
+CardStyle& CardStyle::operator=(const CardStyle& in) {
+	Style = in.Style;
+	StartValue = in.StartValue;
+	EndValue = in.EndValue;
+	Extra = in.Extra;
+	return *this;
 }

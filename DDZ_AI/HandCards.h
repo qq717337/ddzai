@@ -2,56 +2,41 @@
 #include "HandCardsFlag.h"
 #include <set>
 #include <string>
-struct CardSetCompare
-{
-	bool operator()(const uint8_t& lhs, const  uint8_t& rhs)const
-	{
-		uint8_t cardType1 = lhs & 0xf0;
-		uint8_t cardValue1 = lhs & 0x0f;
-		uint8_t cardType2 = rhs & 0xf0;
-		uint8_t cardValue2 = rhs & 0x0f;
-		if (cardType1 == 0) {
-			if (cardType2 == 0) {
-				return cardValue1 < cardValue2;
-			}
-			else {
-				return false;
-			}
-		}
-		if (cardType2 == 0) {
-			if (cardType1 == 0) {
-				return cardValue1 < cardValue2;
-			}
-			else {
-				return true;
-			}
-		}
-
-		if (cardValue1 < cardValue2) {
-			return true;
-		}
-		if (cardValue1 == cardValue2) {
-			return cardType1 < cardType2;
-		}
-		else {
-			return false;
-		}
-	}
-};
+#include<unordered_set>
+class HandCardsMemnto;
 class HandCards :
 	public HandCardsFlag
 {
+	friend class HandCardsMemnto;
 private:
 	std::vector<uint8_t>CardCount;
 	std::set<uint8_t, CardSetCompare> CardsSet;
 public:
 	HandCards();
-	HandCards(const  std::vector<uint8_t>&  cardValues, bool sort = false);
-	bool HasCard(uint8_t value);
-	void RemoveJokerBoom(bool updateFlag);
-	virtual void UpdateByFlag();
-	std::string CardSetString();
-	virtual size_t Size() override;
+	HandCards(const std::vector<uint8_t>&  cardValues, bool sort = false); 
+	HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool sort);
 	~HandCards();
+	bool HasCard(uint8_t cardValue);
+	void RemoveJokerBoom();
+	virtual void UpdateByFlag();
+
+	virtual std::string ToString();
+	virtual void Reset(bool createNewCard)override;
+	virtual size_t Size() const override;
+	virtual std::vector<uint8_t> AvailableBoom()override;
+	virtual std::vector<uint8_t> AvailableTriple()override;
+	virtual std::vector<uint8_t> AvailableDouble()override;
+	virtual std::vector<uint8_t> AvailableChain(int len, int count)override;
+	std::vector<std::vector<uint8_t>> IsolateCards(bool sub=false);
+
+	inline int Count(int cardIndex) {
+		return CardCount[cardIndex];
+	}
+	inline std::set<uint8_t, CardSetCompare>&Data() {
+		return  CardsSet;
+	}
+	inline const std::vector<uint8_t>& Count() {
+		return CardCount;
+	}
 };
 

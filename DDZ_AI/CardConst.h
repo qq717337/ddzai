@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #define CARD_SMALL_JOKER 0x01
 #define CARD_LARGE_JOKER 0x02
 #define CARD_VALUE_LEN 15
@@ -20,6 +22,7 @@ enum ECardIndex {
 	CardIndex_SmallJoker = 13,
 	CardIndex_LargeJoker = 14,
 };
+extern std::string CardNameTable[CARD_VALUE_LEN]; 
 namespace ECardStyle {
 	enum ECardStyle_ {
 		Invalid = 0,

@@ -28,6 +28,12 @@
     <Filter Include="源文件\HandCards">
       <UniqueIdentifier>{20813b87-c572-471c-b87d-66f898318fe6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\util">
+      <UniqueIdentifier>{4b63e2f7-628a-4d57-a14a-6114b86c4b5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Robot">
+      <UniqueIdentifier>{fb4f4d11-4994-4b4d-a5e5-79fb0cd1fa4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -36,19 +42,46 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CardConst.h">
-      <Filter>头文件\HandCards</Filter>
-    </ClInclude>
     <ClInclude Include="CardSet.h">
       <Filter>头文件\DealCards</Filter>
     </ClInclude>
     <ClInclude Include="HandCardsFlag.h">
       <Filter>头文件\HandCards</Filter>
     </ClInclude>
+    <ClInclude Include="CardStyle.h">
+      <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="random.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="common_algorithm.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Range.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="DecorateDealStrategy.h">
+      <Filter>头文件\DealCards</Filter>
+    </ClInclude>
+    <ClInclude Include="OptimizedCard.h">
+      <Filter>头文件\DealCards</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitType.h">
+      <Filter>头文件\Robot</Filter>
+    </ClInclude>
     <ClInclude Include="HandCards.h">
+      <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+    <ClInclude Include="CardConst.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CardStyle.h">
+    <ClInclude Include="Recorder.h">
       <Filter>头文件\HandCards</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,6 +102,21 @@
       <Filter>源文件\HandCards</Filter>
     </ClCompile>
     <ClCompile Include="CardStyle.cpp">
+      <Filter>源文件\HandCards</Filter>
+    </ClCompile>
+    <ClCompile Include="DecorateDealStrategy.cpp">
+      <Filter>源文件\DealCards</Filter>
+    </ClCompile>
+    <ClCompile Include="OptimizedCard.cpp">
+      <Filter>源文件\DealCards</Filter>
+    </ClCompile>
+    <ClCompile Include="SplitType.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="CardConst.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Recorder.cpp">
       <Filter>源文件\HandCards</Filter>
     </ClCompile>
   </ItemGroup>
