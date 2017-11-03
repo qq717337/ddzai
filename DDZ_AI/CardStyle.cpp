@@ -3,6 +3,9 @@
 #include "HandCardsFlag.h"
 #include"common_algorithm.h"
 
+ const CardStyle CardStyle::Invalid = CardStyle(ECardStyle::Invalid, 0, 0);
+ const CardStyle CardStyle::JokerBoom = CardStyle(ECardStyle::Boom, CardIndex_SmallJoker, CardIndex_LargeJoker);
+
 CardStyle::CardStyle()
 {
 	Style = ECardStyle::Invalid;
@@ -134,7 +137,7 @@ int  CardStyle::GetCardsCount() {
 	return 0;
 }
 
-CardStyle CardStyle::GetCardStyleByCardsValue(const std::vector<uint8_t>&cards) {
+CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 	size_t length = cards.size();
 	std::vector<uint8_t> indexCards(length);
 	auto be = indexCards.begin();
@@ -153,7 +156,7 @@ CardStyle CardStyle::GetCardStyleByCardsValue(const std::vector<uint8_t>&cards) 
 		}
 		else {
 			if (cards[0] + cards[1] == 3) {
-				return Const_CardStyle_JokerBoom;
+				return CardStyle::JokerBoom;
 			}
 			else {
 				//logger.Error("无效的2张牌")
@@ -536,7 +539,7 @@ std::string CardStyle::ToString() {
 		return "Joker Boom";
 	}
 	std::string r(StyleString());
-	
+
 	r.push_back(' ');
 	if (EndValue == StartValue) {
 		r.append(CardNameTable[StartValue]);
@@ -558,9 +561,11 @@ std::string CardStyle::ToString() {
 
 
 CardStyle& CardStyle::operator=(const CardStyle& in) {
-	Style = in.Style;
-	StartValue = in.StartValue;
-	EndValue = in.EndValue;
-	Extra = in.Extra;
+	if (&in != this) {
+		Style = in.Style;
+		StartValue = in.StartValue;
+		EndValue = in.EndValue;
+		Extra = in.Extra;
+	}
 	return *this;
 }

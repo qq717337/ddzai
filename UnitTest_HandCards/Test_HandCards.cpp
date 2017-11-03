@@ -1,13 +1,5 @@
 ﻿#include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../DDZ_AI/CardSet.h"
-#include "../DDZ_AI/HandCardsFlag.h"
-#include "../DDZ_AI/HandCards.h"
-#include "../DDZ_AI/OptimizedCard.h"
-#include "../DDZ_AI/CardStyle.h"
-#include"../DDZ_AI/DecorateDealStrategy.h"
-#include"../DDZ_AI/SplitType.h"
-#include"../DDZ_AI/Recorder.h"
 
 #include <string>
 #include <time.h>
@@ -34,7 +26,7 @@ namespace UnitTest_HandCards
 		}
 		TEST_METHOD(TestFlagString)
 		{
-			HandCards newHandCards(std::vector<uint8_t>{ 0x13, 0x23, 0x33, 0x25, 0x1, 0x2 }, false);
+			HandCards newHandCards(std::vector<uint8_t>{ 0x13, 0x23, 0x33, 0x25, 0x1, 0x2 }, true);
 			Assert::AreEqual(newHandCards.Count(CardIndex_3), 3);
 			bool hasCard = newHandCards.HasCard(0x13);
 			Assert::AreEqual(hasCard, true);
@@ -60,7 +52,7 @@ namespace UnitTest_HandCards
 		{
 			uint8_t a[] = { 0x13,0x23,0x33,0x14,0x24,0x34 };
 			std::vector<uint8_t> x(a, a + 6);
-			CardStyle s = CardStyle::GetCardStyleByCardsValue(x);
+			CardStyle s = CardStyle::FromCardsValue(x);
 			Assert::AreEqual(s.StartValue, uint8_t(0));
 			Assert::AreEqual(s.EndValue, uint8_t(1));
 			Assert::AreEqual(s.Style, int(ECardStyle::Triple_Chain_Zero));
@@ -79,7 +71,7 @@ namespace UnitTest_HandCards
 		{
 			uint8_t a[] = { 0x13,0x23,0x33,0x14,0x24,0x34 };
 			std::vector<uint8_t> x(a, a + 6);
-			CardStyle s0 = CardStyle::GetCardStyleByCardsValue(x);
+			CardStyle s0 = CardStyle::FromCardsValue(x);
 			Assert::AreEqual(s0.GetCardsCount(), 6);
 
 			CardStyle s1(ECardStyle::Triple_Chain_One, uint8_t(4), uint8_t(6));
@@ -121,15 +113,14 @@ namespace UnitTest_HandCards
 		TEST_METHOD(TestAvailableChain)
 		{
 			CardSet set;
-			set.DealCard(0, 0x29);
-			set.DealIndex(1, CardIndex_8, 4);
-			set.DealIndex(1, CardIndex_4, 3);
-			//set.DealIndex(1, CardIndex_SmallJoker, 1);
-			set.DealIndex(1, CardIndex_LargeJoker, 1);
+			set.DealChain(1, CardIndex_3, CardIndex_J, 1);
+			set.DealChain(1, CardIndex_10, CardIndex_A, 2);
 			//set.DealChain(2, CardIndex_5, CardIndex_J, 1);
-			auto avChain = set.DeskCardSet.AvailableSingleChain();
+			set.Update();
+			auto p1 = set.PlayerCardSet[1];
+			auto avChain = p1->AvailableSingleChainRange();
 			auto deskStr = set.ToString();
-			auto r = std::vector<uint8_t>{ 0,6,7 };//33456,910JQK,10JQKA
+			auto r = std::vector<CardRange>{ CardRange(CardIndex_3,CardIndex_A) };//33456,910JQK,10JQKA
 			Assert::AreEqual(avChain == r, true);
 		}
 		TEST_METHOD(TestHandCardsIsolate)
@@ -142,13 +133,13 @@ namespace UnitTest_HandCards
 		{
 			OptimizedCard *opt = new OptimizedCard();
 			auto multiBoom = new MultiBoomDealStrategy(opt, 5);
-			opt->Optimized(multiBoom, 3);
+			auto superior = new SuperiorDealStrategy(opt, 2);
+			opt->Optimized(superior, 1);
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
 			system(name.c_str());
 			delete multiBoom;
-			//delete opt;
 		}
 		TEST_METHOD(TestSplitType)
 		{
@@ -163,9 +154,9 @@ namespace UnitTest_HandCards
 
 			auto s = splitType.GetDoubleChainStyle().ToString();
 			SplitMemnto* men = new SplitMemnto(splitType);
-			Recorder<SplitType>::R.Push(men);
+			Recorder<SplitType>::Push(men);
 			auto menCopy = new SplitType();
-			Recorder<SplitType>::R.Pop(menCopy);
+			Recorder<SplitType>::Pop(menCopy);
 		}
 
 		TEST_METHOD(TestRecorder)
@@ -174,16 +165,15 @@ namespace UnitTest_HandCards
 
 			auto avChain3 = newHandCards.IsolateCards();
 			HandCardsMemnto* men = new HandCardsMemnto(newHandCards);
-			Recorder<HandCards>::R.Push(men);
+			Recorder<HandCards>::Push(men);
 			auto menCopy = new HandCards();
-			Recorder<HandCards>::R.Pop(menCopy);
+			Recorder<HandCards>::Pop(menCopy);
 
-			men=new HandCardsMemnto(newHandCards);
-			Recorder<HandCards>::R.Set("liu",men);
+			men = new HandCardsMemnto(newHandCards);//前面已经Pop之后删除了new 的Memnto对象，所以这里要重新New
+			Recorder<HandCards>::Set("liu", men);
 			auto menGet = new HandCards();
-
-			bool isGet=Recorder<HandCards>::R.Get("liu", menGet);
-			Recorder<HandCards>::R.Remove("liu");
+			bool isGet = Recorder<HandCards>::Get("liu", menGet);
+			Recorder<HandCards>::Remove("liu");
 		}
 	};
 }

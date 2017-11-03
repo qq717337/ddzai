@@ -12,7 +12,7 @@ CardSet::CardSet() :player_num(3), PlayerCardSet(3), DeskCardSet(true)
 CardSet::~CardSet()
 {
 	for (auto v : PlayerCardSet) {
-		delete v;
+	if (v!=nullptr)	delete v;
 	}
 }
 
@@ -36,7 +36,9 @@ void CardSet::ResetPlayerCard(int randomDealCount) {
 		v->Reset(false);
 	}
 	uint8_t* newCards = NewCards();
-	std::random_shuffle(newCards, newCards + 54);
+
+	std::default_random_engine defaultEngine;
+	std::shuffle(newCards, newCards + 54, defaultEngine);
 
 	int i, index = 0;
 	for (i = 0; i < player_num; ++i) {
@@ -97,10 +99,11 @@ const std::vector<uint8_t>& CardSet::RandomFillLeft()
 	if (DeskCardSet.GetFlag(CardIndex_LargeJoker, 0) == 1) {
 		ExtraCard.push_back(0x02);
 	}
-	std::random_shuffle(ExtraCard.begin(), ExtraCard.end());
+	std::default_random_engine defaultEngine;
+	std::shuffle(ExtraCard.begin(), ExtraCard.end(), defaultEngine);
 	auto iter_pos = ExtraCard.begin();
 	for (int i = 0; i < player_num; ++i) {
-		int leftCount = LeftCount(i);
+		size_t leftCount = LeftCount(i);
 		for (int j = 0; j < leftCount; ++j) {
 			PlayerCardSet[i]->AddCard(*iter_pos);
 			++iter_pos;
@@ -124,7 +127,7 @@ std::string CardSet::ToString()
 		ostr << player << "\n\t";
 	}
 	if (ExtraCard.size() == 3) {
-		ostr << "Extra ={" << std::hex << int(ExtraCard[0]) << "," << int(ExtraCard[1]) << "," << int(ExtraCard[2]) << "}";
+		ostr << "Extra ={0x" << std::hex << int(ExtraCard[0]) << ",0x" << int(ExtraCard[1]) << ",0x" << int(ExtraCard[2]) << "}";
 	}
 	return ostr.str();
 }

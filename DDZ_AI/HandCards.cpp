@@ -10,7 +10,7 @@ CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
 	UpdateByFlag();
 }
 
-HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool sort) :
+HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end())),
 	CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
@@ -19,7 +19,6 @@ HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool sort) :
 	for (auto &v : cardValues) {
 		if (v < 0x10) {
 			int index = 12 + v;
-			CardCount[index]++;
 			Flags[index][0] = 1;
 		}
 		else {
@@ -27,11 +26,12 @@ HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool sort) :
 			uint8_t	cardValue = v & 0x0f;
 			uint8_t	valueIndex = cardValue - 3;
 			Flags[valueIndex][cardType - 1] = 1;
-			CardCount[valueIndex]++;
 		}
 	}
+	if (updateSet)
+		UpdateByFlag();
 }
-HandCards::HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool sort) :
+HandCards::HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(cardValues),
 	CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
@@ -51,6 +51,8 @@ HandCards::HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool s
 			CardCount[valueIndex]++;
 		}
 	}
+	if (updateSet)
+		UpdateByFlag();
 }
 
 
@@ -90,16 +92,14 @@ void HandCards::UpdateByFlag()
 std::string HandCards::ToString()
 {
 	std::ostringstream ostr;
-	std::cout.setf(std::ios::showbase);
-	std::cout.setf(std::ios::hex, std::ios::basefield);
 	ostr << "{";
 	for (const auto &i : CardsSet) {
 		ostr << "0x" << std::hex << int(i) << ",";
 	}
-	std::string x = ostr.str();
-	x.pop_back();
-	x.push_back('}');
-	return x;
+	long pos = ostr.tellp();
+	ostr.seekp(pos - 1);
+	ostr << '}';
+	return ostr.str();
 }
 
 void HandCards::Reset(bool createNewCard)

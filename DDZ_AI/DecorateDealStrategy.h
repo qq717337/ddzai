@@ -10,13 +10,22 @@ public:
 	DecorateDealStrategy(CardSet* card);
 	virtual ~DecorateDealStrategy();
 };
-class MultiBoomDealStrategy:
-public DecorateDealStrategy{
+class MultiBoomDealStrategy :
+	public DecorateDealStrategy {
 private:
-	int	BoomCount ;
+	int	BoomCount;
 public:
 	virtual void PreDeal() override;
 	MultiBoomDealStrategy(CardSet* card, int boomCount);
 	virtual ~MultiBoomDealStrategy();
 };
 
+class SuperiorDealStrategy :
+	public DecorateDealStrategy {
+private:
+	int	PlayerId;
+public:
+	virtual void PreDeal() override;
+	SuperiorDealStrategy(CardSet* card, int playerId);
+	virtual ~SuperiorDealStrategy();
+};

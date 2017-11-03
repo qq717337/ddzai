@@ -3,7 +3,9 @@
 #include <set>
 #include <string>
 #include<unordered_set>
+
 class HandCardsMemnto;
+
 class HandCards :
 	public HandCardsFlag
 {
@@ -13,8 +15,9 @@ private:
 	std::set<uint8_t, CardSetCompare> CardsSet;
 public:
 	HandCards();
-	HandCards(const std::vector<uint8_t>&  cardValues, bool sort = false); 
-	HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool sort);
+	HandCards(const HandCards&) = delete;
+	HandCards(const std::vector<uint8_t>&  cardValues, bool updateSet = true); 
+	HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet = true);
 	~HandCards();
 	bool HasCard(uint8_t cardValue);
 	void RemoveJokerBoom();
@@ -23,6 +26,8 @@ public:
 	virtual std::string ToString();
 	virtual void Reset(bool createNewCard)override;
 	virtual size_t Size() const override;
+
+	//可以通过判断上一次是否对卡牌造成改变来决定是否需要重新Update
 	virtual std::vector<uint8_t> AvailableBoom()override;
 	virtual std::vector<uint8_t> AvailableTriple()override;
 	virtual std::vector<uint8_t> AvailableDouble()override;

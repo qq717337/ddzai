@@ -1,7 +1,6 @@
 #pragma once
 
 #include "log.h"
-
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -9,7 +8,8 @@
 #include <cstdint>
 #include <algorithm>
 #include <cmath>
-
+#include<map>
+#include <io.h>
 
 namespace Common {
 
@@ -22,7 +22,30 @@ namespace Common {
 	inline static T Min(const T& a, const T& b) {
 		return a < b ? a : b;
 	}
-
+	inline static void GetFiles(std::string path, std::map<std::string, std::string>& files)
+	{
+		long   hFile = 0;
+		struct _finddata_t fileinfo;
+		std::string p;
+		if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
+		{
+			do
+			{
+				if ((fileinfo.attrib &  _A_SUBDIR))
+				{
+					if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+						GetFiles(p.assign(path).append("\\").append(fileinfo.name), files);
+				}
+				else
+				{
+					std::string fileName(fileinfo.name);
+					files.insert(make_pair(fileName.substr(0, fileName.find_first_of('.')), p.assign(path).append("\\").append(fileinfo.name)));
+				}
+			} while (_findnext(hFile, &fileinfo) == 0);
+			_findclose(hFile);
+		}
+	}
+	
 	inline static std::string& Trim(std::string& str) {
 		if (str.size() <= 0) {
 			return str;

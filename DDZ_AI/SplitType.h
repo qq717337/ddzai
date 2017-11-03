@@ -2,6 +2,8 @@
 #include <vector>
 #include "Range.h"
 #include "CardStyle.h"
+//组合的不同拆分方法不建立不同的类了，而是在一个类中完成不同的组装策略，
+//例如最优保留炸弹等的，或者最小步数的，或者为了接某一张牌，但是最优的没有，必须拆分对子这种情况，
 class SplitMemnto;
 
 class SplitType
@@ -11,12 +13,10 @@ class SplitType
 #define INSERT_SPLITTYPE(x)	x.push_back(cardIndex);\
 	std::sort(x.begin(), x.end())
 #define INSERT_CHAIN_SPLITTYPE(x) x.push_back(CardRange(startIndex, endIndex))
-#define VECTOR_COPY(src,des)	des.resize(src.size());\
-	std::copy(src.begin(), src.end(), des.begin())
 
 
 private:
-	std::vector<uint8_t> Boom; //14代表王炸
+	std::vector<uint8_t> Boom;
 	std::vector<uint8_t>Single;
 	std::vector<uint8_t>Double;
 	std::vector<uint8_t>Triple;
@@ -26,8 +26,7 @@ private:
 
 
 public:
-	SplitType&operator=(const SplitType& rhs);
-
+	std::string ToString();
 	void AddBoom(uint8_t cardIndex);
 	void AddSingle(uint8_t cardIndex);
 	void AddDouble(uint8_t cardIndex);
@@ -38,12 +37,40 @@ public:
 
 	CardStyle MinValueCardStyle();
 	size_t MinStepCount(); //获取拆分后的牌的最小出完步数
+	size_t CardCount();
 	bool GetLastShotCardStyles(CardStyle* ref);
 	CardStyle GetSingleChainStyle();
 	CardStyle GetDoubleChainStyle();
 	CardStyle GetTripleChainStyle();
 	CardStyle GetTripleStyle();
+	//从SingleChain中获取一个单只,forceSplit=true则强制返回一个即使不满足最优拆解
+	bool RequireSingleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
+	bool RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
+	virtual void Reset();
 	SplitType();
 	~SplitType();
+	SplitType&operator=(const SplitType& rhs);
+	inline bool SplitType::operator==(const SplitType & rhs) const
+	{
+		return(rhs.Boom == Boom && rhs.Single == Single && rhs.Double == Double && rhs.Triple == Triple &&
+			rhs.SingleChain == SingleChain && rhs.DoubleChain == DoubleChain && rhs.TripleChain == TripleChain);
+	}
+
+	inline bool SplitType::operator!=(const SplitType & rhs) const
+	{
+		return(rhs.Boom != Boom || rhs.Single != Single || rhs.Double != Double || rhs.Triple != Triple ||
+			rhs.SingleChain != SingleChain || rhs.DoubleChain != DoubleChain || rhs.TripleChain != TripleChain);
+	}
+	inline bool InSingle(uint8_t cardIndex)const { return std::find(Single.begin(), Single.end(), cardIndex) != Single.end(); }
+	inline bool InDouble(uint8_t cardIndex)const { return std::find(Double.begin(), Double.end(), cardIndex) != Double.end(); }
+	inline const bool HasJokerBoom()const { return std::find(Boom.begin(), Boom.end(), CardIndex_JokerBoom) != Single.end(); }
+
+	inline const std::vector<uint8_t>& GetBoom()const { return Boom; }
+	inline const std::vector<uint8_t>& GetSingle()const { return Single; }
+	inline const std::vector<uint8_t>& GetDouble() const { return Double; }
+	inline const std::vector<uint8_t>& GetTriple()const { return Triple; }
+	inline const std::vector<CardRange>& GetSingleChain() const { return SingleChain; }
+	inline const std::vector<CardRange>& GetDoubleChain() const { return DoubleChain; }
+	inline const std::vector<CardRange>& GetTripleChain() const { return TripleChain; }
 };
 

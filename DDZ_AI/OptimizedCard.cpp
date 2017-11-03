@@ -106,6 +106,4 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 
 OptimizedCard::~OptimizedCard()
 {
-	delete[] isolateCardIndex;
-	delete[]firstChainIndex;
 }

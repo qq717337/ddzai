@@ -1,10 +1,11 @@
 #pragma once
 
-#include "CardConst.h"
 #include"stdafx.h"
 #include <vector>
 #include<string>
 #include <memory>
+#include "CardConst.h"
+#include"Range.h"
 struct CardSetCompare
 {
 	bool operator()(const uint8_t& lhs, const  uint8_t& rhs)const
@@ -66,6 +67,9 @@ public:
 	virtual std::vector<uint8_t> AvailableDouble();
 	virtual std::vector<uint8_t> AvailableChain(int len, int count);
 
+	std::vector<CardRange> AvailableTripleChainRange();
+	std::vector<CardRange> AvailableDoubleChainRange();
+	std::vector<CardRange> AvailableSingleChainRange();
 #pragma region inline function
 	inline int Count(int cardIndex) {
 		return Flags[cardIndex][0] + Flags[cardIndex][1] + Flags[cardIndex][2] + Flags[cardIndex][3];

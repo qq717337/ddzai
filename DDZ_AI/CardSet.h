@@ -12,7 +12,7 @@ protected:
 public:
 	std::vector<uint8_t> ExtraCard;
 	HandCardsFlag DeskCardSet;
-	std::vector<HandCards*>PlayerCardSet;
+	std::vector< HandCards*>PlayerCardSet;
 	CardSet();
 	virtual ~CardSet();
 	void Update();

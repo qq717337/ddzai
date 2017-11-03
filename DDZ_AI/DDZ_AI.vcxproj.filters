@@ -34,6 +34,21 @@
     <Filter Include="源文件\Robot">
       <UniqueIdentifier>{fb4f4d11-4994-4b4d-a5e5-79fb0cd1fa4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Image">
+      <UniqueIdentifier>{dbeb9d8c-c491-4f44-8fa6-7d3123877ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Image">
+      <UniqueIdentifier>{7cf8d21d-f58e-40c9-bd4d-fee93ef9a6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Robot\Strategy">
+      <UniqueIdentifier>{77ae1c8e-ff15-4694-96d7-f5143583faf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Robot\Handle">
+      <UniqueIdentifier>{e756ca1e-a699-4258-81cf-5eec19ca741c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Robot\Split">
+      <UniqueIdentifier>{8d3b9a59-e120-4706-b13d-0fab39e62cbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -72,9 +87,6 @@
     <ClInclude Include="OptimizedCard.h">
       <Filter>头文件\DealCards</Filter>
     </ClInclude>
-    <ClInclude Include="SplitType.h">
-      <Filter>头文件\Robot</Filter>
-    </ClInclude>
     <ClInclude Include="HandCards.h">
       <Filter>头文件\HandCards</Filter>
     </ClInclude>
@@ -83,6 +95,42 @@
     </ClInclude>
     <ClInclude Include="Recorder.h">
       <Filter>头文件\HandCards</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitStrategy.h">
+      <Filter>源文件\Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCVEntry.h">
+      <Filter>头文件\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="common_windows.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="LordPlayStrategy.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="MinStepSplitStrategy.h">
+      <Filter>头文件\Robot\Split</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitType.h">
+      <Filter>头文件\Robot\Split</Filter>
+    </ClInclude>
+    <ClInclude Include="TakeCardSplitStrategy.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayStrategyBase.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitStrategyBase.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayStrategyHandle.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTable.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -119,5 +167,37 @@
     <ClCompile Include="Recorder.cpp">
       <Filter>源文件\HandCards</Filter>
     </ClCompile>
+    <ClCompile Include="SplitStrategyBase.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="MinStepSplitStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="SplitStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="TakeCardSplitStrategy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStrategyHandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCVEntry.cpp">
+      <Filter>源文件\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="LordPlayStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStrategyBase.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DDZ_AI.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

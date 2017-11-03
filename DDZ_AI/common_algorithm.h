@@ -14,6 +14,7 @@ inline std::unordered_map<uint8_t, int> cardCountMap(std::vector<uint8_t>& cardI
 	}
 	return m;
 }
+
 template<typename T>
 inline size_t smallerCount(const std::vector<T>& value, T compareValue) {
 	int sum = 0;

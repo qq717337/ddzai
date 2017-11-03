@@ -75,6 +75,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\CommondCode\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\CommondCode\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -101,12 +105,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opencv_world330.lib;opencv_world330d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -143,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common_windows.h" />
+    <ClInclude Include="GameTable.h" />
+    <ClInclude Include="OpenCVEntry.h" />
+    <ClInclude Include="PlayStrategyHandle.h" />
     <ClInclude Include="CardConst.h" />
     <ClInclude Include="CardSet.h" />
     <ClInclude Include="CardStyle.h" />
@@ -152,15 +168,25 @@
     <ClInclude Include="HandCards.h" />
     <ClInclude Include="HandCardsFlag.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="LordPlayStrategy.h" />
+    <ClInclude Include="MinStepSplitStrategy.h" />
+    <ClInclude Include="PlayStrategyBase.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="OptimizedCard.h" />
     <ClInclude Include="random.h" />
     <ClInclude Include="Range.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SplitStrategy.h" />
+    <ClInclude Include="SplitStrategyBase.h" />
     <ClInclude Include="SplitType.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TakeCardSplitStrategy.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameTable.cpp" />
+    <ClCompile Include="OpenCVEntry.cpp" />
+    <ClCompile Include="PlayStrategyHandle.cpp" />
     <ClCompile Include="CardConst.cpp" />
     <ClCompile Include="CardSet.cpp" />
     <ClCompile Include="CardStyle.cpp" />
@@ -168,8 +194,13 @@
     <ClCompile Include="DecorateDealStrategy.cpp" />
     <ClCompile Include="HandCards.cpp" />
     <ClCompile Include="HandCardsFlag.cpp" />
+    <ClCompile Include="LordPlayStrategy.cpp" />
+    <ClCompile Include="MinStepSplitStrategy.cpp" />
+    <ClCompile Include="PlayStrategyBase.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="OptimizedCard.cpp" />
+    <ClCompile Include="SplitStrategy.cpp" />
+    <ClCompile Include="SplitStrategyBase.cpp" />
     <ClCompile Include="SplitType.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -177,6 +208,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TakeCardSplitStrategy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DDZ_AI.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

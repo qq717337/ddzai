@@ -15,26 +15,26 @@ public:
 	virtual void  Restore(T* ref) = 0;
 };
 
-template<class T>
+template<typename T>
 class Recorder
 {
 private:
-	std::stack<Memnto<T>*> _Stack;
-	std::map<std::string, Memnto<T>*> _Map;
+	static std::stack<Memnto<T>*> _Stack;
+	static std::map<std::string, Memnto<T>*> _Map;
 public:
-	Recorder() {}
-	virtual ~Recorder() {}
-	static Recorder<T> R;
-	void Push(Memnto<T>* ref) { _Stack.emplace(ref); }
-	void Pop(T* ref) { 
+	//static Recorder<T> R;
+inline static void Push(Memnto<T>* ref) { _Stack.emplace(ref); }
+inline static void Pop(T* ref) {
 		//_Stack.top().
+		if (ref!=NULL){
 		Memnto<T>*topElem= _Stack.top();
 		topElem->Restore(ref);
-		_Stack.pop();
 		delete topElem;
+		}
+		_Stack.pop();
 	}
-	void Set(std::string key, Memnto<T>* ref) { _Map.insert(std::map<std::string, Memnto<T>*>::value_type(key, ref)); }
-	bool Get(std::string key, T* ref,bool remove=false) {
+	inline static void Set(std::string key, Memnto<T>* ref) { _Map.insert(std::map<std::string, Memnto<T>*>::value_type(key, ref)); }
+	inline static bool Get(std::string key, T* ref,bool remove=false) {
 		auto iter= _Map.find(key);
 		if (iter != _Map.end()) {
 			Memnto<T>*topElem = iter->second;
@@ -45,7 +45,7 @@ public:
 			return false;
 		}
 	}
-	bool Remove(std::string key) {
+	inline static bool Remove(std::string key) {
 		auto iter = _Map.find(key);
 		if (iter != _Map.end()) {
 			Memnto<T>*topElem = iter->second;
@@ -58,8 +58,11 @@ public:
 		}
 	}
 }; 
-template <class T>
-Recorder<T> Recorder<T>::R; //静态数据成员的初始化  
+template <typename T>
+std::stack<Memnto<T>*> Recorder<T>::_Stack; //静态数据成员的初始化  
+
+template <typename T>
+std::map<std::string, Memnto<T>*> Recorder<T>::_Map; //静态数据成员的初始化  
 
 class SplitMemnto :public Memnto<SplitType>
 {

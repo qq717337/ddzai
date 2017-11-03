@@ -221,6 +221,68 @@ std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)
 	return validChain;
 }
 
+std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange() {
+	std::vector<CardRange> r;
+	std::vector<uint8_t> chain = AvailableTripleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 1));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 1));
+	}
+	return r;
+}
+
+std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange() {
+	std::vector<CardRange> r;
+	std::vector<uint8_t> chain = AvailableDoubleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 2));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 2));
+	}
+	return r;
+}
+
+std::vector<CardRange> HandCardsFlag::AvailableSingleChainRange() {
+	std::vector<CardRange> r;
+	std::vector<uint8_t> chain = AvailableSingleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 4));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 4));
+	}
+	return r;
+}
 
 HandCardsFlag::~HandCardsFlag()
 {

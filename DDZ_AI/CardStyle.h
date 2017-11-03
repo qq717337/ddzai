@@ -7,6 +7,8 @@
 
 class CardStyle
 {
+private:
+	std::string StyleString();
 public:
 	int Style;
 	uint8_t StartValue;
@@ -34,11 +36,10 @@ public:
 	static CardStyle TripleChainZeroStyle(uint8_t startValue, uint8_t endValue);
 	static CardStyle TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>&extra);
 	static CardStyle TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>&extra);
-	static CardStyle GetCardStyleByCardsValue(const std::vector<uint8_t>&cards);
+	static CardStyle FromCardsValue(const std::vector<uint8_t>&cards);
 	int Compare(const CardStyle& other);
 	std::string  ToString();
-	std::string StyleString();
+	const static CardStyle Invalid ;
+	const static CardStyle JokerBoom;
+	inline int Length()const { return EndValue - StartValue + 1; }
 };
-
-const CardStyle Const_CardStyle_JokerBoom = CardStyle(ECardStyle::Boom, CardIndex_SmallJoker, CardIndex_LargeJoker);
-const CardStyle Const_CardStyle_Invalid = CardStyle(ECardStyle::Invalid, 0, 0);

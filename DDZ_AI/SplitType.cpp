@@ -24,6 +24,7 @@ SplitType & SplitType::operator=(const SplitType & rhs)
 	}
 	return *this;
 }
+
 size_t SplitType::MinStepCount()
 {
 	size_t singleCount = Single.size();
@@ -45,9 +46,9 @@ size_t SplitType::MinStepCount()
 			}
 		}
 	}
-	size_t 	extra = singleCount + doubleCount;
-	size_t tripleCount = Triple.size();
-	size_t diff = tripleCount - extra; //三个头的个数减去单只和双只的个数，如果大于0，则追加步数，否则，算到单只里面就不需要额外的步数了
+	int extra = singleCount + doubleCount;
+	int tripleCount = Triple.size();
+	int diff = tripleCount - extra; //三个头的个数减去单只和双只的个数，如果大于0，则追加步数，否则，算到单只里面就不需要额外的步数了
 	if (diff < 0) {
 		diff = 0;
 	}
@@ -85,8 +86,8 @@ bool SplitType::GetLastShotCardStyles(CardStyle* ref) {
 			return true;
 		}
 		if (Boom.size() > 0) {
-			if (Boom[0] >= CardIndex_SmallJoker) {
-				*ref = Const_CardStyle_JokerBoom;
+			if (Boom[0] == CardIndex_JokerBoom) {
+				*ref = CardStyle::JokerBoom;
 			}
 			else {
 				*ref = CardStyle(ECardStyle::Boom, Boom[0]);
@@ -136,7 +137,7 @@ void SplitType::AddDouble(uint8_t cardIndex)
 
 void SplitType::AddTriple(uint8_t cardIndex)
 {
-	INSERT_SPLITTYPE(Double);
+	INSERT_SPLITTYPE(Triple);
 }
 
 void SplitType::AddSingleChain(uint8_t startIndex, uint8_t endIndex)
@@ -248,7 +249,7 @@ CardStyle SplitType::MinValueCardStyle() {
 	if (r.Style == ECardStyle::Invalid) {
 		if (Boom.size() > 0) {
 			if (Boom[0] > CardIndex_2) {
-				r = Const_CardStyle_JokerBoom;
+				r = CardStyle::JokerBoom;
 			}
 			else {
 				r = CardStyle(ECardStyle::Boom, Boom[0]);
@@ -263,20 +264,20 @@ CardStyle SplitType::GetSingleChainStyle() {
 	if (SingleChain.size() > 0) {
 		return CardStyle(ECardStyle::Single_Chain, SingleChain[0].Start, SingleChain[0].End);
 	}
-	return Const_CardStyle_Invalid;
+	return CardStyle::Invalid;
 }
 CardStyle SplitType::GetDoubleChainStyle() {
 	if (DoubleChain.size() > 0) {
 		return CardStyle(ECardStyle::Double_Chain, DoubleChain[0].Start, DoubleChain[0].End);
 	}
-	return Const_CardStyle_Invalid;
+	return CardStyle::Invalid;
 }
 
 
 CardStyle SplitType::GetTripleChainStyle() {
 	CardStyle r;
 	if (TripleChain.size() == 0) {
-		return Const_CardStyle_Invalid;
+		return CardStyle::Invalid;
 	}
 	size_t chainLen = TripleChain[0].Length();
 
@@ -310,7 +311,7 @@ CardStyle SplitType::GetTripleChainStyle() {
 CardStyle SplitType::GetTripleStyle() {
 	CardStyle r;
 	if (Triple.size() == 0) {
-		return Const_CardStyle_Invalid;
+		return CardStyle::Invalid;
 	}
 	size_t singleLen = Single.size();
 	size_t  doubleLen = Double.size();
@@ -336,4 +337,135 @@ CardStyle SplitType::GetTripleStyle() {
 		}
 	}
 	return r;
+}
+size_t SplitType::CardCount() {
+	size_t sum = Boom.size() * 4 + Triple.size() * 3 + Double.size() * 2 + Single.size();
+	for (auto& v : SingleChain) {
+		sum += v.Length();
+	}
+	for (auto& v : DoubleChain) {
+		sum += v.Length() * 2;
+	}
+	for (auto& v : TripleChain) {
+		sum += v.Length() * 3;
+	}
+	return sum;
+}
+bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
+{
+	if (SingleChain.size() == 0) {
+		return false;
+	}
+	out.resize(requireCount);
+	for (auto & v : SingleChain) { //一般可以忽略双飞的同事还会出现两个对子的情况，但是为了兼顾三张，所以遍历下，第一种情况 可以从
+		if (v.Length() - requireCount >= 5) {
+			for (int i = 0; i < requireCount; ++i) {
+				out[i] = SingleChain[0].Start + i;
+			}
+			return true;
+		}
+	}
+	//如果无法实现完美的拆分，则破坏顺子，破坏顺子的前提是找张数一致的进行优先破坏，这里判断是不是单张
+	if (forceSplit) {
+		int	appendCount = 0;
+		std::vector<uint8_t>	exclude;
+		for (uint8_t i = SingleChain[0].Start; i < SingleChain[0].End; ++i) {
+			if (InSingle(i) || InDouble(i)) {
+				exclude.push_back(i);
+				continue;
+			}
+			out[appendCount] = i;
+			appendCount++;
+			if (appendCount == requireCount) {
+				break;
+			}
+		}
+		for (int j = appendCount; j < requireCount; j++) {
+			out[appendCount] = exclude[requireCount - j - 1];
+		}
+		return true;
+	}
+
+	return false;
+}
+ bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
+{
+	if (DoubleChain.size() == 0) {
+		return false;
+	}
+	out.resize(requireCount);
+	for (auto & v : DoubleChain) { //一般可以忽略双飞的同事还会出现两个对子的情况，但是为了兼顾三张，所以遍历下，第一种情况 可以从
+		if (v.Length() - requireCount >= 5) {
+			for (int i = 0; i < requireCount; ++i) {
+				out[i] = DoubleChain[0].Start + i;
+			}
+			return true;
+		}
+	}
+	//如果无法实现完美的拆分，则破坏顺子，破坏顺子的前提是找张数一致的进行优先破坏，这里判断是不是单张
+	if (forceSplit) {
+		int	appendCount = 0;
+		std::vector<uint8_t>	exclude;
+		for (uint8_t i = DoubleChain[0].Start; i < DoubleChain[0].End; ++i) {
+			if (InSingle(i) || InDouble(i)) {
+				exclude.push_back(i);
+				continue;
+			}
+			out[appendCount] = i;
+			appendCount++;
+			if (appendCount == requireCount) {
+				break;
+			}
+		}
+		for (int j = appendCount; j < requireCount; j++) {
+			out[appendCount] = exclude[requireCount - j - 1];
+		}
+		return true;
+	}
+
+	return false;
+}
+void SplitType::Reset()
+{
+	Boom.clear();
+	Single.clear();
+	Double.clear();
+	Triple.clear();
+	SingleChain.clear();  //至少5张
+	DoubleChain.clear(); //至少3张
+	TripleChain.clear();//至少2张
+}
+#define OUTPUT_SPLITTYPE_VALUE(variable_name,x) if(x.size()>0){\
+ostr << variable_name<<":{";\
+for (auto & v : x) {\
+	ostr << CardNameTable[v] << ',';\
+}\
+long pos = ostr.tellp();\
+ostr.seekp(pos - 1);\
+ostr << "}\n";\
+}
+
+#define OUTPUT_SPLITTYPE_RANGE(variable_name,x) if (x.size() > 0) {\
+ostr << variable_name << ":{";\
+for (auto & v : x) {\
+	ostr << '[' << CardNameTable[v.Start] << '-' << CardNameTable[v.End] << "],";\
+}\
+long pos = ostr.tellp();\
+ostr.seekp(pos - 1);\
+ostr << "}\n";\
+}
+
+
+std::string SplitType::ToString() {
+	std::ostringstream ostr;
+
+	OUTPUT_SPLITTYPE_VALUE("Single", Single)
+		OUTPUT_SPLITTYPE_VALUE("Double", Double)
+		OUTPUT_SPLITTYPE_VALUE("Triple", Triple)
+		OUTPUT_SPLITTYPE_VALUE("Boom", Boom)
+
+		OUTPUT_SPLITTYPE_RANGE("SingleChain", SingleChain)
+		OUTPUT_SPLITTYPE_RANGE("DoubleChain", DoubleChain)
+		OUTPUT_SPLITTYPE_RANGE("TripleChain", TripleChain)
+		return ostr.str();
 }
