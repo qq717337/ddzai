@@ -1,27 +1,36 @@
 #include "stdafx.h"
 #include "LordPlayStrategy.h"
 #include"MinStepSplitStrategy.h"
+#include "GameTable.h"
 
 CardStyle LordPlayStrategy::Play()
 {
-	return CardStyle::Invalid;
+	CardStyle r;
+	m_minStepSplitStrategy->Split();
+	m_handlerMinStepPlay->Handle(m_minStepSplitStrategy.get(), r);
+	return r;
 }
 
 CardStyle LordPlayStrategy::Take(Identity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
+	m_minStepSplitStrategy->Split();
+	m_minStepSplitStrategy->OptimiumTake(lastStyle);
+	m_minStepSplitStrategy->AvailableTake(lastStyle);
 	//先判断使用哪一种拆分策略，或者一开始创建多个SplitStrategy，然后再传入不同的Handle里面进行处理
-	CardStyle ret;
-	if (m_handlerCanTake->Handle(m_splitStrategy.get(), ret)) {
+	CardStyle ret(CardStyle::Invalid);
+
+	if (m_handlerOptimiumTake->Handle(m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
+		return ret;
+	}
+
+	if (m_handlerOptimiumTake->Handle(m_keepBigSplitStrategy.get(), ret)) {//有保留大牌可接牌的情况
+		return ret;
+	}
+
+	if (m_handlerCanTake->Handle(m_minStepSplitStrategy.get(), ret)) {//以上不符合 但是可以接牌，进行后续判断
 
 	}
-	else {
-		if (handler02->Handle(m_splitStrategy.get(), ret)) {
-
-		}
-		else {
-
-		}
-	}
+	//都不符合就选择不接
 	return ret;
 }
 
@@ -31,27 +40,27 @@ int LordPlayStrategy::Identity()
 	return Identity::Lord;
 }
 
-LordPlayStrategy::LordPlayStrategy(const std::vector<uint8_t>& cardsValue) : PlayStrategyBase(Identity(), cardsValue)
+LordPlayStrategy::LordPlayStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
-	m_splitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
+	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
-LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue) : PlayStrategyBase(Identity(), cardsValue)
+LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
-	m_splitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
+	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
-void LordPlayStrategy::InitResponsibility()
+void LordPlayStrategy::Init()
 {
 	m_handlerCanTake = std::make_unique<HandleCanTakeCard>();
-	handler02 = std::make_unique<HandleCanTakeCard>();
-	handler03 = std::make_unique<HandleCanTakeCard>();
+	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTakeCard>();
+	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
 
-	// 进行链的组装，即头尾相连，一层套一层  
-	m_handlerCanTake->setNextStrategy(handler02.get());
-	handler02->setNextStrategy(handler03.get());
+	//进行链的组装，即头尾相连，一层套一层  
+	//m_handlerCanTake->setNextStrategy(m_handlerOptimiumTake.get());
+	//m_handlerOptimiumTake->setNextStrategy(m_handlerMinStepPlay.get());
 
 }
 

@@ -22,6 +22,7 @@
 #include"../DDZ_AI/SplitStrategyBase.h"
 #include"../DDZ_AI/MinStepSplitStrategy.h"
 #include "../DDZ_AI/OpenCVEntry.h"
+#include "../DDZ_AI/GameTable.h"
 #include <string>
 #include <time.h>
 // TODO: 在此处引用程序需要的其他头文件

@@ -6,6 +6,7 @@
 #include <memory>
 #include "CardConst.h"
 #include"Range.h"
+#include"CardStyle.h"
 struct CardSetCompare
 {
 	bool operator()(const uint8_t& lhs, const  uint8_t& rhs)const
@@ -57,6 +58,7 @@ public:
 	void RemoveIndex(uint8_t cardIndex, uint8_t count);
 	void RemoveCard(uint8_t color, uint8_t cardIndex);
 	void RemoveCard(uint8_t cardValue); 
+	void RemoveCard(const CardStyle& style);
 	void AddCard(uint8_t color, uint8_t cardIndex);
 	void AddCard(uint8_t cardValue);
 	virtual void Reset(bool createNewCard);

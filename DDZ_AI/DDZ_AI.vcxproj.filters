@@ -123,14 +123,23 @@
     <ClInclude Include="PlayStrategyBase.h">
       <Filter>头文件\Robot\Strategy</Filter>
     </ClInclude>
-    <ClInclude Include="SplitStrategyBase.h">
-      <Filter>头文件\Robot\Strategy</Filter>
-    </ClInclude>
     <ClInclude Include="PlayStrategyHandle.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
+    <ClInclude Include="SplitStrategyBase.h">
+      <Filter>头文件\Robot\Split</Filter>
+    </ClInclude>
+    <ClInclude Include="Farmer1PlayerStrategy.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="Farmer2PlayerStrategy.h">
+      <Filter>头文件\Robot\Strategy</Filter>
+    </ClInclude>
     <ClInclude Include="GameTable.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Robot</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleMinValuePlay.h">
+      <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -176,12 +185,6 @@
     <ClCompile Include="SplitStrategy.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
-    <ClCompile Include="TakeCardSplitStrategy.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayStrategyHandle.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="OpenCVEntry.cpp">
       <Filter>源文件\Image</Filter>
     </ClCompile>
@@ -191,7 +194,22 @@
     <ClCompile Include="PlayStrategyBase.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
+    <ClCompile Include="Farmer1PlayerStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="Farmer2PlayerStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
     <ClCompile Include="GameTable.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayStrategyHandle.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="TakeCardSplitStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleMinValuePlay.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,6 +16,7 @@ public:
 	std::vector< uint8_t> Extra;
 	CardStyle();
 	~CardStyle();
+	CardStyle(const CardStyle& inStyle);
 	CardStyle(int style, uint8_t startValue);
 	CardStyle(int style, uint8_t startValue, uint8_t endValue);
 	CardStyle(int style, uint8_t startValue, uint8_t endValue, const std::vector< uint8_t>& extra);

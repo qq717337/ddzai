@@ -81,6 +81,59 @@ void HandCardsFlag::RemoveCard(uint8_t cardValue)
 	Flags[index][color] = 0;
 }
 
+void HandCardsFlag::RemoveCard(const CardStyle & style)
+{
+	switch (style.Style) {
+	case ECardStyle::Single:
+		RemoveIndex(style.StartValue, 1);
+		break;
+	case ECardStyle::Double:
+		RemoveIndex(style.StartValue, 2);
+		break;
+	case ECardStyle::Triple_Zero:
+		RemoveIndex(style.StartValue, 3);
+		break;
+	case ECardStyle::Triple_One:
+		RemoveIndex(style.StartValue, 3);
+		RemoveIndex(style.Extra[0], 1);
+		break;
+	case ECardStyle::Triple_Two:
+		RemoveIndex(style.StartValue, 3);
+		RemoveIndex(style.Extra[0], 2);
+		break;
+	case ECardStyle::Triple_Chain_Zero:
+		RemoveChain(style.StartValue, style.EndValue, 3);
+		break;
+	case ECardStyle::Triple_Chain_One:
+		RemoveChain(style.StartValue, style.EndValue, 3);
+		for (auto v : style.Extra) {
+			RemoveIndex(v, 1);
+		}
+		break;
+	case ECardStyle::Triple_Chain_Two:
+		RemoveChain(style.StartValue, style.EndValue, 3);
+		for (auto v : style.Extra) {
+			RemoveIndex(v, 2);
+		}
+		break;
+	case ECardStyle::Single_Chain:
+		RemoveChain(style.StartValue, style.EndValue, 1);
+		break;
+	case ECardStyle::Double_Chain:
+		RemoveChain(style.StartValue, style.EndValue, 2);
+		break;
+	case ECardStyle::Boom:
+		if (style.StartValue == CardIndex_JokerBoom) {
+			RemoveIndex(CardIndex_SmallJoker, 1);
+			RemoveIndex(CardIndex_LargeJoker, 1);
+		}
+		else {
+			RemoveIndex(style.StartValue, 4);
+		}
+		break;
+	}
+}
+
 void HandCardsFlag::RemoveCard(uint8_t color, uint8_t cardIndex)
 {
 	_ASSERT(Flags[cardIndex][color] != 0);

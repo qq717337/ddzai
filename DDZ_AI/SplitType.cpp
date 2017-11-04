@@ -260,13 +260,13 @@ CardStyle SplitType::MinValueCardStyle() {
 }
 
 
-CardStyle SplitType::GetSingleChainStyle() {
+CardStyle SplitType::GetSingleChainStyle()const {
 	if (SingleChain.size() > 0) {
 		return CardStyle(ECardStyle::Single_Chain, SingleChain[0].Start, SingleChain[0].End);
 	}
 	return CardStyle::Invalid;
 }
-CardStyle SplitType::GetDoubleChainStyle() {
+CardStyle SplitType::GetDoubleChainStyle() const {
 	if (DoubleChain.size() > 0) {
 		return CardStyle(ECardStyle::Double_Chain, DoubleChain[0].Start, DoubleChain[0].End);
 	}
@@ -274,7 +274,7 @@ CardStyle SplitType::GetDoubleChainStyle() {
 }
 
 
-CardStyle SplitType::GetTripleChainStyle() {
+CardStyle SplitType::GetTripleChainStyle()const {
 	CardStyle r;
 	if (TripleChain.size() == 0) {
 		return CardStyle::Invalid;
@@ -308,7 +308,7 @@ CardStyle SplitType::GetTripleChainStyle() {
 	return r;
 }
 
-CardStyle SplitType::GetTripleStyle() {
+CardStyle SplitType::GetTripleStyle()const {
 	CardStyle r;
 	if (Triple.size() == 0) {
 		return CardStyle::Invalid;

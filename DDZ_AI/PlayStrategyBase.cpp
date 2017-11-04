@@ -1,13 +1,18 @@
 #include "stdafx.h"
 #include "PlayStrategyBase.h"
 
-PlayStrategyBase::PlayStrategyBase(int identity, const std::vector<uint8_t>& cardsValue)
+#include "GameTable.h"
+PlayStrategyBase::PlayStrategyBase(int identity, const std::vector<uint8_t>& cardsValue, GameTable *table)
 {
+	m_table = table;
 	m_handCards = std::make_shared<HandCards>(cardsValue);
+	//不可以在父类的构造函数中调用子类的虚方法
+	//尝试在此处调用Init函数会报链接错误
 }
 
-PlayStrategyBase::PlayStrategyBase(int identity, const std::set<uint8_t, CardSetCompare>& cardsValue)
+PlayStrategyBase::PlayStrategyBase(int identity, const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable *table)
 {
+	m_table = table;
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 

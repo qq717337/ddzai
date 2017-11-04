@@ -15,7 +15,8 @@ private:
 	void tripleSingleChainFirst();
 public:
 	virtual void Split()override;
-	virtual std::vector<CardStyle> OptimizeTake(const CardStyle & style)override;
+	virtual void OptimiumTake(const CardStyle & style)override;
+	virtual void AvailableTake(const CardStyle & style)override;
 	MinStepSplitStrategy(std::shared_ptr<HandCards> cards);
 	~MinStepSplitStrategy();
 };

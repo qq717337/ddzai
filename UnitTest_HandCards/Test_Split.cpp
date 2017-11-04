@@ -75,5 +75,13 @@ namespace UnitTest_Split
 			strategy.Split();
 			auto&minStepSplitType = strategy.MinStepSplit();
 		}
+		TEST_METHOD(TestGameTable)
+		{
+			CardSet set;
+			auto& extraCards = set.RandomFillLeft();
+
+			GameTable table(set);
+			table.Play(Identity::Lord);
+		}
 	};
 }

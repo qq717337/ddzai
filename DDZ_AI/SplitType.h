@@ -9,7 +9,6 @@ class SplitMemnto;
 class SplitType
 {
 	friend class SplitMemnto;//声明为友元类以便这个类可以访问所有的SplitType的成员
-
 #define INSERT_SPLITTYPE(x)	x.push_back(cardIndex);\
 	std::sort(x.begin(), x.end())
 #define INSERT_CHAIN_SPLITTYPE(x) x.push_back(CardRange(startIndex, endIndex))
@@ -39,10 +38,10 @@ public:
 	size_t MinStepCount(); //获取拆分后的牌的最小出完步数
 	size_t CardCount();
 	bool GetLastShotCardStyles(CardStyle* ref);
-	CardStyle GetSingleChainStyle();
-	CardStyle GetDoubleChainStyle();
-	CardStyle GetTripleChainStyle();
-	CardStyle GetTripleStyle();
+	CardStyle GetSingleChainStyle()const;
+	CardStyle GetDoubleChainStyle()const;
+	CardStyle GetTripleChainStyle()const;
+	CardStyle GetTripleStyle()const;
 	//从SingleChain中获取一个单只,forceSplit=true则强制返回一个即使不满足最优拆解
 	bool RequireSingleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
 	bool RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;

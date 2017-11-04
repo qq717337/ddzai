@@ -17,6 +17,13 @@ CardStyle::CardStyle()
 CardStyle::~CardStyle()
 {
 }
+CardStyle::CardStyle(const CardStyle & inStyle)
+{
+	Style = inStyle.Style;
+	StartValue = inStyle.StartValue;
+	EndValue = inStyle.EndValue;
+	Extra = inStyle.Extra;
+}
 CardStyle::CardStyle(int style, uint8_t startValue)
 {
 	Style = style;
