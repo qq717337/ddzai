@@ -159,7 +159,11 @@
     <ClInclude Include="Farmer1PlayerStrategy.h" />
     <ClInclude Include="Farmer2PlayerStrategy.h" />
     <ClInclude Include="GameTable.h" />
+    <ClInclude Include="HandleCanOptimiumTake.h" />
+    <ClInclude Include="HandleCanTake.h" />
+    <ClInclude Include="HandleLastShot.h" />
     <ClInclude Include="HandleMinValuePlay.h" />
+    <ClInclude Include="HandleTwoStepPlay.h" />
     <ClInclude Include="OpenCVEntry.h" />
     <ClInclude Include="PlayStrategyHandle.h" />
     <ClInclude Include="CardConst.h" />
@@ -190,7 +194,11 @@
     <ClCompile Include="Farmer1PlayerStrategy.cpp" />
     <ClCompile Include="Farmer2PlayerStrategy.cpp" />
     <ClCompile Include="GameTable.cpp" />
+    <ClCompile Include="HandleCanOptimiumTake.cpp" />
+    <ClCompile Include="HandleCanTake.cpp" />
+    <ClCompile Include="HandleLastShot.cpp" />
     <ClCompile Include="HandleMinValuePlay.cpp" />
+    <ClCompile Include="HandleTwoStepPlay.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />
     <ClCompile Include="PlayStrategyHandle.cpp" />
     <ClCompile Include="CardConst.cpp" />

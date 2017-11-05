@@ -67,6 +67,7 @@ public:
 	virtual std::vector<uint8_t> AvailableBoom();
 	virtual std::vector<uint8_t> AvailableTriple();
 	virtual std::vector<uint8_t> AvailableDouble();
+	virtual std::vector<uint8_t> AvailableSingle();
 	virtual std::vector<uint8_t> AvailableChain(int len, int count);
 
 	std::vector<CardRange> AvailableTripleChainRange();

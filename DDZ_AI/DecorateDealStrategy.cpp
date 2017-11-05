@@ -13,8 +13,8 @@ void MultiBoomDealStrategy::PreDeal()
 {
 	int64_t choiceStartPlayer = CommonRandom.NextInt(0, 3);
 	auto booms = _Card->DeskCardSet.AvailableBoom();
-	std::default_random_engine defaultEngine;
-	std::shuffle(booms.begin(), booms.end(), defaultEngine);
+	extern std::default_random_engine DefaultRandomEngine;
+	std::shuffle(booms.begin(), booms.end(), DefaultRandomEngine);
 	auto iter = booms.begin();
 	for (int i = 0; i < BoomCount; ++i) {
 		_Card->DealIndex(choiceStartPlayer % 3, *iter,4);

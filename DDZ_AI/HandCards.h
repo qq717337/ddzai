@@ -31,7 +31,13 @@ public:
 	virtual std::vector<uint8_t> AvailableBoom()override;
 	virtual std::vector<uint8_t> AvailableTriple()override;
 	virtual std::vector<uint8_t> AvailableDouble()override;
+	virtual std::vector<uint8_t> AvailableSingle()override;
+	virtual std::vector<uint8_t> AvailableBoom(bool bigger,uint8_t cardIndex);
+	virtual std::vector<uint8_t> AvailableTriple(bool bigger, uint8_t cardIndex);
+	virtual std::vector<uint8_t> AvailableDouble(bool bigger, uint8_t cardIndex);
+	virtual std::vector<uint8_t> AvailableSingle(bool bigger, uint8_t cardIndex);
 	virtual std::vector<uint8_t> AvailableChain(int len, int count)override;
+	virtual std::vector<uint8_t> AvailableChain(int len, int count,bool bigger,uint8_t cardIndex);
 	std::vector<std::vector<uint8_t>> IsolateCards(bool sub=false);
 
 	inline int Count(int cardIndex) {

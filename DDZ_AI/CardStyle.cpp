@@ -3,8 +3,8 @@
 #include "HandCardsFlag.h"
 #include"common_algorithm.h"
 
- const CardStyle CardStyle::Invalid = CardStyle(ECardStyle::Invalid, 0, 0);
- const CardStyle CardStyle::JokerBoom = CardStyle(ECardStyle::Boom, CardIndex_SmallJoker, CardIndex_LargeJoker);
+const CardStyle CardStyle::Invalid = CardStyle(ECardStyle::Invalid, 0, 0);
+const CardStyle CardStyle::JokerBoom = CardStyle(ECardStyle::Boom, CardIndex_JokerBoom);
 
 CardStyle::CardStyle()
 {
@@ -575,4 +575,14 @@ CardStyle& CardStyle::operator=(const CardStyle& in) {
 		Extra = in.Extra;
 	}
 	return *this;
+}
+
+bool CardStyle::operator==(const CardStyle & in)const
+{
+	return Style == in.Style && StartValue == in.StartValue && EndValue == in.EndValue && Extra == in.Extra;
+}
+
+bool CardStyle::operator!=(const CardStyle & in)const
+{
+	return Style != in.Style || StartValue != in.StartValue || EndValue != in.EndValue || Extra != in.Extra;
 }

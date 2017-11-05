@@ -24,6 +24,8 @@ public:
 	CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t extra);
 	int  GetCardsCount();
 	CardStyle& operator=(const CardStyle& in);
+	bool operator==(const CardStyle& in)const;
+	bool operator!=(const CardStyle & in)const;
 	std::vector<uint8_t>Index();
 	static CardStyle SingleStyle(uint8_t value);
 	static CardStyle DoubleStyle(uint8_t value);
@@ -43,4 +45,5 @@ public:
 	const static CardStyle Invalid ;
 	const static CardStyle JokerBoom;
 	inline int Length()const { return EndValue - StartValue + 1; }
+	inline bool Valid()const { return Style!=ECardStyle::Invalid; }
 };

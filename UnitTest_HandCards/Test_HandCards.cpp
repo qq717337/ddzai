@@ -146,7 +146,7 @@ namespace UnitTest_HandCards
 			SplitType splitType;
 			splitType.AddBoom(CardIndex_Q);
 			CardStyle styleRef;
-			if (splitType.GetLastShotCardStyles(&styleRef)) {
+			if (splitType.GetLastShotCardStyle(&styleRef)) {
 				auto s = styleRef.ToString();
 			}
 

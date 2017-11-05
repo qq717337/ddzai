@@ -6,9 +6,9 @@ HandleMinValuePlay::~HandleMinValuePlay()
 {
 }
 
-bool HandleMinValuePlay::Handle(SplitStrategy * strategy, CardStyle & result)
+bool HandleMinValuePlay::Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
 {
-	const SplitType& split = strategy->MinStepSplit();
+	const SplitType& split = splitStrategy->MinStepSplit();
 	auto& _boom = split.GetBoom();
 	auto& _triple = split.GetTriple();
 	auto& _double = split.GetDouble();

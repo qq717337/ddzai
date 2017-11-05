@@ -141,6 +141,18 @@
     <ClInclude Include="HandleMinValuePlay.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
+    <ClInclude Include="HandleTwoStepPlay.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleLastShot.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleCanTake.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleCanOptimiumTake.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -209,8 +221,20 @@
     <ClCompile Include="TakeCardSplitStrategy.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
+    <ClCompile Include="HandleCanOptimiumTake.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleCanTake.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleLastShot.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
     <ClCompile Include="HandleMinValuePlay.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleTwoStepPlay.cpp">
+      <Filter>源文件\Robot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

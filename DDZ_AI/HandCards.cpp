@@ -128,7 +128,7 @@ std::vector<uint8_t> HandCards::AvailableBoom()
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] == 4) {
 			r.push_back(i);
-		};
+		}
 	}
 	return r;
 }
@@ -139,7 +139,7 @@ std::vector<uint8_t> HandCards::AvailableTriple()
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 3) {
 			r.push_back(i);
-		};
+		}
 	}
 	return r;
 }
@@ -150,11 +150,83 @@ std::vector<uint8_t> HandCards::AvailableDouble()
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 2) {
 			r.push_back(i);
-		};
+		}
 	}
 	return r;
 }
-
+std::vector<uint8_t> HandCards::AvailableSingle()
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+		if (CardCount[i] >= 1) {
+			r.push_back(i);
+		}
+	}
+	return r;
+}
+std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i <= CardIndex_2; i++) {
+		if (CardCount[i] == 4) {
+			if (bigger) {
+				if (i > cardIndex) r.push_back(i);
+			}
+			else {
+				if (i < cardIndex) r.push_back(i);
+			}
+		}
+	}
+	if (CardCount[CardIndex_SmallJoker] == 1 && CardCount[CardIndex_LargeJoker] == 1) {
+		r.push_back(CardIndex_JokerBoom);
+	}
+	return r;
+}
+std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+		if (CardCount[i] >= 3) {
+			if (bigger) {
+				if (i > cardIndex) r.push_back(i);
+			}
+			else {
+				if (i < cardIndex) r.push_back(i);
+			}
+		}
+	}
+	return r;
+}
+std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+		if (CardCount[i] >= 2) {
+			if (bigger) {
+				if (i > cardIndex) r.push_back(i);
+			}
+			else {
+				if (i < cardIndex) r.push_back(i);
+			}
+		}
+	}
+	return r;
+}
+std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+		if (CardCount[i] >= 1) {
+			if (bigger) {
+				if (i > cardIndex) r.push_back(i);
+			}
+			else {
+				if (i < cardIndex) r.push_back(i);
+			}
+		}
+	}
+	return r;
+}
 std::vector<uint8_t> HandCards::AvailableChain(int len, int count)
 {
 	_ASSERT(count <= 3);
@@ -180,6 +252,25 @@ std::vector<uint8_t> HandCards::AvailableChain(int len, int count)
 			}
 		}
 		startCard = notEnoughIndexArray[i] + 1; //将从此处开始的下一张牌作为新的开始
+	}
+	return validChain;
+}
+
+std::vector<uint8_t> HandCards::AvailableChain(int len, int count, bool bigger, uint8_t cardIndex)
+{
+	std::vector<uint8_t> validChain;
+	auto allChain = AvailableChain(len, count);
+	for (auto & chain : allChain) {
+		if (bigger) {
+			if (chain > cardIndex) {
+				validChain.push_back(chain);
+			}
+		}
+		else {
+			if (chain < cardIndex) {
+				validChain.push_back(chain);
+			}
+		}
 	}
 	return validChain;
 }

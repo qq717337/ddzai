@@ -47,3 +47,10 @@ namespace ECardStyle {
 		Triple_Chain_Two = 232,
 	};
 }
+namespace ESituationSafeLevel {
+	enum ESituationSafeLevel_ {
+		AllPlayerMinStepGreater2,
+		AllPlayerMinStepWithOutBoomGreater2,
+		AllPlayerBoomGreater2,
+	};
+}

@@ -78,7 +78,11 @@ namespace UnitTest_Split
 		TEST_METHOD(TestGameTable)
 		{
 			CardSet set;
-			auto& extraCards = set.RandomFillLeft();
+			set.DealIndex(0, 4, 3);
+			set.DealIndex(0, 1, 1);
+			set.DealIndex(0, 5, 1);
+			set.Update();
+			//auto& extraCards = set.RandomFillLeft();
 
 			GameTable table(set);
 			table.Play(Identity::Lord);

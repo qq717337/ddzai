@@ -192,7 +192,46 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 
 void MinStepSplitStrategy::AvailableTake(const CardStyle & style)
 {
-	m_splitType->GetBoom();
+	HandCards*	handCards = m_cards.get();
+
+	if (style == CardStyle::JokerBoom) {
+		return;
+	}
+	switch (style.Style)
+	{
+	case ECardStyle::Single: {
+		auto biggerSingle = handCards->AvailableSingle(true, style.StartValue);
+		for (auto& v : biggerSingle) {
+			m_availableStyle.emplace_back(style.Style, v);
+		}
+		break;
+	}
+	case ECardStyle::Double: {
+		auto biggerDouble = handCards->AvailableDouble(true, style.StartValue);
+		for (auto& v : biggerDouble) {
+			m_availableStyle.emplace_back(style.Style, v);
+		}
+		break;
+	}
+	case ECardStyle::Triple_Zero:
+	case ECardStyle::Triple_One:
+	case ECardStyle::Triple_Two: {
+		auto biggerTriple = handCards->AvailableTriple(true, style.StartValue);
+		for (auto& v : biggerTriple) {
+			m_availableStyle.emplace_back(style.Style, v);
+		}
+		break;
+	}
+	case ECardStyle::Boom: {
+		auto biggerBoom = handCards->AvailableBoom(true, style.StartValue);
+		for (auto& v : biggerBoom) {
+			m_availableStyle.emplace_back(style.Style, v);
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 MinStepSplitStrategy::MinStepSplitStrategy(std::shared_ptr<HandCards> cards) :SplitStrategy(cards), m_split_function{

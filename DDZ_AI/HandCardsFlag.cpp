@@ -245,6 +245,17 @@ std::vector<uint8_t> HandCardsFlag::AvailableDouble()
 	return r;
 }
 
+std::vector<uint8_t> HandCardsFlag::AvailableSingle()
+{
+	std::vector<uint8_t>r;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+		if (Count(i) >= 1) {
+			r.push_back(i);
+		};
+	}
+	return r;
+}
+
 std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)
 {
 	_ASSERT(count <= 3);

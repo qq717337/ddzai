@@ -2,6 +2,7 @@
 #include "SplitType.h"
 #include "common_algorithm.h"
 #include <algorithm>
+#include <unordered_set>
 
 SplitType::SplitType()
 {
@@ -25,7 +26,7 @@ SplitType & SplitType::operator=(const SplitType & rhs)
 	return *this;
 }
 
-size_t SplitType::MinStepCount()
+size_t SplitType::MinStepCount(bool exceptBoom)const
 {
 	size_t singleCount = Single.size();
 	size_t	doubleCount = Double.size();
@@ -53,9 +54,12 @@ size_t SplitType::MinStepCount()
 		diff = 0;
 	}
 	size_t totalStep = TripleChain.size() + SingleChain.size() + DoubleChain.size() + Boom.size() + extra + diff;
+	if (exceptBoom) {
+		totalStep -= Boom.size();
+	}
 	return totalStep;
 }
-bool SplitType::GetLastShotCardStyles(CardStyle* ref) {
+bool SplitType::GetLastShotCardStyle(CardStyle* ref) const {
 	if (MinStepCount() == 1) {
 		if (TripleChain.size() > 0) {
 			if (Single.size() == TripleChain[0].Length()) {
@@ -157,7 +161,7 @@ void SplitType::AddTripleChain(uint8_t startIndex, uint8_t endIndex)
 
 //最小牌值出法,34567,这种先出 556677，后出，排除炸弹
 //如果有三个带的，则优先考虑使用三个带出牌，而不是用单只或者对子
-CardStyle SplitType::MinValueCardStyle() {
+CardStyle SplitType::MinValueCardStyle()const {
 	uint8_t minIndex = CardIndex_LargeJoker + 1;
 	CardStyle r;
 
@@ -338,7 +342,73 @@ CardStyle SplitType::GetTripleStyle()const {
 	}
 	return r;
 }
-size_t SplitType::CardCount() {
+std::vector<CardStyle> SplitType::GetAllSplitStyle() const
+{
+	std::vector<CardStyle> availableStyle;
+	auto singleChainStyle = GetSingleChainStyle();
+	if (singleChainStyle.Valid()) {
+		availableStyle.push_back(std::move(singleChainStyle));
+	}
+	auto doubleChainStyle = GetDoubleChainStyle();
+	if (doubleChainStyle.Valid()) {
+		availableStyle.push_back(std::move(doubleChainStyle));
+	}
+
+	auto tripleChainStyle = GetTripleChainStyle();
+	if (tripleChainStyle.Valid()) {
+		availableStyle.push_back(std::move(tripleChainStyle));
+	}
+
+	auto tripleStyle = GetTripleStyle();
+	if (tripleStyle.Valid()) {
+		availableStyle.push_back(std::move(tripleStyle));
+	}
+
+	if (Double.size() > 0) {
+		for (auto v : Double) {
+			bool ignoreThisDouble = false;
+			for (auto& style : availableStyle) {
+				if (style.Style == ECardStyle::Triple_Two || style.Style == ECardStyle::Triple_Chain_Two) {
+					for (auto eachExtra : style.Extra) {
+						if (eachExtra == v) {
+							ignoreThisDouble = true;
+							break;
+						}
+					}
+				}
+			}
+			if (!ignoreThisDouble) {
+				availableStyle.emplace_back(ECardStyle::Double, v);
+			}
+		}
+	}
+
+	if (Single.size() > 0) {
+		for (auto v : Single) {
+			bool ignoreThisSingle = false;
+			for (auto & style : availableStyle) {
+				if (style.Style == ECardStyle::Triple_One || style.Style == ECardStyle::Triple_Chain_One) {
+					for (auto eachExtra : style.Extra) {
+						if (eachExtra == v) {
+							ignoreThisSingle = true;
+							break;
+						}
+					}
+				}
+			}
+			if (!ignoreThisSingle) {
+				availableStyle.emplace_back(ECardStyle::Single, v);
+			}
+		}
+	}
+
+	if (Boom.size() > 0) {
+		availableStyle.emplace_back(ECardStyle::Boom, Boom[0]);
+	}
+
+	return availableStyle;
+}
+size_t SplitType::CardCount() const {
 	size_t sum = Boom.size() * 4 + Triple.size() * 3 + Double.size() * 2 + Single.size();
 	for (auto& v : SingleChain) {
 		sum += v.Length();
@@ -388,7 +458,7 @@ bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>
 
 	return false;
 }
- bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
+bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
 {
 	if (DoubleChain.size() == 0) {
 		return false;
@@ -425,6 +495,181 @@ bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>
 
 	return false;
 }
+bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSingleIndex, std::vector<uint8_t>& outDoubleIndex, std::vector<uint8_t>& outTripleIndex,
+	std::function<void(std::vector<uint8_t>&, std::vector<uint8_t>&, std::vector<uint8_t>&)> redefineFunc)
+{
+	size_t lenOfSingle = Single.size();
+	size_t lenOfDouble = Double.size();
+	size_t lenOfTriple = Triple.size();
+	size_t lenOfTripleChain = 0;
+
+	std::unordered_set<uint8_t> singleIsolateCards;
+	std::unordered_set<uint8_t> doubleIsolateCards;
+	std::unordered_set<uint8_t> tripleIsolateCards;
+	if (redefineFunc) {
+		redefineFunc(Single, Double, Triple);
+	}
+	if (lenOfSingle > 0) {
+		for (auto v : Single) {
+			singleIsolateCards.insert(v);
+		}
+	}
+	if (lenOfDouble > 0) {
+		for (auto v : Double) {
+			doubleIsolateCards.insert(v);
+		}
+	}
+	if (lenOfTriple > 0) {
+		for (auto v : Triple) {
+			tripleIsolateCards.insert(v);
+		}
+	}
+	if (SingleChain.size() > 0) {
+		for (auto v : SingleChain) {
+			if (v.Length() > 5) {
+				singleIsolateCards.insert(v.Start);
+				singleIsolateCards.insert(v.End);
+			}
+		}
+	}
+	if (DoubleChain.size() > 0) {
+		for (auto v : DoubleChain) {
+			if (v.Length() > 3) {
+				doubleIsolateCards.insert(v.Start);
+				doubleIsolateCards.insert(v.End);
+			}
+		}
+	}
+	if (TripleChain.size() > 0) {
+		for (auto v : TripleChain) {
+			if (v.Length() > 2) {
+				tripleIsolateCards.insert(v.Start);
+				tripleIsolateCards.insert(v.End);
+			}
+		}
+	}
+	int index;
+	if (singleIsolateCards.size() + doubleIsolateCards.size() * 2 + tripleIsolateCards.size() * 3 < requireCount) {
+		if (DoubleChain.size() > 0) {
+			for (index = DoubleChain[0].Start; index <= DoubleChain[0].End; ++index) {
+				doubleIsolateCards.insert(index);
+			}
+		}
+		if (SingleChain.size() > 0) {
+			for (auto v : SingleChain) {
+				if (v.Length() <= 6) {
+					for (index = SingleChain[0].Start; index <= SingleChain[0].End; ++index) {
+						singleIsolateCards.insert(index);
+					}
+				}
+			}
+		}
+	}
+	// CommonRandom.NextInt(0, swapOtherIndex.size())
+	size_t ls = singleIsolateCards.size();
+	size_t ld = doubleIsolateCards.size();
+	size_t lt = tripleIsolateCards.size();
+	std::vector<uint8_t> singleSlice(singleIsolateCards.begin(), singleIsolateCards.end());
+	std::vector<uint8_t> doubleSlice(doubleIsolateCards.begin(), doubleIsolateCards.end());
+	std::vector<uint8_t> tripleSlice(tripleIsolateCards.begin(), tripleIsolateCards.end());
+	int* randSingleIndex = perm<int>(ls);
+	int* randDoubleIndex = perm<int>(ld);
+	int* randTripleIndex = perm<int>(lt);
+
+	if (requireCount <= ls) {
+		for (index = 0; index < requireCount; index++) {
+			outSingleIndex.push_back(singleSlice[randSingleIndex[index]]);
+		}
+		delete randSingleIndex, randDoubleIndex, randTripleIndex;
+		return true;
+	}
+	else {
+		if (requireCount <= ld * 2 + ls) {
+
+			int requireSingleCount = 0;
+			int	requireDoubleCount = 0;
+			int	subSingleCount = requireCount - ls;
+			if (subSingleCount % 2 == 0) {
+				requireSingleCount = ls;
+				requireDoubleCount = subSingleCount / 2;
+			}
+			else {
+				requireSingleCount = ls - 1;
+				requireDoubleCount = subSingleCount / 2 + 1;
+			}
+
+			for (index = 0; index < requireSingleCount; ++index) {
+				int cardIndex = singleSlice[randSingleIndex[index]];
+				outSingleIndex.push_back(cardIndex);
+			}
+
+			for (index = 0; index < requireDoubleCount; ++index) {
+				int cardIndex = doubleSlice[randDoubleIndex[index]];
+				outDoubleIndex.push_back(cardIndex);
+			}
+		}
+		else {
+			if (ls + ld * 2 + 3 < requireCount) {
+				//fmt.Println("必须要从两个Triple中获取")
+				if (lt < 2) {
+					throw std::runtime_error("无法找到两个Triple");
+				}
+				else {
+					outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
+					outDoubleIndex.push_back(tripleSlice[randTripleIndex[1]]);
+				}
+				delete randSingleIndex, randDoubleIndex, randTripleIndex;
+				return true;
+			}
+
+			int requireSingleCount = 0;
+			int	requireDoubleCount = 0;
+			int	subSingleDoubleCount = requireCount - 3;
+			if (subSingleDoubleCount % 3 == 1) {
+				requireSingleCount = 1;
+			}
+			if (subSingleDoubleCount % 3 == 2) {
+				requireDoubleCount = 1;
+			}
+
+			if (requireSingleCount == 1) {
+				if (ls == 0) {
+					if (ld == 0) {
+						throw std::runtime_error("既没有单也没有双，找不到了");
+					}
+					else {
+						for (index = 0; index < requireSingleCount; index++) {
+							outSingleIndex.push_back(doubleSlice[randDoubleIndex[index]]);
+						}
+					}
+				}
+				else {
+					outSingleIndex.push_back(singleSlice[randSingleIndex[0]]);
+				}
+			}
+			if (requireDoubleCount == 1) {
+				if (ld == 0) {
+					if (ls < 2) {
+						throw std::runtime_error("既没有单也没有双，找不到了");
+					}
+					else {
+						for (index = 0; index < 2; index++) {
+							outSingleIndex.push_back(singleSlice[randSingleIndex[index]]);
+						}
+					}
+				}
+				else {
+					outDoubleIndex.push_back(doubleSlice[randDoubleIndex[0]]);
+				}
+			}
+
+			outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
+		}
+	}
+	delete randSingleIndex, randDoubleIndex, randTripleIndex;
+	return true;
+}
+
 void SplitType::Reset()
 {
 	Boom.clear();

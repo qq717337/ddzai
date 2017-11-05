@@ -8,7 +8,7 @@ class HandleMinValuePlay :
 public:
 	HandleMinValuePlay()=default;
 	~HandleMinValuePlay();
-	virtual bool Handle(SplitStrategy * strategy, CardStyle & result)override;
-	HandleMinValuePlay(const HandleCanOptimiumTakeCard&) = delete;
+	virtual bool Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result)override;
+	HandleMinValuePlay(const HandleMinValuePlay&) = delete;
 };
 

@@ -26,6 +26,16 @@ CardStyle Farmer2PlayerStrategy::Take(Identity::EIdentity_ lastIdentity, const C
 	return CardStyle();
 }
 
+bool Farmer2PlayerStrategy::OtherCanTake(const CardStyle & style) const
+{
+	return false;
+}
+
+bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
+{
+	return false;
+}
+
 int Farmer2PlayerStrategy::Identity()
 {
 	return 2;

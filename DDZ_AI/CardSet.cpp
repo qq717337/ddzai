@@ -36,9 +36,8 @@ void CardSet::ResetPlayerCard(int randomDealCount) {
 		v->Reset(false);
 	}
 	uint8_t* newCards = NewCards();
-
-	std::default_random_engine defaultEngine;
-	std::shuffle(newCards, newCards + 54, defaultEngine);
+	extern std::default_random_engine DefaultRandomEngine;
+	std::shuffle(newCards, newCards + 54, DefaultRandomEngine);
 
 	int i, index = 0;
 	for (i = 0; i < player_num; ++i) {
@@ -99,8 +98,8 @@ const std::vector<uint8_t>& CardSet::RandomFillLeft()
 	if (DeskCardSet.GetFlag(CardIndex_LargeJoker, 0) == 1) {
 		ExtraCard.push_back(0x02);
 	}
-	std::default_random_engine defaultEngine;
-	std::shuffle(ExtraCard.begin(), ExtraCard.end(), defaultEngine);
+	extern std::default_random_engine DefaultRandomEngine;
+	std::shuffle(ExtraCard.begin(), ExtraCard.end(), DefaultRandomEngine);
 	auto iter_pos = ExtraCard.begin();
 	for (int i = 0; i < player_num; ++i) {
 		size_t leftCount = LeftCount(i);

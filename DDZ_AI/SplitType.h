@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <functional>
 #include "Range.h"
 #include "CardStyle.h"
 //组合的不同拆分方法不建立不同的类了，而是在一个类中完成不同的组装策略，
@@ -34,17 +35,20 @@ public:
 	void AddDoubleChain(uint8_t startIndex, uint8_t endIndex);
 	void AddTripleChain(uint8_t startIndex, uint8_t endIndex);
 
-	CardStyle MinValueCardStyle();
-	size_t MinStepCount(); //获取拆分后的牌的最小出完步数
-	size_t CardCount();
-	bool GetLastShotCardStyles(CardStyle* ref);
+	CardStyle MinValueCardStyle()const;
+	size_t MinStepCount(bool exceptBoom=false)const; //获取拆分后的牌的最小出完步数
+	size_t CardCount()const;
+	bool GetLastShotCardStyle(CardStyle* ref)const;
 	CardStyle GetSingleChainStyle()const;
 	CardStyle GetDoubleChainStyle()const;
 	CardStyle GetTripleChainStyle()const;
 	CardStyle GetTripleStyle()const;
+	std::vector<CardStyle>GetAllSplitStyle()const;
 	//从SingleChain中获取一个单只,forceSplit=true则强制返回一个即使不满足最优拆解
 	bool RequireSingleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
 	bool RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
+	bool RequireFromAll(size_t requireCount, std::vector<uint8_t> & outSingleIndex, std::vector<uint8_t> & outDoubleIndex, std::vector<uint8_t> & outTripleIndex,
+		std::function<void(std::vector<uint8_t> &, std::vector<uint8_t> &, std::vector<uint8_t> &)> redefineFunc);
 	virtual void Reset();
 	SplitType();
 	~SplitType();

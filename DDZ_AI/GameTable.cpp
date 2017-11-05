@@ -25,7 +25,7 @@ void GameTable::Play(Identity::EIdentity_ identity)
 	auto &handCards=const_cast<HandCards&>( m_playerStrategy[identity]->GetHandCards());
 	handCards.RemoveCard(playStyle);
 	handCards.UpdateByFlag();
-	int size=handCards.Size();
+	int size=handCards.Size(); 
 }
 
 void GameTable::Take(Identity::EIdentity_ identity, Identity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
