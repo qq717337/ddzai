@@ -2,12 +2,12 @@
 #include "Farmer2PlayerStrategy.h"
 
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
@@ -21,7 +21,7 @@ CardStyle Farmer2PlayerStrategy::Play()
 	return CardStyle();
 }
 
-CardStyle Farmer2PlayerStrategy::Take(Identity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
+CardStyle Farmer2PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
 	return CardStyle();
 }
@@ -36,7 +36,12 @@ bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeL
 	return false;
 }
 
-int Farmer2PlayerStrategy::Identity()
+std::vector<ECardStyle::ECardStyle_> Farmer2PlayerStrategy::AvoidPlayStyle()
+{
+	return std::vector<ECardStyle::ECardStyle_>();
+}
+
+int Farmer2PlayerStrategy::EIdentity()
 {
 	return 2;
 }

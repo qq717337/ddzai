@@ -14,10 +14,13 @@ protected:
 public:
 	virtual void Init()=0;
 	virtual CardStyle Play() = 0;
-	virtual CardStyle Take(Identity::EIdentity_ lastIdentity, const CardStyle & lastStyle) = 0;
+	virtual CardStyle Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle) = 0;
 	virtual bool OtherCanTake(const CardStyle& style)const=0;
 	virtual bool IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const = 0;
-	virtual int Identity() = 0;
+	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle()=0;
+	virtual int EIdentity() = 0;
+
+
 	PlayStrategyBase(int identity, const  std::vector<uint8_t>& cardsValue,GameTable *table);
 	PlayStrategyBase(int identity, const  std::set<uint8_t, CardSetCompare>& cardsValue, GameTable *table);
 	virtual ~PlayStrategyBase();

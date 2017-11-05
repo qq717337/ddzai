@@ -572,15 +572,18 @@ bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSin
 	std::vector<uint8_t> singleSlice(singleIsolateCards.begin(), singleIsolateCards.end());
 	std::vector<uint8_t> doubleSlice(doubleIsolateCards.begin(), doubleIsolateCards.end());
 	std::vector<uint8_t> tripleSlice(tripleIsolateCards.begin(), tripleIsolateCards.end());
-	int* randSingleIndex = perm<int>(ls);
-	int* randDoubleIndex = perm<int>(ld);
-	int* randTripleIndex = perm<int>(lt);
+
+	uint8_t randSingleIndex[10];
+	perm<uint8_t>(ls,randSingleIndex);
+	uint8_t randDoubleIndex[10];
+	perm<uint8_t>(ld,randDoubleIndex);
+	uint8_t randTripleIndex[10];
+	perm<uint8_t>(lt,randDoubleIndex);
 
 	if (requireCount <= ls) {
 		for (index = 0; index < requireCount; index++) {
 			outSingleIndex.push_back(singleSlice[randSingleIndex[index]]);
 		}
-		delete randSingleIndex, randDoubleIndex, randTripleIndex;
 		return true;
 	}
 	else {
@@ -610,7 +613,6 @@ bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSin
 		}
 		else {
 			if (ls + ld * 2 + 3 < requireCount) {
-				//fmt.Println("必须要从两个Triple中获取")
 				if (lt < 2) {
 					throw std::runtime_error("无法找到两个Triple");
 				}
@@ -618,7 +620,6 @@ bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSin
 					outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
 					outDoubleIndex.push_back(tripleSlice[randTripleIndex[1]]);
 				}
-				delete randSingleIndex, randDoubleIndex, randTripleIndex;
 				return true;
 			}
 
@@ -666,7 +667,6 @@ bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSin
 			outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
 		}
 	}
-	delete randSingleIndex, randDoubleIndex, randTripleIndex;
 	return true;
 }
 

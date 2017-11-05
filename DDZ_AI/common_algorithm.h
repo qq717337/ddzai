@@ -42,12 +42,23 @@ inline size_t smallerCount(const std::vector<T>& value, T compareValue) {
 }
 
 template<typename T>
-inline T* perm(size_t randomCount) {
-	T* a = new T[randomCount];
-	for (size_t i = 0; i < randomCount; ++i)
-		a[i] = i;
-	for (size_t i = randomCount - 1; i >= 1; --i)
-		std::swap(a[i], a[rand() % i]);
+inline void perm(size_t randomCount,std::vector<T>&value ) {
+	value.resize(randomCount);
+	int start = 0;
+	for (; start < randomCount; ++start) {
+		value[start] = start;
+	}
 
-	return a;
+	for (size_t i = randomCount - 1; i >= 1; --i)
+		std::swap(value[i], value[rand() % i]);
+}
+template<typename T>
+inline void perm(size_t randomCount, T *value) {
+	int start = 0;
+	for (; start < randomCount; ++start) {
+		value[start] = start;
+	}
+
+	for (size_t i = randomCount - 1; i >= 1; --i)
+		std::swap(value[i], value[rand() % i]);
 }

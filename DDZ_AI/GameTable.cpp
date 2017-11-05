@@ -19,7 +19,7 @@ GameTable::~GameTable()
 {
 }
 
-void GameTable::Play(Identity::EIdentity_ identity)
+void GameTable::Play(EIdentity::EIdentity_ identity)
 {
 	auto playStyle = m_playerStrategy[identity]->Play();
 	auto &handCards=const_cast<HandCards&>( m_playerStrategy[identity]->GetHandCards());
@@ -28,13 +28,22 @@ void GameTable::Play(Identity::EIdentity_ identity)
 	int size=handCards.Size(); 
 }
 
-void GameTable::Take(Identity::EIdentity_ identity, Identity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
+void GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
 	m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
 }
 
-size_t GameTable::CardCount(Identity::EIdentity_ identity)const
+size_t GameTable::CardCount(EIdentity::EIdentity_ identity)const
 {
 	auto& handCards = m_playerStrategy[identity]->GetHandCards();
 	return handCards.Size();
+}
+
+const HandCards* GameTable::GetHandCard(EIdentity::EIdentity_ identity) const
+{
+	return &m_playerStrategy[identity]->GetHandCards();
+}
+const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const
+{
+	return m_playerStrategy[identity].get();
 }

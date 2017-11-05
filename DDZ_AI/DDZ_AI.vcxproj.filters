@@ -144,14 +144,20 @@
     <ClInclude Include="HandleTwoStepPlay.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
-    <ClInclude Include="HandleLastShot.h">
-      <Filter>头文件\Robot\Handle</Filter>
-    </ClInclude>
     <ClInclude Include="HandleCanTake.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
     <ClInclude Include="HandleCanOptimiumTake.h">
       <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleAvoidOtherWinPlay.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleLastShotPlay.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityTakeSplitStrategy.h">
+      <Filter>头文件\Robot\Split</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,14 +233,20 @@
     <ClCompile Include="HandleCanTake.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
-    <ClCompile Include="HandleLastShot.cpp">
-      <Filter>源文件\Robot</Filter>
-    </ClCompile>
     <ClCompile Include="HandleMinValuePlay.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
     <ClCompile Include="HandleTwoStepPlay.cpp">
       <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleAvoidOtherWinPlay.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleLastShotPlay.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="PriorityTakeSplitStrategy.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

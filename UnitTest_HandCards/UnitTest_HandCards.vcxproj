@@ -77,8 +77,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\CommondCode\opencv\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\CommondCode\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\CommondCode\DDZ_AI\log4cpp\include;D:\CommondCode\DDZ_AI\opencv\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\CommondCode\DDZ_AI\log4cpp\lib;D:\CommondCode\DDZ_AI\opencv\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>D:\CommondCode\opencv\build\x64\vc14\lib;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world330.lib;opencv_world330d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world330.lib;opencv_world330d.lib;log4cppD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -160,6 +160,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Test_Algorithm.cpp" />
     <ClCompile Include="Test_Image.cpp" />
     <ClCompile Include="Test_Split.cpp" />
     <ClCompile Include="stdafx.cpp">

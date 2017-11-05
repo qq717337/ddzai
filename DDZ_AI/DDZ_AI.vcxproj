@@ -75,8 +75,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\CommondCode\opencv\build\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\CommondCode\opencv\build\x64\vc14\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\CommondCode\DDZ_AI\log4cpp\include;D:\CommondCode\DDZ_AI\opencv\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\CommondCode\DDZ_AI\log4cpp\lib;D:\CommondCode\DDZ_AI\opencv\lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -114,7 +114,7 @@
       <AdditionalDependencies>opencv_world330.lib;opencv_world330d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4cppLIB.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -159,9 +159,10 @@
     <ClInclude Include="Farmer1PlayerStrategy.h" />
     <ClInclude Include="Farmer2PlayerStrategy.h" />
     <ClInclude Include="GameTable.h" />
+    <ClInclude Include="HandleAvoidOtherWinPlay.h" />
     <ClInclude Include="HandleCanOptimiumTake.h" />
     <ClInclude Include="HandleCanTake.h" />
-    <ClInclude Include="HandleLastShot.h" />
+    <ClInclude Include="HandleLastShotPlay.h" />
     <ClInclude Include="HandleMinValuePlay.h" />
     <ClInclude Include="HandleTwoStepPlay.h" />
     <ClInclude Include="OpenCVEntry.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="LordPlayStrategy.h" />
     <ClInclude Include="MinStepSplitStrategy.h" />
     <ClInclude Include="PlayStrategyBase.h" />
+    <ClInclude Include="PriorityTakeSplitStrategy.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="OptimizedCard.h" />
     <ClInclude Include="random.h" />
@@ -194,9 +196,10 @@
     <ClCompile Include="Farmer1PlayerStrategy.cpp" />
     <ClCompile Include="Farmer2PlayerStrategy.cpp" />
     <ClCompile Include="GameTable.cpp" />
+    <ClCompile Include="HandleAvoidOtherWinPlay.cpp" />
     <ClCompile Include="HandleCanOptimiumTake.cpp" />
     <ClCompile Include="HandleCanTake.cpp" />
-    <ClCompile Include="HandleLastShot.cpp" />
+    <ClCompile Include="HandleLastShotPlay.cpp" />
     <ClCompile Include="HandleMinValuePlay.cpp" />
     <ClCompile Include="HandleTwoStepPlay.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="LordPlayStrategy.cpp" />
     <ClCompile Include="MinStepSplitStrategy.cpp" />
     <ClCompile Include="PlayStrategyBase.cpp" />
+    <ClCompile Include="PriorityTakeSplitStrategy.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="OptimizedCard.cpp" />
     <ClCompile Include="SplitStrategy.cpp" />
