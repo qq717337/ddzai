@@ -4,7 +4,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest_Split
 {
-	TEST_CLASS(UnitTest2)
+	TEST_CLASS(UnitTest3)
 	{
 	public:
 		TEST_METHOD_INITIALIZE(SetUp)

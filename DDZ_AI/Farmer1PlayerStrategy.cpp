@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Farmer1PlayerStrategy.h"
+#include "GameTable.h"
 
 Farmer1PlayerStrategy::~Farmer1PlayerStrategy()
 {
@@ -28,7 +29,7 @@ CardStyle Farmer1PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 
 bool Farmer1PlayerStrategy::OtherCanTake(const CardStyle & style) const
 {
-	return false;
+	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
 }
 
 bool Farmer1PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const

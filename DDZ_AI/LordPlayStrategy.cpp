@@ -11,9 +11,13 @@ CardStyle LordPlayStrategy::Play()
 	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
 		return r;
 	}
+	if (m_handlerTwoStepPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
+		return r;
+	}
 	if (m_handlerAvoidOtherWinPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
 		return r;
 	}
+
 	m_handlerMinStepPlay->Handle(this, m_minStepSplitStrategy.get(), r);
 	return r;
 }
@@ -43,7 +47,7 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 
 bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 {
-	return false;
+	return m_table->GetHandCard(EIdentity::Farmer1)->CanTake(style) || m_table->GetHandCard(EIdentity::Farmer2)->CanTake(style);
 }
 
 bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
@@ -90,11 +94,13 @@ LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& card
 
 void LordPlayStrategy::Init()
 {
+	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
+	m_handlerLastShotPlay = std::make_unique<HandleLastShotPlay>(); 
+	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
+	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
+
 	m_handlerCanTake = std::make_unique<HandleCanTake>();
 	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
-	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
-	m_handlerLastShotPlay = std::make_unique<HandleLastShotPlay>();
-	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
 	//进行链的组装，即头尾相连，一层套一层  
 	//m_handlerCanTake->setNextStrategy(m_handlerOptimiumTake.get());
 	//m_handlerOptimiumTake->setNextStrategy(m_handlerMinStepPlay.get());

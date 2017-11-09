@@ -4,7 +4,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest_Split
 {
-	TEST_CLASS(UnitTest2)
+	TEST_CLASS(UnitTest4)
 	{
 	public:
 		TEST_METHOD_INITIALIZE(SetUp)
@@ -78,10 +78,15 @@ namespace UnitTest_Split
 		TEST_METHOD(TestGameTable)
 		{
 			CardSet set;
-			set.DealIndex(0, 4, 2);
-			set.DealIndex(0, 1, 1);
-			set.DealIndex(1, 6, 2);
-			set.DealIndex(2, 9, 3);
+			set.DealIndex(0, CardIndex_10, 1);
+			set.DealChain(0, CardIndex_3, CardIndex_7);
+			set.DealIndex(2, CardIndex_8, 1);
+			set.DealIndex(2, CardIndex_7, 2);
+			set.DealIndex(1, CardIndex_9, 1);
+			set.DealIndex(1, CardIndex_J, 3);
+			set.DealIndex(2, CardIndex_Q, 1);
+			set.DealIndex(2, CardIndex_K, 2);
+			set.DealIndex(1, CardIndex_A, 1);
 			set.Update();
 			//auto& extraCards = set.RandomFillLeft();
 			

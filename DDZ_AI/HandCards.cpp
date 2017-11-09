@@ -122,7 +122,7 @@ size_t HandCards::Size()const
 	return sum;
 }
 
-std::vector<uint8_t> HandCards::AvailableBoom()
+std::vector<uint8_t> HandCards::AvailableBoom()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -133,7 +133,7 @@ std::vector<uint8_t> HandCards::AvailableBoom()
 	return r;
 }
 
-std::vector<uint8_t> HandCards::AvailableTriple()
+std::vector<uint8_t> HandCards::AvailableTriple()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -144,7 +144,7 @@ std::vector<uint8_t> HandCards::AvailableTriple()
 	return r;
 }
 
-std::vector<uint8_t> HandCards::AvailableDouble()
+std::vector<uint8_t> HandCards::AvailableDouble()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -154,7 +154,7 @@ std::vector<uint8_t> HandCards::AvailableDouble()
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableSingle()
+std::vector<uint8_t> HandCards::AvailableSingle()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -164,7 +164,7 @@ std::vector<uint8_t> HandCards::AvailableSingle()
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)
+std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i <= CardIndex_2; i++) {
@@ -182,7 +182,7 @@ std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)
+std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -197,7 +197,7 @@ std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)
+std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -212,7 +212,7 @@ std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)
+std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -227,7 +227,7 @@ std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableChain(int len, int count)
+std::vector<uint8_t> HandCards::AvailableChain(int len, int count)const
 {
 	_ASSERT(count <= 3);
 	std::vector<uint8_t> validChain;
@@ -256,7 +256,7 @@ std::vector<uint8_t> HandCards::AvailableChain(int len, int count)
 	return validChain;
 }
 
-std::vector<uint8_t> HandCards::AvailableChain(int len, int count, bool bigger, uint8_t cardIndex)
+std::vector<uint8_t> HandCards::AvailableChain(int len, int count, bool bigger, uint8_t cardIndex)const
 {
 	std::vector<uint8_t> validChain;
 	auto allChain = AvailableChain(len, count);
@@ -318,6 +318,69 @@ std::vector<std::vector<uint8_t>> HandCards::IsolateCards(bool sub)
 		UpdateByFlag();
 	}
 	return isolateCards;
+}
+
+bool HandCards::CanTake(const CardStyle & lastStyle)const
+{
+	auto booms = AvailableBoom();
+	if (booms.size()>0 && lastStyle.Style != ECardStyle::Boom) {
+		return true;
+	}
+	switch (lastStyle.Style)
+	{
+	case ECardStyle::Boom: {
+		return booms.size() > 0;
+		break;
+	}
+	case ECardStyle::Triple_One: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		return triples.size() > 0;
+		break;
+	}
+	case ECardStyle::Triple_Two: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		return triples.size() > 0;
+		break;
+	}
+	case ECardStyle::Double: {
+		auto doubles = AvailableDouble(true, lastStyle.StartValue);
+		return doubles.size() > 0;
+		break;
+	}
+	case ECardStyle::Single: {
+		auto singles = AvailableSingle(true, lastStyle.StartValue);
+		return singles.size() > 0;
+		break;
+	}
+	case ECardStyle::Single_Chain: {
+		auto singleChains = AvailableSingleChain(true, lastStyle.StartValue, lastStyle.Length());
+		return singleChains.size() > 0;
+		break;
+	}
+	case ECardStyle::Double_Chain: {
+		auto singleChains = AvailableDoubleChain(true, lastStyle.StartValue, lastStyle.Length());
+		return singleChains.size() > 0;
+		break;
+	}
+	case ECardStyle::Triple_Chain_Zero: {
+		auto singleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+		return singleChains.size() > 0;
+		break;
+	}
+	case ECardStyle::Triple_Chain_One: {
+		auto singleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+		return singleChains.size() > 0 && Size() > lastStyle.Length() * 4;
+		break;
+	}
+	case ECardStyle::Triple_Chain_Two: {
+		auto singleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+		return singleChains.size() > 0 && Size() > lastStyle.Length() * 5;
+		break;
+	}
+	default:
+		break;
+	}
+	return false;
 }
 
 HandCards::~HandCards()

@@ -28,25 +28,28 @@ public:
 	virtual size_t Size() const override;
 
 	//可以通过判断上一次是否对卡牌造成改变来决定是否需要重新Update
-	virtual std::vector<uint8_t> AvailableBoom()override;
-	virtual std::vector<uint8_t> AvailableTriple()override;
-	virtual std::vector<uint8_t> AvailableDouble()override;
-	virtual std::vector<uint8_t> AvailableSingle()override;
-	virtual std::vector<uint8_t> AvailableBoom(bool bigger,uint8_t cardIndex);
-	virtual std::vector<uint8_t> AvailableTriple(bool bigger, uint8_t cardIndex);
-	virtual std::vector<uint8_t> AvailableDouble(bool bigger, uint8_t cardIndex);
-	virtual std::vector<uint8_t> AvailableSingle(bool bigger, uint8_t cardIndex);
-	virtual std::vector<uint8_t> AvailableChain(int len, int count)override;
-	virtual std::vector<uint8_t> AvailableChain(int len, int count,bool bigger,uint8_t cardIndex);
+	virtual std::vector<uint8_t> AvailableBoom()const override;
+	virtual std::vector<uint8_t> AvailableTriple()const override;
+	virtual std::vector<uint8_t> AvailableDouble()const override;
+	virtual std::vector<uint8_t> AvailableSingle()const override;
+	virtual std::vector<uint8_t> AvailableBoom(bool bigger,uint8_t cardIndex)const;
+	virtual std::vector<uint8_t> AvailableTriple(bool bigger, uint8_t cardIndex)const;
+	virtual std::vector<uint8_t> AvailableDouble(bool bigger, uint8_t cardIndex)const;
+	virtual std::vector<uint8_t> AvailableSingle(bool bigger, uint8_t cardIndex)const;
+	virtual std::vector<uint8_t> AvailableChain(int len, int count)const override;
+	virtual std::vector<uint8_t> AvailableChain(int len, int count,bool bigger,uint8_t cardIndex)const;
 	std::vector<std::vector<uint8_t>> IsolateCards(bool sub=false);
-
-	inline int Count(int cardIndex) {
+	bool CanTake(const CardStyle& lastStyle)const;
+	inline int Count(int cardIndex)const {
 		return CardCount[cardIndex];
 	}
-	inline std::set<uint8_t, CardSetCompare>&Data() {
+	inline std::set<uint8_t, CardSetCompare>&Data(){
 		return  CardsSet;
 	}
-	inline const std::vector<uint8_t>& Count() {
+	inline const std::set<uint8_t, CardSetCompare>&Data()const {
+		return  CardsSet;
+	}
+	inline const std::vector<uint8_t>& Count()const {
 		return CardCount;
 	}
 };

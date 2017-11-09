@@ -212,7 +212,7 @@ std::string HandCardsFlag::FlagString()
 	return sr;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableBoom()
+std::vector<uint8_t> HandCardsFlag::AvailableBoom()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -223,7 +223,7 @@ std::vector<uint8_t> HandCardsFlag::AvailableBoom()
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableTriple()
+std::vector<uint8_t> HandCardsFlag::AvailableTriple()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -234,7 +234,7 @@ std::vector<uint8_t> HandCardsFlag::AvailableTriple()
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableDouble()
+std::vector<uint8_t> HandCardsFlag::AvailableDouble()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -245,7 +245,7 @@ std::vector<uint8_t> HandCardsFlag::AvailableDouble()
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableSingle()
+std::vector<uint8_t> HandCardsFlag::AvailableSingle()const
 {
 	std::vector<uint8_t>r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
@@ -256,7 +256,7 @@ std::vector<uint8_t> HandCardsFlag::AvailableSingle()
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)
+std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)const
 {
 	_ASSERT(count <= 3);
 	std::vector<uint8_t> validChain;
@@ -285,7 +285,46 @@ std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)
 	return validChain;
 }
 
-std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange() {
+std::vector<uint8_t> HandCardsFlag::AvailableChain(bool isBigger, uint8_t cardIndex, int len, int count)const
+{
+	_ASSERT(count <= 3);
+	std::vector<uint8_t> validChain;
+	std::vector<uint8_t> notEnoughIndexArray;//牌没有达到指定数目的下标
+	int i, k;
+	for (i = 0; i < CardIndex_2; ++i) {
+		if (Count(i) < count) {
+			notEnoughIndexArray.push_back(i);
+		}
+	}
+
+	notEnoughIndexArray.push_back(CardIndex_2);     //牌2不能归入顺子里面
+	notEnoughIndexArray.push_back(CardIndex_SmallJoker);//牌2不能归入顺子里面
+	notEnoughIndexArray.push_back(CardIndex_LargeJoker);   //牌2不能归入顺子里面
+
+	int startCard = 0;//得到第一个0点,下标为0，代表3这张牌
+	for (i = 0; i < notEnoughIndexArray.size(); ++i) {
+		int	diff = notEnoughIndexArray[i] - startCard - len;
+		if (diff >= 0) { //第一个出现无牌的下标可以让从3开始组成顺子
+			for (k = 0; k <= diff; ++k) {
+				uint8_t startIndex = startCard + k;
+				if (isBigger) {
+					if (startIndex > cardIndex) {
+						validChain.push_back(startIndex); //+3用于从牌3开始推算,不加代表按照下标返回
+					}
+				}
+				else {
+					if (startIndex < cardIndex) {
+						validChain.push_back(startIndex); //+3用于从牌3开始推算,不加代表按照下标返回
+					}
+				}
+			}
+		}
+		startCard = notEnoughIndexArray[i] + 1; //将从此处开始的下一张牌作为新的开始
+	}
+	return validChain;
+}
+
+std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange()const {
 	std::vector<CardRange> r;
 	std::vector<uint8_t> chain = AvailableTripleChain();
 	if (chain.size() > 0) {
@@ -306,7 +345,7 @@ std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange() {
 	return r;
 }
 
-std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange() {
+std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange()const {
 	std::vector<CardRange> r;
 	std::vector<uint8_t> chain = AvailableDoubleChain();
 	if (chain.size() > 0) {
@@ -327,7 +366,7 @@ std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange() {
 	return r;
 }
 
-std::vector<CardRange> HandCardsFlag::AvailableSingleChainRange() {
+std::vector<CardRange> HandCardsFlag::AvailableSingleChainRange() const {
 	std::vector<CardRange> r;
 	std::vector<uint8_t> chain = AvailableSingleChain();
 	if (chain.size() > 0) {

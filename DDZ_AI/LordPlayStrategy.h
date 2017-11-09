@@ -6,7 +6,7 @@
 #include "HandleMinValuePlay.h"
 #include "HandleLastShotPlay.h"
 #include "HandleAvoidOtherWinPlay.h"
-
+#include "HandleTwoStepPlay.h"
 #include <memory>
 class LordPlayStrategy :
 	public PlayStrategyBase
@@ -17,6 +17,7 @@ private:
 
 	std::unique_ptr<PlayStrategyHandle>m_handlerMinStepPlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerLastShotPlay;
+	std::unique_ptr<PlayStrategyHandle>m_handlerTwoStepPlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerAvoidOtherWinPlay;
 
 	std::unique_ptr<PlayStrategyHandle>m_handlerCanTake;

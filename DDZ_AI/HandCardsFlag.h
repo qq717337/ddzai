@@ -64,29 +64,38 @@ public:
 	virtual void Reset(bool createNewCard);
 	virtual size_t Size()const;
 	std::string FlagString();
-	virtual std::vector<uint8_t> AvailableBoom();
-	virtual std::vector<uint8_t> AvailableTriple();
-	virtual std::vector<uint8_t> AvailableDouble();
-	virtual std::vector<uint8_t> AvailableSingle();
-	virtual std::vector<uint8_t> AvailableChain(int len, int count);
+	virtual std::vector<uint8_t> AvailableBoom()const;
+	virtual std::vector<uint8_t> AvailableTriple()const;
+	virtual std::vector<uint8_t> AvailableDouble()const;
+	virtual std::vector<uint8_t> AvailableSingle()const;
+	virtual std::vector<uint8_t> AvailableChain(int len, int count)const;
+	virtual std::vector<uint8_t> AvailableChain(bool isBigger,uint8_t cardIndex,int len, int count)const;
 
-	std::vector<CardRange> AvailableTripleChainRange();
-	std::vector<CardRange> AvailableDoubleChainRange();
-	std::vector<CardRange> AvailableSingleChainRange();
+	std::vector<CardRange> AvailableTripleChainRange()const;
+	std::vector<CardRange> AvailableDoubleChainRange()const;
+	std::vector<CardRange> AvailableSingleChainRange()const;
 #pragma region inline function
-	inline int Count(int cardIndex) {
+	inline int Count(int cardIndex)const {
 		return Flags[cardIndex][0] + Flags[cardIndex][1] + Flags[cardIndex][2] + Flags[cardIndex][3];
 	}
-	inline std::vector<uint8_t>  AvailableSingleChain() {
+	inline std::vector<uint8_t>  AvailableSingleChain()const {
 		return AvailableChain(5, 1);
-	}
-	inline std::vector<uint8_t> AvailableDoubleChain() {
+	}	
+	inline std::vector<uint8_t> AvailableDoubleChain() const {
 		return AvailableChain(3, 2);
 	}
-	inline std::vector<uint8_t> AvailableTripleChain() {
+	inline std::vector<uint8_t> AvailableTripleChain()const {
 		return AvailableChain(2, 3);
 	}
-
+	inline std::vector<uint8_t>  AvailableSingleChain(bool isBigger,uint8_t cardStartIndex,int len) const {
+		return AvailableChain(isBigger,cardStartIndex, len, 1);
+	}
+	inline std::vector<uint8_t> AvailableDoubleChain(bool isBigger, uint8_t cardStartIndex, int len) const {
+		return AvailableChain(isBigger, cardStartIndex, len, 2);
+	}
+	inline std::vector<uint8_t> AvailableTripleChain(bool isBigger, uint8_t cardStartIndex, int len)const {
+		return AvailableChain(isBigger, cardStartIndex, len, 3);
+	}
 #pragma endregion
 
 };

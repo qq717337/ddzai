@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Farmer2PlayerStrategy.h"
-
+#include "GameTable.h"
 
 Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
 {
@@ -28,7 +28,7 @@ CardStyle Farmer2PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 
 bool Farmer2PlayerStrategy::OtherCanTake(const CardStyle & style) const
 {
-	return false;
+	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
 }
 
 bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
