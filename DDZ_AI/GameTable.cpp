@@ -22,14 +22,15 @@ GameTable::~GameTable()
 void GameTable::Play(EIdentity::EIdentity_ identity)
 {
 	auto playStyle = m_playerStrategy[identity]->Play();
-	auto &handCards=const_cast<HandCards&>( m_playerStrategy[identity]->GetHandCards());
+	auto &handCards = const_cast<HandCards&>(m_playerStrategy[identity]->GetHandCards());
 	handCards.RemoveCard(playStyle);
 	handCards.UpdateByFlag();
-	int size=handCards.Size(); 
+	int size = handCards.Size();
 }
 
 void GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
+	m_lastCardStyle = lastStyle;
 	m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
 }
 
@@ -37,6 +38,17 @@ size_t GameTable::CardCount(EIdentity::EIdentity_ identity)const
 {
 	auto& handCards = m_playerStrategy[identity]->GetHandCards();
 	return handCards.Size();
+}
+
+bool GameTable::IsStyleOtherCanNotTake(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)const
+{
+	if (lastIdentity == EIdentity::Lord) {
+		return !GetHandCard(EIdentity::Farmer1)->CanTake(lastStyle) && !GetHandCard(EIdentity::Farmer2)->CanTake(lastStyle);
+	}
+	else {
+		return !GetHandCard(EIdentity::Lord)->CanTake(lastStyle);
+	}
+	return false;
 }
 
 const HandCards* GameTable::GetHandCard(EIdentity::EIdentity_ identity) const

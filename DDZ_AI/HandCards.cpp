@@ -323,12 +323,13 @@ std::vector<std::vector<uint8_t>> HandCards::IsolateCards(bool sub)
 bool HandCards::CanTake(const CardStyle & lastStyle)const
 {
 	auto booms = AvailableBoom();
-	if (booms.size()>0 && lastStyle.Style != ECardStyle::Boom) {
+	if (booms.size() > 0 && lastStyle.Style != ECardStyle::Boom) {
 		return true;
 	}
 	switch (lastStyle.Style)
 	{
 	case ECardStyle::Boom: {
+		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		return booms.size() > 0;
 		break;
 	}

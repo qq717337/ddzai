@@ -12,7 +12,7 @@ public:
 	virtual bool OtherCanTake(const CardStyle& style)const override;
 	virtual bool IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const;
 	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle();
-	virtual int EIdentity()override; 
+	virtual EIdentity::EIdentity_ Identity()const override;
 	virtual void Init()override;
 };
 

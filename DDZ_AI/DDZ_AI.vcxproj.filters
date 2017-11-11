@@ -117,9 +117,6 @@
     <ClInclude Include="SplitType.h">
       <Filter>头文件\Robot\Split</Filter>
     </ClInclude>
-    <ClInclude Include="TakeCardSplitStrategy.h">
-      <Filter>头文件\Robot\Strategy</Filter>
-    </ClInclude>
     <ClInclude Include="PlayStrategyBase.h">
       <Filter>头文件\Robot\Strategy</Filter>
     </ClInclude>
@@ -157,6 +154,15 @@
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
     <ClInclude Include="PriorityTakeSplitStrategy.h">
+      <Filter>头文件\Robot\Split</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleTwoStepWinTake.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleBoomTake.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="TakeCardSplitStrategy.h">
       <Filter>头文件\Robot\Split</Filter>
     </ClInclude>
   </ItemGroup>
@@ -246,6 +252,12 @@
       <Filter>源文件\Robot</Filter>
     </ClCompile>
     <ClCompile Include="PriorityTakeSplitStrategy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleTwoStepWinTake.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleBoomTake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -40,7 +40,7 @@ public:
 	static CardStyle TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>&extra);
 	static CardStyle TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>&extra);
 	static CardStyle FromCardsValue(const std::vector<uint8_t>&cards);
-	int Compare(const CardStyle& other);
+	int Compare(const CardStyle& other)const;
 	std::string  ToString();
 	const static CardStyle Invalid ;
 	const static CardStyle JokerBoom;

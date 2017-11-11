@@ -6,13 +6,13 @@ Farmer1PlayerStrategy::~Farmer1PlayerStrategy()
 {
 }
 
-Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
+Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 	//m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
-Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
+Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
@@ -42,9 +42,9 @@ std::vector<ECardStyle::ECardStyle_> Farmer1PlayerStrategy::AvoidPlayStyle()
 	return std::vector<ECardStyle::ECardStyle_>();
 }
 
-int Farmer1PlayerStrategy::EIdentity()
+EIdentity::EIdentity_ Farmer1PlayerStrategy::Identity()const
 {
-	return 1;
+	return EIdentity::EIdentity_::Farmer1;
 }
 
 void Farmer1PlayerStrategy::Init()

@@ -7,7 +7,6 @@ CardStyle LordPlayStrategy::Play()
 {
 	CardStyle r;
 	m_minStepSplitStrategy->Split();
-
 	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
 		return r;
 	}
@@ -30,10 +29,14 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	//先判断使用哪一种拆分策略，或者一开始创建多个SplitStrategy，然后再传入不同的Handle里面进行处理
 	CardStyle ret(CardStyle::Invalid);
 
+	std::vector<CardStyle> x;
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), CardStyle::DoubleStyle(CardIndex_2), x);
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		return ret;
 	}
-
+	if (m_handlerCheckTwoStepWinTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		return ret;
+	}
 	if (m_handlerOptimiumTake->Handle(this, m_keepBigSplitStrategy.get(), ret)) {//有保留大牌可接牌的情况
 		return ret;
 	}
@@ -52,7 +55,17 @@ bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 
 bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
 {
-
+	switch (level)
+	{
+	case ESituationSafeLevel::AllPlayerMinStepGreater2:
+		break;
+	case ESituationSafeLevel::AllPlayerMinStepWithOutBoomGreater2:
+		break;
+	case ESituationSafeLevel::AllPlayerBoomGreater2:
+		break;
+	default:
+		break;
+	}
 	return false;
 }
 
@@ -75,18 +88,18 @@ std::vector<ECardStyle::ECardStyle_> LordPlayStrategy::AvoidPlayStyle()
 }
 
 
-int LordPlayStrategy::EIdentity()
+EIdentity::EIdentity_ LordPlayStrategy::Identity()const
 {
-	return EIdentity::Lord;
+	return EIdentity::EIdentity_::Lord;
 }
 
-LordPlayStrategy::LordPlayStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue, table)
+LordPlayStrategy::LordPlayStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
-LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue, table)
+LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
@@ -101,6 +114,7 @@ void LordPlayStrategy::Init()
 
 	m_handlerCanTake = std::make_unique<HandleCanTake>();
 	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
+	m_handlerCheckTwoStepWinTake = std::make_unique<HandleTwoStepWinTake>();
 	//进行链的组装，即头尾相连，一层套一层  
 	//m_handlerCanTake->setNextStrategy(m_handlerOptimiumTake.get());
 	//m_handlerOptimiumTake->setNextStrategy(m_handlerMinStepPlay.get());

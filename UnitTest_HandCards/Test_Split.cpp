@@ -78,10 +78,13 @@ namespace UnitTest_Split
 		TEST_METHOD(TestGameTable)
 		{
 			CardSet set;
-			set.DealIndex(0, CardIndex_10, 1);
-			set.DealChain(0, CardIndex_3, CardIndex_7);
-			set.DealIndex(2, CardIndex_8, 1);
-			set.DealIndex(2, CardIndex_7, 2);
+			set.DealIndex(0, CardIndex_2, 2);
+			set.DealIndex(0, CardIndex_LargeJoker, 1);
+			set.DealIndex(0, CardIndex_SmallJoker, 1);
+			set.DealChain(0, CardIndex_8, CardIndex_Q);
+			set.DealIndex(0, CardIndex_3, 1);
+			//set.DealIndex(0, CardIndex_4, 2);
+			set.DealIndex(2, CardIndex_7, 4);
 			set.DealIndex(1, CardIndex_9, 1);
 			set.DealIndex(1, CardIndex_J, 3);
 			set.DealIndex(2, CardIndex_Q, 1);
@@ -91,7 +94,8 @@ namespace UnitTest_Split
 			//auto& extraCards = set.RandomFillLeft();
 			
 			GameTable table(set);
-			table.Play(EIdentity::Lord);
+			table.Take(EIdentity::Lord,EIdentity::Farmer1,CardStyle::SingleChainStyle(CardIndex_3,CardIndex_7));
+			auto str=table.GetPlayStrategy(EIdentity::Lord);
 		}
 	};
 }

@@ -2,12 +2,12 @@
 #include "Farmer2PlayerStrategy.h"
 #include "GameTable.h"
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(EIdentity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
@@ -41,9 +41,9 @@ std::vector<ECardStyle::ECardStyle_> Farmer2PlayerStrategy::AvoidPlayStyle()
 	return std::vector<ECardStyle::ECardStyle_>();
 }
 
-int Farmer2PlayerStrategy::EIdentity()
+EIdentity::EIdentity_ Farmer2PlayerStrategy::Identity()const
 {
-	return 2;
+	return EIdentity::EIdentity_::Farmer2;
 }
 
 void Farmer2PlayerStrategy::Init()

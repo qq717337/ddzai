@@ -451,7 +451,7 @@ CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, c
 }
 
 
-int CardStyle::Compare(const CardStyle & style)
+int CardStyle::Compare(const CardStyle & style)const
 {
 	bool isPBoom = Style == ECardStyle::Boom;
 	bool isABoom = style.Style == ECardStyle::Boom;

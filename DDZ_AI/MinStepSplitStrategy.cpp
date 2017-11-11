@@ -28,6 +28,20 @@ void MinStepSplitStrategy::Split()
 void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 {
 	auto& splitTypeRef = MinStepSplit();//可以修改为返回一个vector包含多个SplitType,但是只有在step大于最小step的数量不大于一定的情况下才有效
+	auto & booms = splitTypeRef.GetBoom();
+	if (style.Style == ECardStyle::Boom) {
+		for (auto v : booms) {
+			CardStyle boomStyle = CardStyle::BoomStyle(v);
+			if (boomStyle.Compare(style) > 0) {
+				m_optimiumBoomStyle.emplace_back(boomStyle);
+			}
+		}
+	}
+	else {
+		for (auto v : booms)
+			m_optimiumBoomStyle.emplace_back(ECardStyle::Boom, v);
+	}
+
 	switch (style.Style)
 	{
 	case ECardStyle::Single: {

@@ -10,6 +10,8 @@ protected:
 	std::vector<SplitType> m_splitTypeVector;
 	std::vector<size_t> m_splitMinStepVector;
 	std::vector<CardStyle> m_optimiumStyle;
+	//经过拆分后留下的BoomStyle
+	std::vector<CardStyle> m_optimiumBoomStyle;
 	std::vector<CardStyle> m_availableStyle;
 	void sortSplitType();
 public:
@@ -18,8 +20,9 @@ public:
 	virtual void Split();
 	virtual void OptimiumTake(const CardStyle & style);
 	virtual void AvailableTake(const CardStyle & style);
-	inline const std::vector<CardStyle>& GetOptimiumStyle() { return m_optimiumStyle; }
-	inline const std::vector<CardStyle>& GetAvailableStyle() { return m_availableStyle; }
+	inline const std::vector<CardStyle>& GetOptimiumStyle() const{ return m_optimiumStyle; }
+	inline const std::vector<CardStyle>& GetOptimiumBoomStyle() const { return m_optimiumBoomStyle; }
+	inline const std::vector<CardStyle>& GetAvailableStyle() const{ return m_availableStyle; }
 	SplitStrategy(std::shared_ptr< HandCards>cards);
 	virtual ~SplitStrategy();
 };

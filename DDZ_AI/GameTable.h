@@ -13,13 +13,18 @@ private:
 	inline PlayStrategyBase* getStrategy(EIdentity::EIdentity_ identity) {
 		return m_playerStrategy[identity].get();
 	}
+	CardStyle m_lastCardStyle;
 public:
 	GameTable(const CardSet& cardSet);
 	~GameTable();
+	inline const CardStyle& GetLastCardStyle()const {return m_lastCardStyle; }
 	void Play(EIdentity::EIdentity_ identity);
 	void Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle);
-
 	size_t CardCount(EIdentity::EIdentity_ identity)const;
+	bool IsStyleOtherCanNotTake(EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle)const;
+	bool inline IsFarmerCanNotTake(const CardStyle& lastStyle)const { return IsStyleOtherCanNotTake(EIdentity::Lord, lastStyle); }
+	bool inline IsLordCanNotTake(const CardStyle& lastStyle)const { return IsStyleOtherCanNotTake(EIdentity::Farmer1, lastStyle); }
+
 	const HandCards* GetHandCard(EIdentity::EIdentity_ identity)const;
 	const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const;
 };
