@@ -17,7 +17,7 @@ public:
 		return  map[GetCardName(cardValue)];
 	}
 	void Show(const cv::String& img1, const cv::String& img2);
-	void ShowCard(std::vector<uint8_t> PlayerCards0, std::vector<uint8_t> PlayerCards1, std::vector<uint8_t> PlayerCards2, std::vector<uint8_t> extraCards);
+	void ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards);
 	void Wait(int delay);
 	void DestroyAllWindow();
 	~OpenCVEntry();

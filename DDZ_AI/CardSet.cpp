@@ -12,7 +12,7 @@ CardSet::CardSet() :player_num(3), PlayerCardSet(3), DeskCardSet(true)
 CardSet::~CardSet()
 {
 	for (auto v : PlayerCardSet) {
-	if (v!=nullptr)	delete v;
+		if (v != nullptr)	delete v;
 	}
 }
 
@@ -80,7 +80,7 @@ size_t CardSet::LeftCount(int playerId)
 	return (54 - 3) / player_num - PlayerCardSet[playerId]->Size();
 }
 //·µ»ØÊ£ÓàµÄ3ÕÅÅÆ
-const std::vector<uint8_t>& CardSet::RandomFillLeft()
+const CardVector& CardSet::RandomFillLeft()
 {
 	Update();
 	ExtraCard.reserve(64);

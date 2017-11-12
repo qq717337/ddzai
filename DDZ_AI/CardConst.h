@@ -4,6 +4,8 @@
 #define CARD_SMALL_JOKER 0x01
 #define CARD_LARGE_JOKER 0x02
 #define CARD_VALUE_LEN 15
+
+
 namespace EIdentity {
 	enum EIdentity_ {
 		Lord = 0,

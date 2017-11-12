@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PlayStrategyBase.h"
-
+#include "MinStepSplitStrategy.h"
 #include "GameTable.h"
 inline const CardStyle & PlayStrategyBase::GetLastCardStyle() const
 {
@@ -33,13 +33,23 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 	}
 	auto splitType = split->MinStepSplit();
 	auto allStyle = splitType.GetAllSplitStyle();
-	auto finded_elem= std::find_if(allStyle.begin(), allStyle.end(), [choosedStyle](CardStyle v) {
+	auto finded_elem = std::find_if(allStyle.begin(), allStyle.end(), [choosedStyle](CardStyle v) {
 		return v == choosedStyle;
 	});
-	allStyle.erase(finded_elem);
 
+	if (finded_elem == allStyle.end()) {//如果Chain无法被完美接住，产生其他牌，需要重新进行Split
+		Recorder<HandCards>::Push(new HandCardsMemnto(*m_handCards.get()));
+		m_handCards->RemoveCard(choosedStyle);
+		MinStepSplitStrategy new_split(m_handCards);
+		new_split.Split();
+		allStyle = new_split.MinStepSplit().GetAllSplitStyle();
+		Recorder<HandCards>::Pop(m_handCards.get());
+	}
+	else {
+		allStyle.erase(finded_elem);
+	}
 	int canTakeCount = 0;
-	
+
 	for (auto& v : allStyle) {
 		if (m_table->IsStyleOtherCanNotTake(this->Identity(), v)) {
 			styleList.emplace_back(std::move(v));
@@ -54,7 +64,7 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 	}
 	return false;
 }
-PlayStrategyBase::PlayStrategyBase(int identity, const std::vector<uint8_t>& cardsValue, GameTable *table)
+PlayStrategyBase::PlayStrategyBase(int identity, const CardVector & cardsValue, GameTable *table)
 {
 	m_table = table;
 	m_handCards = std::make_shared<HandCards>(cardsValue);
@@ -68,7 +78,7 @@ PlayStrategyBase::PlayStrategyBase(int identity, const std::set<uint8_t, CardSet
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
-void PlayStrategyBase::Reset(const std::vector<uint8_t>& cardsValue)
+void PlayStrategyBase::Reset(const CardVector & cardsValue)
 {
 	m_handCards.reset(new HandCards(cardsValue));
 }

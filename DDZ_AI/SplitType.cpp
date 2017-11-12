@@ -72,7 +72,7 @@ bool SplitType::GetLastShotCardStyle(CardStyle* ref) const {
 			}
 			else {
 				if (Double.size() * 2 == TripleChain[0].Length()) {
-					*ref = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, std::vector<uint8_t>{ Double[0], Double[0] });
+					*ref = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector { Double[0], Double[0] });
 					return true;
 				}
 				else {
@@ -290,20 +290,20 @@ CardStyle SplitType::GetTripleChainStyle()const {
 
 	if (singleLen >= chainLen) {
 		if (doubleLen < chainLen) {
-			r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, std::vector<uint8_t>(Single.begin(), Single.begin() + chainLen));
+			r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector (Single.begin(), Single.begin() + chainLen));
 		}
 		else {
 			if (Single[0] + Single[1] < Double[0] + Double[1]) {
-				r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, std::vector<uint8_t>(Single.begin(), Single.begin() + chainLen));
+				r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector (Single.begin(), Single.begin() + chainLen));
 			}
 			else {
-				r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, std::vector<uint8_t>(Double.begin(), Double.begin() + chainLen));
+				r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector (Double.begin(), Double.begin() + chainLen));
 			}
 		}
 	}
 	else {
 		if (doubleLen >= chainLen) {
-			r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, std::vector<uint8_t>(Double.begin(), Double.begin() + chainLen));
+			r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector (Double.begin(), Double.begin() + chainLen));
 		}
 		else {
 			r = CardStyle(ECardStyle::Triple_Chain_Zero, TripleChain[0].Start, TripleChain[0].End);
@@ -421,7 +421,7 @@ size_t SplitType::CardCount() const {
 	}
 	return sum;
 }
-bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
+bool SplitType::RequireSingleFromChain(size_t requireCount, CardVector & out, bool forceSplit)const
 {
 	if (SingleChain.size() == 0) {
 		return false;
@@ -438,7 +438,7 @@ bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>
 	//如果无法实现完美的拆分，则破坏顺子，破坏顺子的前提是找张数一致的进行优先破坏，这里判断是不是单张
 	if (forceSplit) {
 		int	appendCount = 0;
-		std::vector<uint8_t>	exclude;
+		CardVector 	exclude;
 		for (uint8_t i = SingleChain[0].Start; i < SingleChain[0].End; ++i) {
 			if (InSingle(i) || InDouble(i)) {
 				exclude.push_back(i);
@@ -458,7 +458,7 @@ bool SplitType::RequireSingleFromChain(size_t requireCount, std::vector<uint8_t>
 
 	return false;
 }
-bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>& out, bool forceSplit)const
+bool SplitType::RequireDoubleFromChain(size_t requireCount, CardVector & out, bool forceSplit)const
 {
 	if (DoubleChain.size() == 0) {
 		return false;
@@ -475,7 +475,7 @@ bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>
 	//如果无法实现完美的拆分，则破坏顺子，破坏顺子的前提是找张数一致的进行优先破坏，这里判断是不是单张
 	if (forceSplit) {
 		int	appendCount = 0;
-		std::vector<uint8_t>	exclude;
+		CardVector 	exclude;
 		for (uint8_t i = DoubleChain[0].Start; i < DoubleChain[0].End; ++i) {
 			if (InSingle(i) || InDouble(i)) {
 				exclude.push_back(i);
@@ -495,8 +495,8 @@ bool SplitType::RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t>
 
 	return false;
 }
-bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSingleIndex, std::vector<uint8_t>& outDoubleIndex, std::vector<uint8_t>& outTripleIndex,
-	std::function<void(std::vector<uint8_t>&, std::vector<uint8_t>&, std::vector<uint8_t>&)> redefineFunc)
+bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex, CardVector & outDoubleIndex, CardVector & outTripleIndex,
+	std::function<void(CardVector &, CardVector &, CardVector &)> redefineFunc)
 {
 	size_t lenOfSingle = Single.size();
 	size_t lenOfDouble = Double.size();
@@ -569,16 +569,16 @@ bool SplitType::RequireFromAll(size_t requireCount, std::vector<uint8_t>& outSin
 	size_t ls = singleIsolateCards.size();
 	size_t ld = doubleIsolateCards.size();
 	size_t lt = tripleIsolateCards.size();
-	std::vector<uint8_t> singleSlice(singleIsolateCards.begin(), singleIsolateCards.end());
-	std::vector<uint8_t> doubleSlice(doubleIsolateCards.begin(), doubleIsolateCards.end());
-	std::vector<uint8_t> tripleSlice(tripleIsolateCards.begin(), tripleIsolateCards.end());
+	CardVector  singleSlice(singleIsolateCards.begin(), singleIsolateCards.end());
+	CardVector  doubleSlice(doubleIsolateCards.begin(), doubleIsolateCards.end());
+	CardVector  tripleSlice(tripleIsolateCards.begin(), tripleIsolateCards.end());
 
-	uint8_t randSingleIndex[10];
+	std::vector< uint8_t> randSingleIndex;
 	perm<uint8_t>(ls,randSingleIndex);
-	uint8_t randDoubleIndex[10];
+	std::vector< uint8_t> randDoubleIndex;
 	perm<uint8_t>(ld,randDoubleIndex);
-	uint8_t randTripleIndex[10];
-	perm<uint8_t>(lt,randDoubleIndex);
+	std::vector< uint8_t> randTripleIndex;
+	perm<uint8_t>(lt, randTripleIndex);
 
 	if (requireCount <= ls) {
 		for (index = 0; index < requireCount; index++) {

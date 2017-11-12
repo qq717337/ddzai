@@ -10,23 +10,23 @@ void OptimizedCard::SwapWithEmpty(int left, int right)
 		if (swapOtherIndex.size() > 0) {
 			uint8_t otherSwapIndex = swapOtherIndex[CommonRandom.NextInt(0, swapOtherIndex.size())];
 			uint8_t	choice = isolateCardIndex[left][CommonRandom.NextInt(0, isolateCardIndex[left].size())];
-			auto iterFinder = std::find_if(leftdata.begin(), leftdata.end(), [choice](uint8_t x) {return (x  & 0xf )== (choice+3); });
+			auto iterFinder = std::find_if(leftdata.begin(), leftdata.end(), [choice](uint8_t x) {return (x & 0xf) == (choice + 3); });
 			//auto rightFinder = std::find(rightdata.begin(),rightdata.end(), otherSwapIndex);
 			//std::swap(iterFinder, rightFinder);
 			if (iterFinder != leftdata.end()) {
-			uint8_t value = (*iterFinder);
-			leftdata.erase(iterFinder);
-			leftdata.insert(otherSwapIndex);
-			rightdata.insert(value);
-			rightdata.erase(otherSwapIndex);
+				uint8_t value = (*iterFinder);
+				leftdata.erase(iterFinder);
+				leftdata.insert(otherSwapIndex);
+				rightdata.insert(value);
+				rightdata.erase(otherSwapIndex);
 			}
 		}
 	}
 }
 
-std::vector<uint8_t> OptimizedCard::ExchangeValue(int playerIndex)
+CardVector  OptimizedCard::ExchangeValue(int playerIndex)
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	auto &data = PlayerCardSet[playerIndex]->Data();
 	auto& count = PlayerCardSet[playerIndex]->Count();
 	for (const auto & v : data) {
@@ -67,7 +67,7 @@ std::string OptimizedCard::ToString()
 
 OptimizedCard::OptimizedCard()
 {
-	
+
 }
 
 void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCount)

@@ -93,7 +93,7 @@ EIdentity::EIdentity_ LordPlayStrategy::Identity()const
 	return EIdentity::EIdentity_::Lord;
 }
 
-LordPlayStrategy::LordPlayStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
+LordPlayStrategy::LordPlayStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);

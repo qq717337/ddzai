@@ -139,7 +139,15 @@ namespace UnitTest_HandCards
 			Logger::WriteMessage(s.c_str());
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
 			system(name.c_str());
-			delete multiBoom;
+		}
+		TEST_METHOD(TestSmoothCard)
+		{
+			SmoothCard *opt = new SmoothCard();
+			opt->Optimized(nullptr,3,3);
+			std::string s = opt->ToString2();
+			Logger::WriteMessage(s.c_str());
+			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
+			system(name.c_str());
 		}
 		TEST_METHOD(TestSplitType)
 		{

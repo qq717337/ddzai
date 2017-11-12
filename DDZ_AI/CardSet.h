@@ -10,7 +10,7 @@ private:
 	uint8_t*  NewCards();
 protected:
 public:
-	std::vector<uint8_t> ExtraCard;
+	CardVector ExtraCard;
 	HandCardsFlag DeskCardSet;
 	std::vector< HandCards*>PlayerCardSet;
 	CardSet();
@@ -22,7 +22,7 @@ public:
 	void DealCard(int playerIndex, uint8_t cardValue);
 	void DealChain(int playerIndex, uint8_t startIndex, uint8_t endIndex, int count = 1);
 
-	const std::vector<uint8_t>& RandomFillLeft();
+	const CardVector & RandomFillLeft();
 
 	virtual std::string ToString();
 	virtual std::string ToString2();

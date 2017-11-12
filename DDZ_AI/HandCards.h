@@ -11,12 +11,12 @@ class HandCards :
 {
 	friend class HandCardsMemnto;
 private:
-	std::vector<uint8_t>CardCount;
+	CardVector CardCount;
 	std::set<uint8_t, CardSetCompare> CardsSet;
 public:
 	HandCards();
 	HandCards(const HandCards&) = delete;
-	HandCards(const std::vector<uint8_t>&  cardValues, bool updateSet = true); 
+	HandCards(const CardVector &  cardValues, bool updateSet = true); 
 	HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet = true);
 	~HandCards();
 	bool HasCard(uint8_t cardValue);
@@ -28,18 +28,19 @@ public:
 	virtual size_t Size() const override;
 
 	//可以通过判断上一次是否对卡牌造成改变来决定是否需要重新Update
-	virtual std::vector<uint8_t> AvailableBoom()const override;
-	virtual std::vector<uint8_t> AvailableTriple()const override;
-	virtual std::vector<uint8_t> AvailableDouble()const override;
-	virtual std::vector<uint8_t> AvailableSingle()const override;
-	virtual std::vector<uint8_t> AvailableBoom(bool bigger,uint8_t cardIndex)const;
-	virtual std::vector<uint8_t> AvailableTriple(bool bigger, uint8_t cardIndex)const;
-	virtual std::vector<uint8_t> AvailableDouble(bool bigger, uint8_t cardIndex)const;
-	virtual std::vector<uint8_t> AvailableSingle(bool bigger, uint8_t cardIndex)const;
-	virtual std::vector<uint8_t> AvailableChain(int len, int count)const override;
-	virtual std::vector<uint8_t> AvailableChain(int len, int count,bool bigger,uint8_t cardIndex)const;
-	std::vector<std::vector<uint8_t>> IsolateCards(bool sub=false);
+	virtual CardVector  AvailableBoom()const override;
+	virtual CardVector  AvailableTriple()const override;
+	virtual CardVector  AvailableDouble()const override;
+	virtual CardVector  AvailableSingle()const override;
+	virtual CardVector  AvailableBoom(bool bigger,uint8_t cardIndex)const;
+	virtual CardVector  AvailableTriple(bool bigger, uint8_t cardIndex)const;
+	virtual CardVector  AvailableDouble(bool bigger, uint8_t cardIndex)const;
+	virtual CardVector  AvailableSingle(bool bigger, uint8_t cardIndex)const;
+	virtual CardVector  AvailableChain(int len, int count)const override;
+	virtual CardVector  AvailableChain(int len, int count,bool bigger,uint8_t cardIndex)const;
+	std::vector<CardVector > IsolateCards(bool sub=false);
 	bool CanTake(const CardStyle& lastStyle)const;
+	CardVector  GetCardsValue(uint8_t cardIndex, int count);
 	inline int Count(int cardIndex)const {
 		return CardCount[cardIndex];
 	}
@@ -49,7 +50,7 @@ public:
 	inline const std::set<uint8_t, CardSetCompare>&Data()const {
 		return  CardsSet;
 	}
-	inline const std::vector<uint8_t>& Count()const {
+	inline const CardVector & Count()const {
 		return CardCount;
 	}
 };

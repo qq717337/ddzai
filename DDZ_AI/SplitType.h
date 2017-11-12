@@ -16,10 +16,10 @@ class SplitType
 
 
 private:
-	std::vector<uint8_t> Boom;
-	std::vector<uint8_t>Single;
-	std::vector<uint8_t>Double;
-	std::vector<uint8_t>Triple;
+	CardVector Boom;
+	CardVector Single;
+	CardVector Double;
+	CardVector Triple;
 	std::vector<CardRange>SingleChain;  //至少5张
 	std::vector<CardRange>DoubleChain; //至少3张
 	std::vector<CardRange>TripleChain;//至少2张
@@ -36,7 +36,7 @@ public:
 	void AddTripleChain(uint8_t startIndex, uint8_t endIndex);
 
 	CardStyle MinValueCardStyle()const;
-	size_t MinStepCount(bool exceptBoom=false)const; //获取拆分后的牌的最小出完步数
+	size_t MinStepCount(bool exceptBoom = false)const; //获取拆分后的牌的最小出完步数
 	size_t CardCount()const;
 	bool GetLastShotCardStyle(CardStyle* ref)const;
 	CardStyle GetSingleChainStyle()const;
@@ -45,10 +45,10 @@ public:
 	CardStyle GetTripleStyle()const;
 	std::vector<CardStyle>GetAllSplitStyle()const;
 	//从SingleChain中获取一个单只,forceSplit=true则强制返回一个即使不满足最优拆解
-	bool RequireSingleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
-	bool RequireDoubleFromChain(size_t requireCount, std::vector<uint8_t> & out, bool forceSplit = false)const;
-	bool RequireFromAll(size_t requireCount, std::vector<uint8_t> & outSingleIndex, std::vector<uint8_t> & outDoubleIndex, std::vector<uint8_t> & outTripleIndex,
-		std::function<void(std::vector<uint8_t> &, std::vector<uint8_t> &, std::vector<uint8_t> &)> redefineFunc);
+	bool RequireSingleFromChain(size_t requireCount, CardVector  & out, bool forceSplit = false)const;
+	bool RequireDoubleFromChain(size_t requireCount, CardVector  & out, bool forceSplit = false)const;
+	bool RequireFromAll(size_t requireCount, CardVector  & outSingleIndex, CardVector  & outDoubleIndex, CardVector  & outTripleIndex,
+		std::function<void(CardVector  &, CardVector  &, CardVector  &)> redefineFunc);
 	virtual void Reset();
 	SplitType();
 	~SplitType();
@@ -68,10 +68,10 @@ public:
 	inline bool InDouble(uint8_t cardIndex)const { return std::find(Double.begin(), Double.end(), cardIndex) != Double.end(); }
 	inline const bool HasJokerBoom()const { return std::find(Boom.begin(), Boom.end(), CardIndex_JokerBoom) != Single.end(); }
 
-	inline const std::vector<uint8_t>& GetBoom()const { return Boom; }
-	inline const std::vector<uint8_t>& GetSingle()const { return Single; }
-	inline const std::vector<uint8_t>& GetDouble() const { return Double; }
-	inline const std::vector<uint8_t>& GetTriple()const { return Triple; }
+	inline const CardVector & GetBoom()const { return Boom; }
+	inline const CardVector & GetSingle()const { return Single; }
+	inline const CardVector & GetDouble() const { return Double; }
+	inline const CardVector & GetTriple()const { return Triple; }
 	inline const std::vector<CardRange>& GetSingleChain() const { return SingleChain; }
 	inline const std::vector<CardRange>& GetDoubleChain() const { return DoubleChain; }
 	inline const std::vector<CardRange>& GetTripleChain() const { return TripleChain; }

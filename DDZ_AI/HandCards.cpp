@@ -5,15 +5,15 @@
 
 HandCards::HandCards() :HandCardsFlag(false),
 CardsSet(std::set<uint8_t, CardSetCompare>()),
-CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
+CardCount(CardVector (CARD_VALUE_LEN))
 {
 	UpdateByFlag();
 }
 
-HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool updateSet) :
+HandCards::HandCards(const CardVector & cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end())),
-	CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
+	CardCount(CardVector (CARD_VALUE_LEN))
 {
 	int  j = 0;
 	for (auto &v : cardValues) {
@@ -34,7 +34,7 @@ HandCards::HandCards(const std::vector<uint8_t>& cardValues, bool updateSet) :
 HandCards::HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(cardValues),
-	CardCount(std::vector<uint8_t>(CARD_VALUE_LEN))
+	CardCount(CardVector (CARD_VALUE_LEN))
 {
 	int  j = 0;
 	for (auto &v : cardValues) {
@@ -122,9 +122,9 @@ size_t HandCards::Size()const
 	return sum;
 }
 
-std::vector<uint8_t> HandCards::AvailableBoom()const
+CardVector HandCards::AvailableBoom()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] == 4) {
 			r.push_back(i);
@@ -133,9 +133,9 @@ std::vector<uint8_t> HandCards::AvailableBoom()const
 	return r;
 }
 
-std::vector<uint8_t> HandCards::AvailableTriple()const
+CardVector HandCards::AvailableTriple()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 3) {
 			r.push_back(i);
@@ -144,9 +144,9 @@ std::vector<uint8_t> HandCards::AvailableTriple()const
 	return r;
 }
 
-std::vector<uint8_t> HandCards::AvailableDouble()const
+CardVector  HandCards::AvailableDouble()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 2) {
 			r.push_back(i);
@@ -154,9 +154,9 @@ std::vector<uint8_t> HandCards::AvailableDouble()const
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableSingle()const
+CardVector  HandCards::AvailableSingle()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 1) {
 			r.push_back(i);
@@ -164,9 +164,9 @@ std::vector<uint8_t> HandCards::AvailableSingle()const
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)const
+CardVector  HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i <= CardIndex_2; i++) {
 		if (CardCount[i] == 4) {
 			if (bigger) {
@@ -182,9 +182,9 @@ std::vector<uint8_t> HandCards::AvailableBoom(bool bigger, uint8_t cardIndex)con
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)const
+CardVector  HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 3) {
 			if (bigger) {
@@ -197,9 +197,9 @@ std::vector<uint8_t> HandCards::AvailableTriple(bool bigger, uint8_t cardIndex)c
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)const
+CardVector  HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 2) {
 			if (bigger) {
@@ -212,9 +212,9 @@ std::vector<uint8_t> HandCards::AvailableDouble(bool bigger, uint8_t cardIndex)c
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)const
+CardVector  HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (CardCount[i] >= 1) {
 			if (bigger) {
@@ -227,11 +227,11 @@ std::vector<uint8_t> HandCards::AvailableSingle(bool bigger, uint8_t cardIndex)c
 	}
 	return r;
 }
-std::vector<uint8_t> HandCards::AvailableChain(int len, int count)const
+CardVector  HandCards::AvailableChain(int len, int count)const
 {
 	_ASSERT(count <= 3);
-	std::vector<uint8_t> validChain;
-	std::vector<uint8_t> notEnoughIndexArray;//牌没有达到指定数目的下标
+	CardVector  validChain;
+	CardVector  notEnoughIndexArray;//牌没有达到指定数目的下标
 	int i, k;
 	for (i = 0; i < CardIndex_2; ++i) {
 		if (CardCount[i] < count) {
@@ -256,9 +256,9 @@ std::vector<uint8_t> HandCards::AvailableChain(int len, int count)const
 	return validChain;
 }
 
-std::vector<uint8_t> HandCards::AvailableChain(int len, int count, bool bigger, uint8_t cardIndex)const
+CardVector  HandCards::AvailableChain(int len, int count, bool bigger, uint8_t cardIndex)const
 {
-	std::vector<uint8_t> validChain;
+	CardVector  validChain;
 	auto allChain = AvailableChain(len, count);
 	for (auto & chain : allChain) {
 		if (bigger) {
@@ -275,9 +275,9 @@ std::vector<uint8_t> HandCards::AvailableChain(int len, int count, bool bigger, 
 	return validChain;
 }
 
-std::vector<std::vector<uint8_t>> HandCards::IsolateCards(bool sub)
+std::vector<CardVector > HandCards::IsolateCards(bool sub)
 {
-	std::vector<uint8_t>();
+	CardVector ();
 	std::unordered_set<uint8_t> notIsolateCards;
 	auto singleChain = AvailableSingleChain();
 	int i;
@@ -298,11 +298,11 @@ std::vector<std::vector<uint8_t>> HandCards::IsolateCards(bool sub)
 			notIsolateCards.insert(v + i);
 		}
 	}
-	std::vector<std::vector<uint8_t>> isolateCards(15);
+	std::vector<CardVector > isolateCards(15);
 
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; ++i) {
 		if (notIsolateCards.find(i) != notIsolateCards.end()) { //非孤立元素包含当前index
-			isolateCards[i] = std::vector<uint8_t>(4);
+			isolateCards[i] = CardVector (4);
 		}
 		else {
 			isolateCards[i] = { Flags[i][0],  Flags[i][1],  Flags[i][2],  Flags[i][3] };
@@ -382,6 +382,24 @@ bool HandCards::CanTake(const CardStyle & lastStyle)const
 		break;
 	}
 	return false;
+}
+
+CardVector  HandCards::GetCardsValue(uint8_t cardIndex, int count)
+{
+	 CardVector  r;
+	 int sum = 0;
+	 for (int i = 0; i < 4; ++i) {
+		 if (Flags[cardIndex][i] == 1) {
+			 r.push_back(CardColorIndexToValue(i, cardIndex));
+			 sum++;
+		 }
+		 else {
+			 continue;
+		 }
+		 if (sum == count)break;
+	 }
+	_ASSERT(sum == count);
+	 return r;
 }
 
 HandCards::~HandCards()

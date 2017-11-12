@@ -6,7 +6,7 @@ Farmer1PlayerStrategy::~Farmer1PlayerStrategy()
 {
 }
 
-Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer1PlayerStrategy::Farmer1PlayerStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 	//m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);

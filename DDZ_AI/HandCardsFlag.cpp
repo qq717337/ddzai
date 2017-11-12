@@ -32,11 +32,11 @@ void HandCardsFlag::CardValueToColorIndex(uint8_t cardValue, uint8_t * color, ui
 	}
 }
 uint8_t HandCardsFlag::CardColorIndexToValue(uint8_t color, uint8_t index) {
-	if (color == 0 || index > CardIndex_2) {
+	if (index > CardIndex_2) {
 		return index - CardIndex_2;
 	}
 	else {
-		return (color * 16) + (index + 3);
+		return ((color+1) <<4) | (index + 3);
 	}
 }
 
@@ -212,9 +212,9 @@ std::string HandCardsFlag::FlagString()
 	return sr;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableBoom()const
+CardVector  HandCardsFlag::AvailableBoom()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (Count(i) == 4) {
 			r.push_back(i);
@@ -223,9 +223,9 @@ std::vector<uint8_t> HandCardsFlag::AvailableBoom()const
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableTriple()const
+CardVector  HandCardsFlag::AvailableTriple()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (Count(i) >= 3) {
 			r.push_back(i);
@@ -234,9 +234,9 @@ std::vector<uint8_t> HandCardsFlag::AvailableTriple()const
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableDouble()const
+CardVector  HandCardsFlag::AvailableDouble()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (Count(i) >= 2) {
 			r.push_back(i);
@@ -245,9 +245,9 @@ std::vector<uint8_t> HandCardsFlag::AvailableDouble()const
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableSingle()const
+CardVector  HandCardsFlag::AvailableSingle()const
 {
-	std::vector<uint8_t>r;
+	CardVector r;
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
 		if (Count(i) >= 1) {
 			r.push_back(i);
@@ -256,11 +256,11 @@ std::vector<uint8_t> HandCardsFlag::AvailableSingle()const
 	return r;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)const
+CardVector  HandCardsFlag::AvailableChain(int len, int count)const
 {
 	_ASSERT(count <= 3);
-	std::vector<uint8_t> validChain;
-	std::vector<uint8_t> notEnoughIndexArray;//牌没有达到指定数目的下标
+	CardVector  validChain;
+	CardVector  notEnoughIndexArray;//牌没有达到指定数目的下标
 	int i, k;
 	for (i = 0; i < CardIndex_2; ++i) {
 		if (Count(i) < count) {
@@ -285,11 +285,11 @@ std::vector<uint8_t> HandCardsFlag::AvailableChain(int len, int count)const
 	return validChain;
 }
 
-std::vector<uint8_t> HandCardsFlag::AvailableChain(bool isBigger, uint8_t cardIndex, int len, int count)const
+CardVector  HandCardsFlag::AvailableChain(bool isBigger, uint8_t cardIndex, int len, int count)const
 {
 	_ASSERT(count <= 3);
-	std::vector<uint8_t> validChain;
-	std::vector<uint8_t> notEnoughIndexArray;//牌没有达到指定数目的下标
+	CardVector  validChain;
+	CardVector  notEnoughIndexArray;//牌没有达到指定数目的下标
 	int i, k;
 	for (i = 0; i < CardIndex_2; ++i) {
 		if (Count(i) < count) {
@@ -326,7 +326,7 @@ std::vector<uint8_t> HandCardsFlag::AvailableChain(bool isBigger, uint8_t cardIn
 
 std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange()const {
 	std::vector<CardRange> r;
-	std::vector<uint8_t> chain = AvailableTripleChain();
+	CardVector  chain = AvailableTripleChain();
 	if (chain.size() > 0) {
 		uint8_t head = chain[0];
 		uint8_t tail = head;
@@ -347,7 +347,7 @@ std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange()const {
 
 std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange()const {
 	std::vector<CardRange> r;
-	std::vector<uint8_t> chain = AvailableDoubleChain();
+	CardVector  chain = AvailableDoubleChain();
 	if (chain.size() > 0) {
 		uint8_t head = chain[0];
 		uint8_t tail = head;
@@ -368,7 +368,7 @@ std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange()const {
 
 std::vector<CardRange> HandCardsFlag::AvailableSingleChainRange() const {
 	std::vector<CardRange> r;
-	std::vector<uint8_t> chain = AvailableSingleChain();
+	CardVector  chain = AvailableSingleChain();
 	if (chain.size() > 0) {
 		uint8_t head = chain[0];
 		uint8_t tail = head;

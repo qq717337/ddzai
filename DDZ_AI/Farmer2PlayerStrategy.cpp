@@ -2,7 +2,7 @@
 #include "Farmer2PlayerStrategy.h"
 #include "GameTable.h"
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }

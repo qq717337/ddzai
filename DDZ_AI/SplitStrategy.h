@@ -20,9 +20,10 @@ public:
 	virtual void Split();
 	virtual void OptimiumTake(const CardStyle & style);
 	virtual void AvailableTake(const CardStyle & style);
-	inline const std::vector<CardStyle>& GetOptimiumStyle() const{ return m_optimiumStyle; }
+	std::vector<const SplitType* > GetSplitType(int moreStepThanMinStep);
+	inline const std::vector<CardStyle>& GetOptimiumStyle() const { return m_optimiumStyle; }
 	inline const std::vector<CardStyle>& GetOptimiumBoomStyle() const { return m_optimiumBoomStyle; }
-	inline const std::vector<CardStyle>& GetAvailableStyle() const{ return m_availableStyle; }
+	inline const std::vector<CardStyle>& GetAvailableStyle() const { return m_availableStyle; }
 	SplitStrategy(std::shared_ptr< HandCards>cards);
 	virtual ~SplitStrategy();
 };

@@ -71,7 +71,7 @@ namespace UnitTest_Split
 			//auto s = cards->ToString();
 			//Logger::WriteMessage(s.c_str());
 			MinStepSplitStrategy strategy(std::make_shared<HandCards>(std::vector<uint8_t>{0x33, 0x44, 0x15, 0x45,
-				0x26, 0x46, 0x37, 0x47, 0x18, 0x38, 0x49, 0x1a, 0x1b, 0x2c, 0x2d, 0x4d, 0x3d, 0x1d }, true));
+				0x26, 0x46, 0x37, 0x47, 0x18, 0x38, 0x49, 0x1a, 0x1b, 0x2c, 0x2d, 0x4d, 0x3d, 0x1d ,0x1,0x2}, true));
 			strategy.Split();
 			auto&minStepSplitType = strategy.MinStepSplit();
 		}
@@ -81,10 +81,13 @@ namespace UnitTest_Split
 			set.DealIndex(0, CardIndex_2, 2);
 			set.DealIndex(0, CardIndex_LargeJoker, 1);
 			set.DealIndex(0, CardIndex_SmallJoker, 1);
-			set.DealChain(0, CardIndex_8, CardIndex_Q);
+			set.DealChain(0, CardIndex_8, CardIndex_J);
 			set.DealIndex(0, CardIndex_3, 1);
+			set.DealIndex(0, CardIndex_4, 1);
+			set.DealIndex(0, CardIndex_5, 1);
+			set.DealChain(0, CardIndex_3, CardIndex_9);
 			//set.DealIndex(0, CardIndex_4, 2);
-			set.DealIndex(2, CardIndex_7, 4);
+			set.DealIndex(2, CardIndex_7, 2);
 			set.DealIndex(1, CardIndex_9, 1);
 			set.DealIndex(1, CardIndex_J, 3);
 			set.DealIndex(2, CardIndex_Q, 1);

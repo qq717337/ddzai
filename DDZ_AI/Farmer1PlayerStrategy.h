@@ -5,7 +5,7 @@ class Farmer1PlayerStrategy :
 {
 public:
 	~Farmer1PlayerStrategy();
-	Farmer1PlayerStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table);
+	Farmer1PlayerStrategy(const CardVector & cardsValue, GameTable* table);
 	Farmer1PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table);
 	virtual CardStyle Play() override;
 	virtual CardStyle Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)override;

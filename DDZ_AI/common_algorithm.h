@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include "random.h"
-inline std::unordered_map<uint8_t, int> cardCountMap(std::vector<uint8_t>& cardIndex) {
+inline std::unordered_map<uint8_t, int> cardCountMap(CardVector & cardIndex) {
 	std::unordered_map<uint8_t, int>m;
 	for (auto &v : cardIndex) {
 		std::unordered_map<uint8_t, int>::iterator iter = m.find(v);
@@ -43,6 +43,7 @@ inline size_t smallerCount(const std::vector<T>& value, T compareValue) {
 
 template<typename T>
 inline void perm(size_t randomCount,std::vector<T>&value ) {
+	if (randomCount == 0)return;
 	value.resize(randomCount);
 	int start = 0;
 	for (; start < randomCount; ++start) {
@@ -54,6 +55,7 @@ inline void perm(size_t randomCount,std::vector<T>&value ) {
 }
 template<typename T>
 inline void perm(size_t randomCount, T *value) {
+	if (randomCount == 0)return;
 	int start = 0;
 	for (; start < randomCount; ++start) {
 		value[start] = start;

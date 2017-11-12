@@ -9,14 +9,14 @@
 class OptimizedCard :public CardSet
 {
 private:
-	std::vector<uint8_t>isolateCardIndex[3];
+	CardVector isolateCardIndex[3];
 	uint8_t firstChainIndex[3];
 	void SwapWithEmpty(int left, int right);
-	std::vector<uint8_t> ExchangeValue(int playerIndex);
+	CardVector  ExchangeValue(int playerIndex);
 public:
 	std::string ToString()override;
 	OptimizedCard();
-	void Optimized(DecorateDealStrategy * strategy, int preRandomCount);
+	void Optimized(DecorateDealStrategy * strategy, int preRandomCount=0);
 	virtual ~OptimizedCard();
 };
 

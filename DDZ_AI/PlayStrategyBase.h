@@ -25,10 +25,10 @@ public:
 	//获取当前可以接到的牌，然后遍历剩余的牌，看是否只有一个是别人要不起的牌，如果是则代表胜利了，并将所有的出牌顺序存入一个vector中。
 	virtual bool  CheckIfWin(const SplitStrategy* split, const CardStyle& style,std::vector<CardStyle>& styleList)const;
 	//virtual bool IsLetOtherWin()const = 0;
-	PlayStrategyBase(int identity, const  std::vector<uint8_t>& cardsValue, GameTable *table);
+	PlayStrategyBase(int identity, const  CardVector & cardsValue, GameTable *table);
 	PlayStrategyBase(int identity, const  std::set<uint8_t, CardSetCompare>& cardsValue, GameTable *table);
 	virtual ~PlayStrategyBase();
-	virtual void Reset(const  std::vector<uint8_t>& cardsValue);
+	virtual void Reset(const  CardVector & cardsValue);
 	virtual void Reset(const  std::set<uint8_t, CardSetCompare>& cardsValue);
 
 	inline const HandCards& GetHandCards()const {

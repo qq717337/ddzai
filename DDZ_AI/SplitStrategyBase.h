@@ -11,7 +11,7 @@ class SplitStrategyBase
 #define UPDATE_TRIPLECHAIN m_tripleChains=(m_cards->AvailableTripleChainRange());
 #define UPDATE_DOUBLECHAIN m_doubleChains=(m_cards->AvailableDoubleChainRange());
 #define UPDATE_SINGLECHAIN m_singleChains=(m_cards->AvailableSingleChainRange());
-	
+
 
 public:
 	SplitStrategyBase(std::shared_ptr<HandCards> cards);
@@ -25,8 +25,8 @@ protected:
 	std::shared_ptr<HandCards> m_cards;
 	std::shared_ptr<SplitType> m_splitType;
 
-	std::vector<uint8_t> m_booms;
-	std::vector<uint8_t> m_triples;
+	CardVector  m_booms;
+	CardVector  m_triples;
 	std::vector<CardRange> m_tripleChains;
 	std::vector<CardRange> m_doubleChains;
 	std::vector<CardRange> m_singleChains;
@@ -41,7 +41,7 @@ public:
 	void SplitSingleChainTruncBoom(bool once = true);
 	void SplitIntersectChain();
 
-	std::vector<uint8_t> FindInChain(const std::vector<CardRange>&chain, size_t count);
+	CardVector  FindInChain(const std::vector<CardRange>&chain, size_t count);
 	virtual bool CouldTruncBoom(uint8_t * boomIndex = NULL);
 	int GetLongestSingleChain();
 
@@ -49,22 +49,22 @@ public:
 	virtual void Restore();
 #pragma region MyRegion
 	inline SplitType* _Split_Ptr() { return m_splitType.get(); }
-	inline std::vector<uint8_t>  FindBoomInSingleChain() {
+	inline CardVector   FindBoomInSingleChain() {
 		UPDATE_BOOM
 			UPDATE_SINGLECHAIN
 			return FindInChain(m_singleChains, 4);
 	}
-	inline std::vector<uint8_t>  FindTripleInSingleChain() {
+	inline CardVector   FindTripleInSingleChain() {
 		UPDATE_TRIPLE
 			UPDATE_SINGLECHAIN
 			return FindInChain(m_singleChains, 3);
 	}
-	inline std::vector<uint8_t>  FindBoomInDoubleChain() {
+	inline CardVector   FindBoomInDoubleChain() {
 		UPDATE_BOOM
 			UPDATE_DOUBLECHAIN
 			return FindInChain(m_doubleChains, 4);
 	}
-	inline std::vector<uint8_t>  FindTripleInDoubleChain() {
+	inline CardVector   FindTripleInDoubleChain() {
 		UPDATE_TRIPLE
 			UPDATE_DOUBLECHAIN
 			return FindInChain(m_doubleChains, 3);

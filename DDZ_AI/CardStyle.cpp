@@ -10,7 +10,7 @@ CardStyle::CardStyle()
 {
 	Style = ECardStyle::Invalid;
 	StartValue = EndValue = 0;
-	Extra = std::vector<uint8_t>();
+	Extra = CardVector ();
 }
 
 
@@ -43,22 +43,22 @@ CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t ex
 	EndValue = endValue;
 	Extra = { extra };
 }
-CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
+CardStyle::CardStyle(int style, uint8_t startValue, uint8_t endValue, const CardVector & extra)
 {
 	Style = style;
 	StartValue = startValue;
 	EndValue = endValue;
 	Extra = extra;
 }
-CardStyle::CardStyle(int style, uint8_t startValue, const std::vector<uint8_t>& extra)
+CardStyle::CardStyle(int style, uint8_t startValue, const CardVector & extra)
 {
 	Style = style;
 	StartValue = startValue;
 	EndValue = startValue;
 	Extra = extra;
 }
-std::vector<uint8_t>CardStyle::Index() {
-	std::vector<uint8_t> r;
+CardVector CardStyle::Index() {
+	CardVector  r;
 	switch (Style) {
 	case ECardStyle::Single:
 		r.push_back(StartValue);
@@ -144,9 +144,9 @@ int  CardStyle::GetCardsCount() {
 	return 0;
 }
 
-CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
+CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	size_t length = cards.size();
-	std::vector<uint8_t> indexCards(length);
+	CardVector  indexCards(length);
 	auto be = indexCards.begin();
 	for (size_t i = 0; i < length; ++i) {
 		indexCards[i] = HandCardsFlag::CardValueToIndex(cards[i]);
@@ -214,9 +214,9 @@ CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 		auto m = cardCountMap(indexCards);
 		size_t mLen = m.size();
 		if (mLen == 2) {
-			std::vector<uint8_t> chain;
+			CardVector  chain;
 			uint8_t value = 0;
-			std::vector<uint8_t> extra;
+			CardVector  extra;
 			for (auto &kv : m) {
 				if (kv.second == 3) {
 					chain.push_back(kv.first);
@@ -249,8 +249,8 @@ CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 				auto m = cardCountMap(indexCards);
 				size_t mLen = m.size();
 				if (mLen >= 2) {
-					std::vector<uint8_t> value;
-					std::vector<uint8_t> extra;
+					CardVector  value;
+					CardVector  extra;
 					for (auto &kv : m) {
 						if (kv.second == 3) {
 							value.push_back(kv.first);
@@ -290,8 +290,8 @@ CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 
 		int tripleCount = 0;
 
-		std::vector<uint8_t> value;
-		std::vector<uint8_t> extra;
+		CardVector  value;
+		CardVector  extra;
 
 		for (auto &kv : m) {
 			if (kv.second == 3) {
@@ -323,8 +323,8 @@ CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 		int tripleCount = 0;
 
 
-		std::vector<uint8_t> value;
-		std::vector<uint8_t> extra;
+		CardVector  value;
+		CardVector  extra;
 		for (auto &kv : m) {
 			if (kv.second == 3) {
 				value.push_back(kv.first);
@@ -358,8 +358,8 @@ CardStyle CardStyle::FromCardsValue(const std::vector<uint8_t>&cards) {
 		int tripleCount = 0;
 
 
-		std::vector<uint8_t> value;
-		std::vector<uint8_t> extra;
+		CardVector  value;
+		CardVector  extra;
 		for (auto &kv : m) {
 			if (kv.second == 3) {
 				value.push_back(kv.first);
@@ -405,12 +405,12 @@ CardStyle CardStyle::TripleZeroStyle(uint8_t value)
 	return CardStyle(ECardStyle::Triple_Zero, value);
 }
 
-CardStyle CardStyle::TripleOneStyle(uint8_t value, const std::vector<uint8_t>&extra)
+CardStyle CardStyle::TripleOneStyle(uint8_t value, const CardVector &extra)
 {
 	return CardStyle(ECardStyle::Triple_One, value, value, extra);
 }
 
-CardStyle CardStyle::TripleTwoStyle(uint8_t value, const std::vector<uint8_t>& extra)
+CardStyle CardStyle::TripleTwoStyle(uint8_t value, const CardVector & extra)
 {
 	return CardStyle(ECardStyle::Triple_Two, value, value, extra);
 }
@@ -420,7 +420,7 @@ CardStyle CardStyle::BoomStyle(uint8_t value)
 	return CardStyle(ECardStyle::Boom, value);
 }
 
-CardStyle CardStyle::QuadTwoStyle(uint8_t value, const std::vector<uint8_t>& extra)
+CardStyle CardStyle::QuadTwoStyle(uint8_t value, const CardVector & extra)
 {
 	return CardStyle(ECardStyle::Quad_Two, value, value, extra);
 }
@@ -440,12 +440,12 @@ CardStyle CardStyle::TripleChainZeroStyle(uint8_t startValue, uint8_t endValue)
 	return CardStyle(ECardStyle::Triple_Chain_Zero, startValue, endValue);
 }
 
-CardStyle CardStyle::TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
+CardStyle CardStyle::TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
 {
 	return CardStyle(ECardStyle::Triple_Chain_One, startValue, endValue, extra);
 }
 
-CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const std::vector<uint8_t>& extra)
+CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
 {
 	return CardStyle(ECardStyle::Triple_Chain_Two, startValue, endValue);
 }

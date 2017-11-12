@@ -110,6 +110,7 @@ void SplitStrategyBase::RecursivelyFindTwoChain(CardRange findRange, int findSta
 			}
 	}
 	else {
+		Recorder<HandCards>::Pop(NULL);
 		RecursivelyFindTwoChain(findRange, y + 1);
 	}
 }
@@ -130,7 +131,7 @@ SplitStrategyBase::~SplitStrategyBase()
 
 //提取出孤立的牌，且将大小王炸也提取出来
 void SplitStrategyBase::SplitIsolate() {
-	std::vector<std::vector<uint8_t>> isolateCards = m_cards->IsolateCards(true);
+	std::vector<CardVector > isolateCards = m_cards->IsolateCards(true);
 	if (isolateCards[CardIndex_SmallJoker][0] == 1 && isolateCards[CardIndex_LargeJoker][0] == 1) {
 		m_splitType->AddBoom(CardIndex_LargeJoker);
 	}
@@ -249,9 +250,9 @@ void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 	m_cards->UpdateByFlag();
 }
 
-std::vector<uint8_t> SplitStrategyBase::FindInChain(const std::vector<CardRange>& chain, size_t count)
+CardVector  SplitStrategyBase::FindInChain(const std::vector<CardRange>& chain, size_t count)
 {
-	std::vector<uint8_t> r;
+	CardVector  r;
 	for (auto& c : chain) {
 		for (int v = c.Start; v <= c.End; ++v) {
 			int index = v;
@@ -267,7 +268,7 @@ bool SplitStrategyBase::CouldTruncBoom(uint8_t * boomIndex)
 {
 	UPDATE_BOOM
 		UPDATE_SINGLECHAIN
-		std::vector<uint8_t> booms = FindBoomInSingleChain();
+		CardVector  booms = FindBoomInSingleChain();
 	for (auto& v : booms) {
 		int i;
 		int aheadSingleCount = 0;

@@ -34,7 +34,7 @@ public:
 	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle();
 	virtual EIdentity::EIdentity_ Identity()const override;
 
-	LordPlayStrategy(const std::vector<uint8_t>& cardsValue, GameTable* table);
+	LordPlayStrategy(const CardVector & cardsValue, GameTable* table);
 	LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table);
 	~LordPlayStrategy();
 };

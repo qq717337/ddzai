@@ -10,10 +10,10 @@ void SplitStrategy::sortSplitType()
 
 void SplitStrategy::Reset()
 {
-	 m_splitTypeVector.clear();
-	 m_splitMinStepVector.clear();
-	 m_optimiumStyle.clear();
-	 m_availableStyle.clear();
+	m_splitTypeVector.clear();
+	m_splitMinStepVector.clear();
+	m_optimiumStyle.clear();
+	m_availableStyle.clear();
 }
 
 const SplitType & SplitStrategy::MinStepSplit() const
@@ -41,7 +41,20 @@ void SplitStrategy::AvailableTake(const CardStyle & style)
 {
 }
 
-SplitStrategy::SplitStrategy(std::shared_ptr<HandCards> cards):SplitStrategyBase(cards)
+std::vector<const SplitType*> SplitStrategy::GetSplitType(int moreStepThanMinStep)
+{
+	std::vector<const SplitType*> r;
+	int lowerBoundStep = m_splitMinStepVector[0] + moreStepThanMinStep;
+	for (int i = 0; i < m_splitMinStepVector.size(); i++) {
+		if (m_splitMinStepVector[i] > lowerBoundStep) {
+			break;
+		}
+		r.push_back(&m_splitTypeVector[i]);
+	}
+	return r;
+}
+
+SplitStrategy::SplitStrategy(std::shared_ptr<HandCards> cards) :SplitStrategyBase(cards)
 {
 }
 

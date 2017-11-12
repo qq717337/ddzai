@@ -165,6 +165,7 @@
     <ClInclude Include="HandleCanTake.h" />
     <ClInclude Include="HandleLastShotPlay.h" />
     <ClInclude Include="HandleMinValuePlay.h" />
+    <ClInclude Include="HandleNotTake.h" />
     <ClInclude Include="HandleTwoStepPlay.h" />
     <ClInclude Include="HandleTwoStepWinTake.h" />
     <ClInclude Include="OpenCVEntry.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="random.h" />
     <ClInclude Include="Range.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SmoothCard.h" />
     <ClInclude Include="SplitStrategy.h" />
     <ClInclude Include="SplitStrategyBase.h" />
     <ClInclude Include="SplitType.h" />
@@ -204,6 +206,7 @@
     <ClCompile Include="HandleCanTake.cpp" />
     <ClCompile Include="HandleLastShotPlay.cpp" />
     <ClCompile Include="HandleMinValuePlay.cpp" />
+    <ClCompile Include="HandleNotTake.cpp" />
     <ClCompile Include="HandleTwoStepPlay.cpp" />
     <ClCompile Include="HandleTwoStepWinTake.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />
@@ -221,6 +224,7 @@
     <ClCompile Include="PriorityTakeSplitStrategy.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="OptimizedCard.cpp" />
+    <ClCompile Include="SmoothCard.cpp" />
     <ClCompile Include="SplitStrategy.cpp" />
     <ClCompile Include="SplitStrategyBase.cpp" />
     <ClCompile Include="SplitType.cpp" />

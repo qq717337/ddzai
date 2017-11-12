@@ -56,7 +56,7 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 	//cv::waitKey(5000);
 	//cv::destroyAllWindows();
 }
-void OpenCVEntry::ShowCard(std::vector<uint8_t> PlayerCards0, std::vector<uint8_t> PlayerCards1, std::vector<uint8_t> PlayerCards2, std::vector<uint8_t> extraCards)
+void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards)
 {
 	cv::Mat mBack = image_map["deskimg"];
 	int extraCardX = 1280 / 2 - 120;
