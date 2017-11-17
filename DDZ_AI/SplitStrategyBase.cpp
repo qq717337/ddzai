@@ -70,7 +70,7 @@ CardRange SplitStrategyBase::getIntersectSingleChainPart(CardRange singleChainRa
 	return CardRange(firstSingleIndex, lastSingleIndex);
 }
 
-void SplitStrategyBase::RecursivelyFindTwoChain(CardRange findRange, int findStart)
+void SplitStrategyBase::recursivelyFindTwoChain(CardRange findRange, int findStart)
 {
 	CardRange repeatRange = findNextRepeatCardRange(CardRange(findStart, findRange.End));
 	int	x = repeatRange.Start;
@@ -105,13 +105,13 @@ void SplitStrategyBase::RecursivelyFindTwoChain(CardRange findRange, int findSta
 			else {
 				Recorder<HandCards>::Pop(m_cards.get());
 				if (y + 1 < findRange.End) {
-					RecursivelyFindTwoChain(findRange, y + 1);
+					recursivelyFindTwoChain(findRange, y + 1);
 				}
 			}
 	}
 	else {
 		Recorder<HandCards>::Pop(NULL);
-		RecursivelyFindTwoChain(findRange, y + 1);
+		recursivelyFindTwoChain(findRange, y + 1);
 	}
 }
 
@@ -338,5 +338,5 @@ void SplitStrategyBase::SplitIntersectChain()
 		return;
 	}
 
-	RecursivelyFindTwoChain(singleChainRange, singleChainRange.Start);
+	recursivelyFindTwoChain(singleChainRange, singleChainRange.Start);
 }

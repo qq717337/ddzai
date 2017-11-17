@@ -49,6 +49,9 @@
     <Filter Include="头文件\Robot\Split">
       <UniqueIdentifier>{8d3b9a59-e120-4706-b13d-0fab39e62cbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Robot\Logic">
+      <UniqueIdentifier>{d403481a-dcb4-4c6c-b3d1-9563ffb3b62f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -171,6 +174,9 @@
     <ClInclude Include="SmoothCard.h">
       <Filter>头文件\DealCards</Filter>
     </ClInclude>
+    <ClInclude Include="HandleResult.h">
+      <Filter>头文件\Robot\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="SmoothCard.cpp">
       <Filter>源文件\DealCards</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleResult.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

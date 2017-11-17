@@ -59,3 +59,15 @@ const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identit
 {
 	return m_playerStrategy[identity].get();
 }
+
+const bool GameTable::ShouldAskLord(const SplitType & splitInfo, const HandCards & cards)
+{
+	if (splitInfo.GetBoom().size() >= 2) {
+		return true;
+	}
+	if (splitInfo.MinStepCount() <= 6) {
+		if (cards.Count(CardIndex_SmallJoker) * 4 + cards.Count(CardIndex_LargeJoker) * 5 + cards.Count(CardIndex_2) * 3 + cards.Count(CardIndex_A) * 2 > 10)
+			return true;
+	}
+	return false;
+}

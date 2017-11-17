@@ -5,7 +5,7 @@
 
 HandCards::HandCards() :HandCardsFlag(false),
 CardsSet(std::set<uint8_t, CardSetCompare>()),
-CardCount(CardVector (CARD_VALUE_LEN))
+CardCount(CardVector(CARD_VALUE_LEN))
 {
 	UpdateByFlag();
 }
@@ -13,7 +13,7 @@ CardCount(CardVector (CARD_VALUE_LEN))
 HandCards::HandCards(const CardVector & cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end())),
-	CardCount(CardVector (CARD_VALUE_LEN))
+	CardCount(CardVector(CARD_VALUE_LEN))
 {
 	int  j = 0;
 	for (auto &v : cardValues) {
@@ -34,7 +34,7 @@ HandCards::HandCards(const CardVector & cardValues, bool updateSet) :
 HandCards::HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(cardValues),
-	CardCount(CardVector (CARD_VALUE_LEN))
+	CardCount(CardVector(CARD_VALUE_LEN))
 {
 	int  j = 0;
 	for (auto &v : cardValues) {
@@ -277,7 +277,7 @@ CardVector  HandCards::AvailableChain(int len, int count, bool bigger, uint8_t c
 
 std::vector<CardVector > HandCards::IsolateCards(bool sub)
 {
-	CardVector ();
+	CardVector();
 	std::unordered_set<uint8_t> notIsolateCards;
 	auto singleChain = AvailableSingleChain();
 	int i;
@@ -302,7 +302,7 @@ std::vector<CardVector > HandCards::IsolateCards(bool sub)
 
 	for (uint8_t i = 0; i < CARD_VALUE_LEN; ++i) {
 		if (notIsolateCards.find(i) != notIsolateCards.end()) { //非孤立元素包含当前index
-			isolateCards[i] = CardVector (4);
+			isolateCards[i] = CardVector(4);
 		}
 		else {
 			isolateCards[i] = { Flags[i][0],  Flags[i][1],  Flags[i][2],  Flags[i][3] };
@@ -386,20 +386,189 @@ bool HandCards::CanTake(const CardStyle & lastStyle)const
 
 CardVector  HandCards::GetCardsValue(uint8_t cardIndex, int count)
 {
-	 CardVector  r;
-	 int sum = 0;
-	 for (int i = 0; i < 4; ++i) {
-		 if (Flags[cardIndex][i] == 1) {
-			 r.push_back(CardColorIndexToValue(i, cardIndex));
-			 sum++;
-		 }
-		 else {
-			 continue;
-		 }
-		 if (sum == count)break;
-	 }
+	CardVector  r;
+	int sum = 0;
+	for (int i = 0; i < 4; ++i) {
+		if (Flags[cardIndex][i] == 1) {
+			r.push_back(CardColorIndexToValue(i, cardIndex));
+			sum++;
+		}
+		else {
+			continue;
+		}
+		if (sum == count)break;
+	}
 	_ASSERT(sum == count);
-	 return r;
+	return r;
+}
+
+CardStyle HandCards::FindLessCardStyle(CardStyle & style)
+{
+	switch (style.Style) {
+	case ECardStyle::Single: {
+		for (int i = 0; i < style.StartValue; i++) {
+			int v = CardCount[i];
+			if (v > 0) {
+				return CardStyle(ECardStyle::Single, i);
+			}
+		}
+		break;
+	}
+	case ECardStyle::Boom: {
+		for (int i = 0; i < style.StartValue; i++) {
+			int v = CardCount[i];
+			if (v > 3) {
+				return CardStyle(ECardStyle::Boom, i);
+			}
+		}
+		break;
+	}
+	case ECardStyle::Double: {
+		for (int i = 0; i < style.StartValue; i++) {
+			int v = CardCount[i];
+			if (v > 1) {
+				return CardStyle(ECardStyle::Double, i);
+			}
+		}
+		break;
+	}
+	case ECardStyle::Triple_Zero:
+	case ECardStyle::Triple_One:
+	case ECardStyle::Triple_Two: {
+		for (int i = 0; i < style.StartValue; i++) {
+			int v = CardCount[i];
+			if (v > 0) {
+				return CardStyle(ECardStyle::Triple_Zero, i);
+			}
+		}
+		break;
+	}
+	case ECardStyle::Single_Chain: {
+		int chainCount = style.EndValue - style.StartValue + 1;
+		auto avChain = AvailableChain(chainCount, 1);
+		if (avChain.size() > 0 && avChain[0] < style.StartValue) {
+			return CardStyle(ECardStyle::Single_Chain, avChain[0], avChain[0] + chainCount - 1);
+		}
+		break;
+	}
+	case ECardStyle::Double_Chain: {
+		int  chainCount = style.EndValue - style.StartValue + 1;
+		auto avChain = AvailableChain(chainCount, 2);
+		if (avChain.size() > 0 && avChain[0] < style.StartValue) {
+			return CardStyle(ECardStyle::Double_Chain, avChain[0], avChain[0] + chainCount - 1);
+		}
+		break;
+	}
+	case ECardStyle::Triple_Chain_Zero:
+	case ECardStyle::Triple_Chain_One:
+	case ECardStyle::Triple_Chain_Two:
+		int  chainCount = style.EndValue - style.StartValue + 1;
+		auto avChain = AvailableChain(chainCount, 2);
+		if (avChain.size() > 0 && avChain[0] < style.StartValue) {
+			return CardStyle(ECardStyle::Triple_Chain_Zero, avChain[0], avChain[0] + chainCount - 1);
+		}
+		break;
+	}
+	return CardStyle::Invalid;
+}
+
+std::vector<uint8_t> HandCards::GetCardsValueByStyle(const CardStyle & style) const
+{
+		std::vector<uint8_t> r(15);
+		switch (style.Style) {
+		case ECardStyle::Single:
+			r[style.StartValue] = 1;
+			break;
+		case ECardStyle::Double:
+			r[style.StartValue] = 2;
+			break;
+		case ECardStyle::Triple_Zero:
+			r[style.StartValue] = 3;
+			break;
+		case ECardStyle::Triple_One:
+			r[style.StartValue] = 3;
+			r[style.Extra[0]] += 1;
+			break;
+		case ECardStyle::Triple_Two:
+			r[style.StartValue] = 3;
+			r[style.Extra[0]] += 2;
+			break;
+		case ECardStyle::Triple_Chain_Zero:
+			for (int i = style.StartValue; i <= style.EndValue; i++) {
+				r[i] = 3;
+			}
+			break;
+		case ECardStyle::Triple_Chain_One:
+			for (int i = style.StartValue; i <= style.EndValue; i++) {
+				r[i] = 3;
+			}
+			for (auto v : style.Extra) {
+				r[v] += 1;
+			}
+			break;
+		case ECardStyle::Triple_Chain_Two:
+			for (int i = style.StartValue; i <= style.EndValue; i++) {
+				r[i] = 3;
+			}
+			for (auto v : style.Extra) {
+				r[v] += 2;
+			}
+			break;
+		case ECardStyle::Single_Chain:
+			for (int i = style.StartValue; i <= style.EndValue; i++) {
+				r[i] = 1;
+			}
+			break;
+		case ECardStyle::Double_Chain:
+			for (int i = style.StartValue; i <= style.EndValue; i++) {
+				r[i] = 2;
+			}
+			break;
+		case ECardStyle::Quad_Two:
+			r[style.StartValue] = 4;
+			r[style.Extra[0]] += 1;
+			r[style.Extra[1]] += 1;;
+			break;
+		case ECardStyle::Boom:
+			r[style.StartValue] = 4;
+			if (style.StartValue == CardIndex_JokerBoom) {
+				r[CardIndex_SmallJoker] = 1;
+				r[CardIndex_LargeJoker] = 1;
+			}
+			break;
+		}
+		return r;
+}
+
+std::vector<uint8_t> HandCards::GetCardsByStyle(const CardStyle & style) const
+{
+	if (style == CardStyle::JokerBoom) {
+		return { 0x01, 0x02 };
+	}
+	std::vector<uint8_t> cardsValue = GetCardsValueByStyle(style);
+	std::vector<uint8_t> r;
+	for (int i = 0; i < 15; i++) {
+		auto v = Flags[i];
+		for (int k = 0; k < 4; k++) {
+			if (cardsValue[i] == 0) {
+				break;
+			}
+			if (v[k] == 1) {
+				uint8_t code = HandCards::CardColorIndexToValue(k, i);
+				if (code > 0x10) {
+					cardsValue[i]--;
+					r.push_back(code);
+				}
+			}
+		}
+	}
+	if (cardsValue[CardIndex_SmallJoker] == 1) {
+		r.push_back(0x01);
+	}
+	if (cardsValue[CardIndex_LargeJoker] == 1) {
+		r.push_back(0x02);
+	}
+	return r;
 }
 
 HandCards::~HandCards()

@@ -20,7 +20,7 @@ private:
 protected:
 	CardRange findNextRepeatCardRange(CardRange range);
 	CardRange getIntersectSingleChainPart(CardRange singleChainRange, bool trimHead, bool trimTail);
-	void  RecursivelyFindTwoChain(CardRange findRange, int findStart);
+	void  recursivelyFindTwoChain(CardRange findRange, int findStart);
 
 	std::shared_ptr<HandCards> m_cards;
 	std::shared_ptr<SplitType> m_splitType;
@@ -47,7 +47,8 @@ public:
 
 	virtual void Backup();
 	virtual void Restore();
-#pragma region MyRegion
+
+#pragma region INLINE_FUNCTION
 	inline SplitType* _Split_Ptr() { return m_splitType.get(); }
 	inline CardVector   FindBoomInSingleChain() {
 		UPDATE_BOOM

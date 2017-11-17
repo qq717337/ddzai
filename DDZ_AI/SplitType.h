@@ -75,5 +75,12 @@ public:
 	inline const std::vector<CardRange>& GetSingleChain() const { return SingleChain; }
 	inline const std::vector<CardRange>& GetDoubleChain() const { return DoubleChain; }
 	inline const std::vector<CardRange>& GetTripleChain() const { return TripleChain; }
+
+	inline static const CardStyle* MaxEndValueStyle(const std::vector<CardStyle> inStyles) {
+		int maxStyle = 0;
+		return std::max_element(inStyles.cbegin(), inStyles.cend(), [](CardStyle x, CardStyle y) {
+			return x.EndValue < y.EndValue;
+		})._Ptr;
+	}
 };
 

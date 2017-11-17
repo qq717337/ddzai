@@ -15,16 +15,17 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 		}
 	}
 
-	const std::vector<CardStyle>& optStyles = split->GetOptimiumStyle();
-	const std::vector<CardStyle>& optBoomStyles = split->GetOptimiumBoomStyle();
-	std::vector<CardStyle> mergedStyles;
+	const std::vector<HandleResult>& optStyles = split->GetOptimiumStyle();
+	const std::vector<HandleResult>& optBoomStyles = split->GetOptimiumBoomStyle();
+	std::vector<HandleResult> mergedStyles;
 	std::copy(optStyles.begin(), optStyles.end(), std::back_inserter(mergedStyles));
 	std::copy(optBoomStyles.begin(), optBoomStyles.end(), std::back_inserter(mergedStyles));
 	//std::merge(optStyles.begin(), optStyles.end(), optBoomStyles.begin(), optBoomStyles.end(),mergedStyles.begin());
 	CardStyle choosedStyle;
 	for (auto& v : mergedStyles) {//如果所有的最优解中对方都可以接牌，则表示这边已经无法直接取得胜利
-		if (m_table->IsStyleOtherCanNotTake(this->Identity(), v)) {
-			choosedStyle = v;
+		auto& style = v.Style();
+		if (m_table->IsStyleOtherCanNotTake(this->Identity(), style)) {
+			choosedStyle = style;
 			break;
 		}
 	}

@@ -166,6 +166,7 @@
     <ClInclude Include="HandleLastShotPlay.h" />
     <ClInclude Include="HandleMinValuePlay.h" />
     <ClInclude Include="HandleNotTake.h" />
+    <ClInclude Include="HandleResult.h" />
     <ClInclude Include="HandleTwoStepPlay.h" />
     <ClInclude Include="HandleTwoStepWinTake.h" />
     <ClInclude Include="OpenCVEntry.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="HandleLastShotPlay.cpp" />
     <ClCompile Include="HandleMinValuePlay.cpp" />
     <ClCompile Include="HandleNotTake.cpp" />
+    <ClCompile Include="HandleResult.cpp" />
     <ClCompile Include="HandleTwoStepPlay.cpp" />
     <ClCompile Include="HandleTwoStepWinTake.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />

@@ -41,6 +41,7 @@ public:
 	std::vector<CardVector > IsolateCards(bool sub=false);
 	bool CanTake(const CardStyle& lastStyle)const;
 	CardVector  GetCardsValue(uint8_t cardIndex, int count);
+	CardStyle FindLessCardStyle(CardStyle& style);
 	inline int Count(int cardIndex)const {
 		return CardCount[cardIndex];
 	}
@@ -53,5 +54,9 @@ public:
 	inline const CardVector & Count()const {
 		return CardCount;
 	}
+	std::vector<uint8_t> GetCardsValueByStyle(const CardStyle& style)const; 
+	std::vector<uint8_t>  GetCardsByStyle(const CardStyle& style)const; 
 };
+
+
 

@@ -19,7 +19,7 @@ public:
 	CardStyle(const CardStyle& inStyle);
 	CardStyle(int style, uint8_t startValue);
 	CardStyle(int style, uint8_t startValue, uint8_t endValue);
-	CardStyle(int style, uint8_t startValue, uint8_t endValue, const std::vector< uint8_t>& extra);
+	CardStyle(int style, uint8_t startValue, uint8_t endValue, const CardVector& extra);
 	CardStyle(int style, uint8_t startValue, const CardVector & extra);
 	CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t extra);
 	int  GetCardsCount();

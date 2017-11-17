@@ -9,7 +9,7 @@ bool HandleCanOptimiumTake::Handle(PlayStrategyBase * playStrategy, SplitStrateg
 {
 	auto&optStyle = splitStrategy->GetOptimiumStyle();
 	if (optStyle.size() > 0) {
-		result = optStyle[0];
+		result = optStyle[0].Style();
 		return true;
 	}
 

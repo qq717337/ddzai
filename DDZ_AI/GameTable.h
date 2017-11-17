@@ -27,5 +27,6 @@ public:
 
 	const HandCards* GetHandCard(EIdentity::EIdentity_ identity)const;
 	const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const;
+	static const bool ShouldAskLord(const SplitType& splitInfo, const HandCards& cards);
 };
 
