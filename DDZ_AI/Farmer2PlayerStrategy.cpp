@@ -38,7 +38,19 @@ bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeL
 
 std::vector<ECardStyle::ECardStyle_> Farmer2PlayerStrategy::AvoidPlayStyle()
 {
-	return std::vector<ECardStyle::ECardStyle_>();
+	std::vector<ECardStyle::ECardStyle_> r;
+	auto lordCardsCount = m_table->CardCount(EIdentity::Lord);
+
+	if (lordCardsCount == 1) {
+		r.push_back(ECardStyle::Single);
+	}
+	if (lordCardsCount == 2) {
+		r.push_back(ECardStyle::Double);
+	}
+	if (lordCardsCount == 3) {
+		r.push_back(ECardStyle::Triple_Zero);
+	}
+	return r;
 }
 
 EIdentity::EIdentity_ Farmer2PlayerStrategy::Identity()const
@@ -48,4 +60,5 @@ EIdentity::EIdentity_ Farmer2PlayerStrategy::Identity()const
 
 void Farmer2PlayerStrategy::Init()
 {
+	PlayStrategyBase::Init();
 }

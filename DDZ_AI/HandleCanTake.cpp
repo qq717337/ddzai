@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "HandleCanTake.h"
 
+#include "SplitStrategy.h"
+#include "PlayStrategyBase.h"
 
 HandleCanTake::~HandleCanTake()
 {

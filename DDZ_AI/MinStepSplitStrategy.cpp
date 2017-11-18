@@ -49,7 +49,8 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			auto& optSingles = splitTypeRef->GetSingle();
 			for (uint8_t v : optSingles) {
 				if (v > style.StartValue) {
-					m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
+					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v));
+					//m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
 				}
 			}
 			break;
@@ -58,7 +59,8 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			auto& optDoubles = splitTypeRef->GetDouble();
 			for (uint8_t v : optDoubles) {
 				if (v > style.StartValue) {
-					m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
+					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v));
+					//m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
 				}
 			}
 			break;
@@ -99,7 +101,8 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			}
 			if (style.Style == ECardStyle::Triple_Zero || style.Style != ECardStyle::Triple_Zero && extra.size() > 0) {
 				for (auto v : okTriple) {
-					m_optimiumStyle.emplace_back(CardStyle(style.Style, v, extra));
+					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v, extra));
+					//m_optimiumStyle.emplace_back(CardStyle(style.Style, v, extra));
 				}
 			}
 			break;
@@ -109,10 +112,12 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			for (auto v : biggerBoom) {
 				if (v > style.StartValue) {
 					if (v < CardIndex_SmallJoker) {
-						m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
+						VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v));
+						//m_optimiumStyle.emplace_back(CardStyle(style.Style, v));
 					}
 					else {
-						m_optimiumStyle.push_back(CardStyle::JokerBoom);
+						VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle::JokerBoom);
+						//m_optimiumStyle.push_back(CardStyle::JokerBoom);
 					}
 				}
 			}
@@ -120,87 +125,18 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 		}
 		case ECardStyle::Single_Chain: {
 			auto& chain = splitTypeRef->GetSingleChain();
-			int gapLen = style.EndValue - style.StartValue;
-			for (auto & v : chain) {
-				int overflowLen = v.Length() - style.Length();
-				if (v.Start > style.StartValue && v.Length() >= style.Length() && overflowLen < 3) {
-					int bestStartIndex = v.Start;
-					int bestEndIndex = v.End;
-					for (int i = 0; i < overflowLen; i++) {
-						if (splitTypeRef->InSingle(v.End - i)) {
-							bestEndIndex = v.End - i;
-						}
-					}
-					for (int i = 0; i < overflowLen; i++) {
-						if (splitTypeRef->InSingle(v.Start + i)) {
-							bestStartIndex = v.Start + i;
-						}
-					}
-					int tailStartIndex = bestEndIndex - gapLen;
-					if (tailStartIndex < bestStartIndex) {
-						bestStartIndex = tailStartIndex;
-					}
-
-					auto retHandle = HandleResult(CardStyle(style.Style, bestStartIndex, bestStartIndex + gapLen)).AddBonusStep(overflowLen);
-					m_optimiumStyle.push_back(std::move(retHandle));
-				}
-			}
+			insertOptimumChain(splitTypeRef, chain, style);
 			break;
 		}
 		case ECardStyle::Double_Chain: {
 			auto& chain = splitTypeRef->GetDoubleChain();
-			for (auto & v : chain) {
-				if (v.Start > style.StartValue && v.Length() >= style.Length() && v.Length() - style.Length() < 2) {
-					auto retHandle = HandleResult(CardStyle(style.Style, v.Start, v.Start + (style.EndValue - style.StartValue))).AddBonusStep(v.Length() - style.Length());
-					m_optimiumStyle.push_back(std::move(retHandle));
-				}
-			}
+			insertOptimumChain(splitTypeRef, chain, style);
 			break;
 		}
 		case ECardStyle::Triple_Chain_Zero:
 		case ECardStyle::Triple_Chain_One:
 		case ECardStyle::Triple_Chain_Two: {
-			CardVector extra;
-			auto & _double = splitTypeRef->GetDouble();
-			auto & _single = splitTypeRef->GetSingle();
-			size_t singleLen = _single.size();
-			size_t doubleLen = _double.size();
-			int chainCount = style.Length();
-			if (style.Style == ECardStyle::Triple_Chain_One) {
-				if (singleLen >= chainCount) {
-					for (int i = 0; i < chainCount; ++i)extra.push_back(_single[i]);
-				}
-				else { //如果拆牌的不包含额外的单只，那么需要
-					splitTypeRef->RequireSingleFromChain(chainCount, extra);
-				}
-				if (doubleLen > 0) {
-					if (chainCount == 2) {
-						extra.push_back(_double[0]);
-						extra.push_back(_double[0]);
-					}
-					if (chainCount == 3) {
-						if (singleLen == 0 && doubleLen >= 2) {
-							extra.push_back(_double[0]);
-							extra.push_back(_double[0]);
-							extra.push_back(_double[1]);
-						}
-						if (doubleLen == 1 && singleLen == 1) {
-							extra.push_back(_single[0]);
-							extra.push_back(_double[0]);
-							extra.push_back(_double[0]);
-						}
-					}
-				}
-			}
-			else if (style.Style == ECardStyle::Triple_Chain_Two) {
-				if (doubleLen >= chainCount) {
-					for (int i = 0; i < chainCount; ++i)extra.push_back(_double[i]);
-				}
-				else {
-					splitTypeRef->RequireDoubleFromChain(chainCount, extra);
-				}
-			}
-
+			CardVector extra = getTripleExtraIndex(splitTypeRef, style);
 			int tripleChainStartValue = -1;
 			int tripleChainEndValue = -1;
 			auto &	chain = splitTypeRef->GetTripleChain();
@@ -212,11 +148,13 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			}
 			if (tripleChainStartValue > -1) {
 				if (style.Style == ECardStyle::Triple_Chain_Zero) {
-					m_optimiumStyle.emplace_back(CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue));
+					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue));
+					//m_optimiumStyle.emplace_back(CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue));
 				}
 				else {
-					if (extra.size() >= chainCount) {
-						m_optimiumStyle.emplace_back(CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue, extra));
+					if (extra.size() >= style.Length()) {
+						VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue, extra));
+						//m_optimiumStyle.emplace_back(CardStyle(style.Style, tripleChainStartValue, tripleChainEndValue, extra));
 					}
 				}
 			}
@@ -226,8 +164,6 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 			break;
 		}
 	}
-	//auto& splitTypeRef = MinStepSplit();//可以修改为返回一个vector包含多个SplitType,但是只有在step大于最小step的数量不大于一定的情况下才有效
-
 }
 
 void MinStepSplitStrategy::AvailableTake(const CardStyle & style)
@@ -373,4 +309,80 @@ void MinStepSplitStrategy::tripleSingleChainFirst()
 	SplitIntersectChain();
 	SplitDoubleChain(false);
 	SplitSingleChain(false);
+}
+
+void MinStepSplitStrategy::insertOptimumChain(const SplitType* splitTypeRef, const std::vector<CardRange>& avChains, const CardStyle & inStyle)
+{
+	int gapLen = inStyle.EndValue - inStyle.StartValue;
+	for (auto & v : avChains) {
+		int lessCount = v.Start - inStyle.StartValue > 0 ? 0 : v.Start - inStyle.StartValue - 1;
+		int overflowLen = v.Length() - inStyle.Length() + lessCount;
+		if (v.End > inStyle.EndValue && v.Length() >= inStyle.Length() && overflowLen < 3) {
+			int bestStartIndex = v.Start - lessCount;
+			int bestEndIndex = v.End;
+			for (int i = 0; i < overflowLen; i++) {
+				if (splitTypeRef->InDouble(bestEndIndex - i) || splitTypeRef->InSingle(bestEndIndex - i)) {
+					bestEndIndex = bestEndIndex - i - 1;
+				}
+			}
+			for (int i = 0; i < overflowLen; i++) {
+				if (splitTypeRef->InSingle(bestStartIndex + i) || splitTypeRef->InSingle(bestStartIndex + i)) {
+					bestStartIndex = bestStartIndex + i + 1;
+				}
+			}
+			int tailStartIndex = bestEndIndex - gapLen;
+			if (tailStartIndex < bestStartIndex) {
+				bestStartIndex = tailStartIndex;
+			}
+
+			auto retHandle = HandleResult(CardStyle(inStyle.Style, bestStartIndex, bestStartIndex + gapLen)).AddBonusStep(overflowLen);
+			VECTOR_INSERT_UNIQUE(m_optimiumStyle, retHandle)
+			//m_optimiumStyle.push_back(std::move(retHandle));
+		}
+	}
+}
+
+CardVector MinStepSplitStrategy::getTripleExtraIndex(const SplitType* splitTypeRef, const CardStyle& inStyle)
+{
+	CardVector extra;
+	auto & _double = splitTypeRef->GetDouble();
+	auto & _single = splitTypeRef->GetSingle();
+	size_t singleLen = _single.size();
+	size_t doubleLen = _double.size();
+	int chainCount = inStyle.Length();
+	if (inStyle.Style == ECardStyle::Triple_Chain_One) {
+		if (singleLen >= chainCount) {
+			for (int i = 0; i < chainCount; ++i)extra.push_back(_single[i]);
+		}
+		else { //如果拆牌的不包含额外的单只，那么需要
+			splitTypeRef->RequireSingleFromChain(chainCount, extra);
+		}
+		if (doubleLen > 0) {
+			if (chainCount == 2) {
+				extra.push_back(_double[0]);
+				extra.push_back(_double[0]);
+			}
+			if (chainCount == 3) {
+				if (singleLen == 0 && doubleLen >= 2) {
+					extra.push_back(_double[0]);
+					extra.push_back(_double[0]);
+					extra.push_back(_double[1]);
+				}
+				if (doubleLen == 1 && singleLen == 1) {
+					extra.push_back(_single[0]);
+					extra.push_back(_double[0]);
+					extra.push_back(_double[0]);
+				}
+			}
+		}
+	}
+	else if (inStyle.Style == ECardStyle::Triple_Chain_Two) {
+		if (doubleLen >= chainCount) {
+			for (int i = 0; i < chainCount; ++i)extra.push_back(_double[i]);
+		}
+		else {
+			splitTypeRef->RequireDoubleFromChain(chainCount, extra);
+		}
+	}
+	return extra;
 }

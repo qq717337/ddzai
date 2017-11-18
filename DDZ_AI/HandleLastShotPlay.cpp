@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "HandleLastShotPlay.h"
+#include "SplitStrategy.h"
+#include "PlayStrategyBase.h"
 
-
-HandleLastShotPlay::~HandleLastShotPlay()
-{
-}
 
 bool HandleLastShotPlay::Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
 {

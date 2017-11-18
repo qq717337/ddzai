@@ -402,7 +402,7 @@ CardVector  HandCards::GetCardsValue(uint8_t cardIndex, int count)
 	return r;
 }
 
-CardStyle HandCards::FindLessCardStyle(CardStyle & style)
+CardStyle HandCards::FindLessCardStyle(const CardStyle & style)const
 {
 	switch (style.Style) {
 	case ECardStyle::Single: {
@@ -569,6 +569,14 @@ std::vector<uint8_t> HandCards::GetCardsByStyle(const CardStyle & style) const
 		r.push_back(0x02);
 	}
 	return r;
+}
+
+CardStyle HandCards::LastShot()
+{
+	UpdateByFlag();
+	auto& sets = Data();
+	CardVector v(sets.begin(), sets.end());
+	return CardStyle::FromCardsValue(v);
 }
 
 HandCards::~HandCards()

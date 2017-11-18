@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "HandleBoomTake.h"
+#include "SplitStrategy.h"
+#include "PlayStrategyBase.h"
 
 
 HandleBoomTake::~HandleBoomTake()

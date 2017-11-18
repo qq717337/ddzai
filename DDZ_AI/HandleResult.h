@@ -3,13 +3,15 @@
 class HandleResult
 {
 public:
-	inline const CardStyle&  Style()const { return m_resultStyle; }
+	inline const CardStyle& Style()const { return m_resultStyle; }
+	//让其支持隐式转换为CardStyle
+	operator const CardStyle&()const { return m_resultStyle; }
 	HandleResult() = default;
 	HandleResult(const CardStyle& style);
 	HandleResult& AddBonusStep(int step);
 	HandleResult& OtherTakeThisBonusStep(int step);
 	HandleResult& OtherTakeLeftStep(int step);
-	
+	bool operator==(const HandleResult& rhs)const;
 private:
 	//增加的步数
 	int m_selfBonusStep;

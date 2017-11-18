@@ -1,12 +1,12 @@
 #pragma once
 #include "PlayStrategyHandle.h"
-
-class HandleLastShotPlay :
+//Farmer1在检测到Farmer2可以胜利的情况下打出让Farmer2胜利的牌
+class HandleLetFarmer2WinPlay :
 	public PlayStrategyHandle
 {
 public:
-	HandleLastShotPlay()=default;
+	HandleLetFarmer2WinPlay() = default;
 	virtual bool Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result)override;
-	HandleLastShotPlay(const HandleLastShotPlay&) = delete;
+	HandleLetFarmer2WinPlay(const HandleLetFarmer2WinPlay&) = delete;
 };
 

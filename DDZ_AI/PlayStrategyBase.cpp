@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #include "PlayStrategyBase.h"
 #include "MinStepSplitStrategy.h"
+#include "HandleCanOptimiumTake.h"
+#include "HandleCanTake.h"
+#include "HandleMinValuePlay.h"
+#include "HandleLastShotPlay.h"
+#include "HandleAvoidOtherWinPlay.h"
+#include "HandleTwoStepPlay.h"
+#include "HandleTwoStepWinTake.h"
 #include "GameTable.h"
-inline const CardStyle & PlayStrategyBase::GetLastCardStyle() const
+const CardStyle & PlayStrategyBase::GetLastCardStyle() const
 {
 	return m_table->GetLastCardStyle();
 }
@@ -89,7 +96,24 @@ void PlayStrategyBase::Reset(const std::set<uint8_t, CardSetCompare>& cardsValue
 	m_handCards.reset(new HandCards(cardsValue));
 }
 
+const PlayStrategyBase * PlayStrategyBase::Strategy_Ptr(EIdentity::EIdentity_ identity)
+{
+	return m_table->GetPlayStrategy(identity);
+}
+
 PlayStrategyBase::~PlayStrategyBase()
 {
 	//.if (m_handCards != nullptr)delete m_handCards;
+}
+
+void PlayStrategyBase::Init()
+{
+	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
+	m_handlerLastShotPlay = std::make_unique<HandleLastShotPlay>();
+	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
+	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
+
+	m_handlerCanTake = std::make_unique<HandleCanTake>();
+	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
+	m_handlerCheckTwoStepWinTake = std::make_unique<HandleTwoStepWinTake>();
 }

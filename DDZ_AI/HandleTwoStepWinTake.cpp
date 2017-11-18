@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HandleTwoStepWinTake.h"
-
+#include "SplitStrategy.h"
+#include "PlayStrategyBase.h"
 
 HandleTwoStepWinTake::HandleTwoStepWinTake()
 {

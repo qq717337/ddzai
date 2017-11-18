@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "LordPlayStrategy.h"
-#include"MinStepSplitStrategy.h"
 #include "GameTable.h"
+#include"SplitStrategy.h"
+#include "MinStepSplitStrategy.h"
 
 CardStyle LordPlayStrategy::Play()
 {
@@ -30,7 +31,10 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	CardStyle ret(CardStyle::Invalid);
 
 	std::vector<CardStyle> x;
-	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), CardStyle::DoubleStyle(CardIndex_2), x);
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, x);	
+	if (isWin) {
+		return x[0];
+	}
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		return ret;
 	}
@@ -87,7 +91,6 @@ std::vector<ECardStyle::ECardStyle_> LordPlayStrategy::AvoidPlayStyle()
 	return r;
 }
 
-
 EIdentity::EIdentity_ LordPlayStrategy::Identity()const
 {
 	return EIdentity::EIdentity_::Lord;
@@ -107,18 +110,7 @@ LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& card
 
 void LordPlayStrategy::Init()
 {
-	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
-	m_handlerLastShotPlay = std::make_unique<HandleLastShotPlay>(); 
-	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
-	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
-
-	m_handlerCanTake = std::make_unique<HandleCanTake>();
-	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
-	m_handlerCheckTwoStepWinTake = std::make_unique<HandleTwoStepWinTake>();
-	//进行链的组装，即头尾相连，一层套一层  
-	//m_handlerCanTake->setNextStrategy(m_handlerOptimiumTake.get());
-	//m_handlerOptimiumTake->setNextStrategy(m_handlerMinStepPlay.get());
-
+	PlayStrategyBase::Init();
 }
 
 

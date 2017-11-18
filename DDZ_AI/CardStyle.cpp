@@ -10,7 +10,7 @@ CardStyle::CardStyle()
 {
 	Style = ECardStyle::Invalid;
 	StartValue = EndValue = 0;
-	Extra = CardVector ();
+	Extra = CardVector();
 }
 
 
@@ -387,8 +387,9 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	}
 	}
 
-	return CardStyle();
+	return CardStyle::Invalid;
 }
+
 
 CardStyle CardStyle::SingleStyle(uint8_t value)
 {

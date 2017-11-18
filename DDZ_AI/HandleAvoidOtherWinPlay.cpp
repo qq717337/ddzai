@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "HandleAvoidOtherWinPlay.h"
+#include "SplitStrategy.h"
+#include "PlayStrategyBase.h"
 
 
 HandleAvoidOtherWinPlay::~HandleAvoidOtherWinPlay()
@@ -43,7 +45,7 @@ bool HandleAvoidOtherWinPlay::Handle(PlayStrategyBase * playStrategy, SplitStrat
 		if (tripleChainStyle.Valid()) {
 			availableStyle.emplace_back(tripleChainStyle);
 		}
-		CardStyle	tripleStyle = p.GetTripleStyle();
+		CardStyle tripleStyle = p.GetTripleStyle();
 		if (tripleStyle.Valid()) {
 			if (tripleStyle.Style != ECardStyle::Triple_Chain_Zero) {
 				availableStyle.emplace_back(tripleStyle);

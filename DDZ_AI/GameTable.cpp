@@ -31,6 +31,10 @@ void GameTable::Play(EIdentity::EIdentity_ identity)
 void GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
 	m_lastCardStyle = lastStyle;
+	//如果是王炸的话，则在此处就要不起
+	if (m_lastCardStyle == CardStyle::JokerBoom) {
+		return;
+	}
 	m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
 }
 

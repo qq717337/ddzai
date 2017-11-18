@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HandleMinValuePlay.h"
 #include "common_algorithm.h"
+#include "SplitStrategy.h"
 
 HandleMinValuePlay::~HandleMinValuePlay()
 {
