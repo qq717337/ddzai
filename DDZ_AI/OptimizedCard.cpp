@@ -78,6 +78,10 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 	RandomFillLeft();
 
 	size_t isolateCardCount = 0;
+	for (auto & v : isolateCardIndex) {
+		v.clear();
+	}
+
 	for (int i = 0; i < PlayerCardSet.size(); ++i) {
 		auto isolate = PlayerCardSet[i]->IsolateCards();
 		auto singleChain = PlayerCardSet[i]->AvailableSingleChain();
@@ -94,6 +98,9 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 		}
 		isolateCardCount += isolateCardIndex[i].size();
 	}
+	if (isolateCardCount > 3) {
+		Optimized(strategy, preRandomCount);
+	}else
 	{
 		SwapWithEmpty(0, 1);
 		SwapWithEmpty(0, 2);
@@ -101,6 +108,7 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 		SwapWithEmpty(1, 2);
 		SwapWithEmpty(2, 0);
 		SwapWithEmpty(2, 1);
+		return;
 	}
 }
 

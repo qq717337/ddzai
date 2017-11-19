@@ -13,7 +13,7 @@ const CardStyle & PlayStrategyBase::GetLastCardStyle() const
 {
 	return m_table->GetLastCardStyle();
 }
-bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle & style, std::vector<CardStyle>& styleList) const
+bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle & style, bool isTake, std::vector<CardStyle>& styleList) const
 {
 	CardStyle r;
 	if (split->MinStepSplit().GetLastShotCardStyle(&r)) {
@@ -54,7 +54,9 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 		Recorder<HandCards>::Pop(m_handCards.get());
 	}
 	else {
-		allStyle.erase(finded_elem);
+		if (!isTake) {
+			allStyle.erase(finded_elem);
+		}
 	}
 	int canTakeCount = 0;
 
@@ -68,6 +70,7 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 	}
 
 	if (canTakeCount <= 1) {//至多只有一个可以被其他人压制，那么可以将这一个最后出实现胜利
+		styleList.insert(styleList.begin(), choosedStyle);
 		return true;
 	}
 	return false;
@@ -84,6 +87,7 @@ PlayStrategyBase::PlayStrategyBase(int identity, const std::set<uint8_t, CardSet
 {
 	m_table = table;
 	m_handCards = std::make_shared<HandCards>(cardsValue);
+	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
 void PlayStrategyBase::Reset(const CardVector & cardsValue)
@@ -96,7 +100,7 @@ void PlayStrategyBase::Reset(const std::set<uint8_t, CardSetCompare>& cardsValue
 	m_handCards.reset(new HandCards(cardsValue));
 }
 
-const PlayStrategyBase * PlayStrategyBase::Strategy_Ptr(EIdentity::EIdentity_ identity)
+const PlayStrategyBase * PlayStrategyBase::GetStrategyPtr(EIdentity::EIdentity_ identity)
 {
 	return m_table->GetPlayStrategy(identity);
 }

@@ -84,6 +84,7 @@ const CardVector& CardSet::RandomFillLeft()
 {
 	Update();
 	ExtraCard.reserve(64);
+	ExtraCard.clear();
 	for (uint8_t i = 0; i <= CardIndex_2; i++) {
 		int count = 0;
 		for (uint8_t k = 0; k < 4; k++) {

@@ -12,7 +12,7 @@ private:
 	CardVector isolateCardIndex[3];
 	uint8_t firstChainIndex[3];
 	void SwapWithEmpty(int left, int right);
-	CardVector  ExchangeValue(int playerIndex);
+	CardVector ExchangeValue(int playerIndex);
 public:
 	std::string ToString()override;
 	OptimizedCard();

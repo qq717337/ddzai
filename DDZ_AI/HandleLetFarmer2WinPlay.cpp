@@ -4,7 +4,7 @@
 #include "PlayStrategyBase.h"
 bool HandleLetFarmer2WinPlay::Handle(PlayStrategyBase * playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
 {
-	auto farmer2_strategy = playStrategy->Strategy_Ptr(EIdentity::Farmer2);
+	auto farmer2_strategy = playStrategy->GetStrategyPtr(EIdentity::Farmer2);
 	HandCards& farmer2_handcards = const_cast<HandCards&> (farmer2_strategy->GetHandCards());//获取Farmer2最后的一个走法
 	CardStyle farmer2_lastShot = farmer2_handcards.LastShot();
 	if (!farmer2_lastShot.Valid()) {//Farmer2找不到最后一步则忽略这个Handle

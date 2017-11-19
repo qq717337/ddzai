@@ -3,6 +3,10 @@
 class Farmer2PlayerStrategy :
 	public PlayStrategyBase
 {
+private:
+	CardStyle takeLord(const CardStyle & lastStyle);
+	CardStyle takeFarmer(const CardStyle & lastStyle);
+
 public:
 	~Farmer2PlayerStrategy();
 	Farmer2PlayerStrategy(const CardVector & cardsValue, GameTable* table);

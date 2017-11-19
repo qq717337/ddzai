@@ -31,7 +31,7 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	CardStyle ret(CardStyle::Invalid);
 
 	std::vector<CardStyle> x;
-	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, x);	
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle,true, x);	
 	if (isWin) {
 		return x[0];
 	}
@@ -98,14 +98,12 @@ EIdentity::EIdentity_ LordPlayStrategy::Identity()const
 
 LordPlayStrategy::LordPlayStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	m_handCards = std::make_shared<HandCards>(cardsValue);
-	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
+	//m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
 LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	m_handCards = std::make_shared<HandCards>(cardsValue);
-	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
+	//m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
 void LordPlayStrategy::Init()

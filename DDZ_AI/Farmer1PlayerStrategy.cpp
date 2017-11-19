@@ -7,17 +7,49 @@
 
 CardStyle Farmer1PlayerStrategy::takeLord(const CardStyle & lastStyle)
 {
+	CardStyle ret;
+	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
+		return ret;
+	}
+	if (m_handlerCanTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		return ret;
+	}
 	return CardStyle::Invalid;
 }
 
 CardStyle Farmer1PlayerStrategy::takeFarmer(const CardStyle & lastStyle)
 {
+	//因为Farmer2已经经过了地主要不起的情况，所以不需要再对其进行防止。需要防止的就是该玩家新出的牌会导致地主获胜
 	//不压的情况
 	//1.要不起
 	//2.Farmer2 出牌会让地主压死
 	//3.Farmer2 无法取得胜利，例如全是5张（单只+对子）
+	auto& optTakeStyle = m_minStepSplitStrategy->GetOptimiumStyle();
+	//auto& optBoomTakeStyle = m_minStepSplitStrategy->GetOptimiumBoomStyle();
+	if (optTakeStyle.size() == 0) {
+		return CardStyle::Invalid;
+	}
+	const SplitType& minStepSplit = GetStrategyPtr(EIdentity::Farmer2)->m_minStepSplitStrategy->MinStepSplit();
+	auto allStyles = minStepSplit.GetAllSplitStyle();
 
-	//因为Farmer2已经经过了地主要不起的情况，所以不需要再对其进行防止。需要防止的就是该玩家新出的牌会导致地主获胜
+	if (allStyles.size() == 1) {
+		return CardStyle::Invalid;
+	}
+	auto& f2_handcards = GetStrategyPtr(EIdentity::Farmer2)->GetHandCards();
+	auto& lord_handcards = GetStrategyPtr(EIdentity::Lord)->GetHandCards();
+
+	int beatedCount = 0;//可被压制但是f2无法压制的Style个数，如果超过1个，那么我就选择接牌，否则不接
+	for (auto &v : allStyles) {
+		CardStyle ret;
+		bool lordCanTake = lord_handcards.CanTake(v, ret);//如果地主可以接牌，而且f2无法接住地主压得牌，那么添加一个被压制的个数
+		if (lordCanTake && !f2_handcards.CanTake(ret)) {
+			++beatedCount;
+		}
+	}
+	if (allStyles.size() - beatedCount > 1) {
+		return	optTakeStyle[0];
+	}
+
 	return CardStyle::Invalid;
 }
 
@@ -27,13 +59,10 @@ Farmer1PlayerStrategy::~Farmer1PlayerStrategy()
 
 Farmer1PlayerStrategy::Farmer1PlayerStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	m_handCards = std::make_shared<HandCards>(cardsValue);
-	//m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 }
 
 Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
 CardStyle Farmer1PlayerStrategy::Play()
@@ -59,8 +88,12 @@ CardStyle Farmer1PlayerStrategy::Play()
 
 CardStyle Farmer1PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
+	m_minStepSplitStrategy->Split();
+	m_minStepSplitStrategy->OptimiumTake(lastStyle);
+	m_minStepSplitStrategy->AvailableTake(lastStyle);
+
 	std::vector<CardStyle> x;
-	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, x);
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle,true, x);
 	if (isWin) {
 		return x[0];
 	}

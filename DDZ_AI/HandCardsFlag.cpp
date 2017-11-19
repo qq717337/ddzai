@@ -212,6 +212,20 @@ std::string HandCardsFlag::FlagString()
 	return sr;
 }
 
+CardVector HandCardsFlag::ToCardValues() const
+{
+	int i, j;
+	CardVector r;
+	for (i = 0; i < CARD_VALUE_LEN; i++) {
+		for (j = 0; j < 4; j++) {
+			if (Flags[i][j] == 1) {
+				r.push_back(CardColorIndexToValue(j, i));
+			}
+		}
+	}
+	return r;
+}
+
 CardVector  HandCardsFlag::AvailableBoom()const
 {
 	CardVector r;

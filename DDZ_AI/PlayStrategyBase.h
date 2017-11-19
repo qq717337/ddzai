@@ -11,6 +11,10 @@ class PlayStrategyHandle;
 class PlayStrategyBase
 {
 protected:
+	friend class LordPlayStrategy;
+	friend class Farmer1PlayerStrategy;
+	friend class Farmer2PlayerStrategy;
+
 	GameTable *m_table;
 	std::shared_ptr<HandCards> m_handCards;
 
@@ -36,7 +40,7 @@ public:
 	const CardStyle& GetLastCardStyle()const;
 
 	//获取当前可以接到的牌，然后遍历剩余的牌，看是否只有一个是别人要不起的牌，如果是则代表胜利了，并将所有的出牌顺序存入一个vector中。
-	virtual bool  CheckIfWin(const SplitStrategy* split, const CardStyle& style, std::vector<CardStyle>& styleList)const;
+	virtual bool CheckIfWin(const SplitStrategy* split, const CardStyle& style, bool isTake, std::vector<CardStyle>& styleList)const;
 	//virtual bool IsLetOtherWin()const = 0;
 	PlayStrategyBase(int identity, const  CardVector & cardsValue, GameTable *table);
 	PlayStrategyBase(int identity, const  std::set<uint8_t, CardSetCompare>& cardsValue, GameTable *table);
@@ -44,8 +48,7 @@ public:
 	virtual void Reset(const  CardVector & cardsValue);
 	virtual void Reset(const  std::set<uint8_t, CardSetCompare>& cardsValue);
 
-	inline const GameTable *Table_Ptr() { return m_table; }
-	const PlayStrategyBase *Strategy_Ptr(EIdentity::EIdentity_ identity);
+	const PlayStrategyBase *GetStrategyPtr(EIdentity::EIdentity_ identity);
 	inline const HandCards& GetHandCards()const {
 		_ASSERT(m_handCards);
 		return *m_handCards.get();

@@ -40,7 +40,8 @@ public:
 	virtual CardVector  AvailableChain(int len, int count,bool bigger,uint8_t cardIndex)const;
 	std::vector<CardVector > IsolateCards(bool sub=false);
 	bool CanTake(const CardStyle& lastStyle)const;
-	CardVector  GetCardsValue(uint8_t cardIndex, int count);
+	bool HandCards::CanTake(const CardStyle & lastStyle, CardStyle &retStyle)const;
+	CardVector GetCardsValue(uint8_t cardIndex, int count)const;
 	CardStyle FindLessCardStyle(const CardStyle& style)const;
 	inline int Count(int cardIndex)const {
 		return CardCount[cardIndex];

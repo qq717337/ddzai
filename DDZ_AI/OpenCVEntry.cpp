@@ -2,7 +2,47 @@
 #include "common_windows.h"
 #include "OpenCVEntry.h"
 
-OpenCVEntry::OpenCVEntry(const wchar_t* cardImagePath):m_cardPath(cardImagePath)
+cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, CardVector extraCards)
+{
+	cv::Mat mBack = image_map["deskimg"];
+	int extraCardX = 1280 / 2 - 120;
+	int	extraCardY = 720 / 2 - 50;
+	for (auto v : extraCards) {
+		cv::Mat	copyContent = GetCardImage(v);
+		auto mat3 = mBack(cv::Rect(extraCardX, extraCardY, copyContent.cols, copyContent.rows));
+		copyContent.copyTo(mat3);
+		extraCardX += 40;
+	}
+	int p0X = 280;
+	int p0Y = 540;
+	for (auto v : PlayerCards0) {
+		cv::Mat	copyContent = GetCardImage(v);
+		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
+		copyContent.copyTo(mat3);
+		p0X += 40;
+	}
+
+	int p1X = 1280 - 60 * 2 - 54;
+	int p1Y = 80;
+	for (auto v : PlayerCards1) {
+		cv::Mat	copyContent = GetCardImage(v);
+		auto mat3 = mBack(cv::Rect(p1X, p1Y, copyContent.cols, copyContent.rows));
+		copyContent.copyTo(mat3);
+		p1Y += 30;
+	}
+
+	int p2X = 60;
+	int	p2Y = 80;
+	for (auto v : PlayerCards2) {
+		cv::Mat	copyContent = GetCardImage(v);
+		auto mat3 = mBack(cv::Rect(p2X, p2Y, copyContent.cols, copyContent.rows));
+		copyContent.copyTo(mat3);
+		p2Y += 30;
+	}
+	return mBack;
+}
+
+OpenCVEntry::OpenCVEntry(const wchar_t* cardImagePath) :m_cardPath(cardImagePath)
 {
 	std::map<std::string, std::string> filesName;
 	Common::GetFilesWindows(m_cardPath, filesName);
@@ -34,7 +74,7 @@ std::string OpenCVEntry::GetCardName(uint8_t cardValue)
 	};
 	uint8_t color = (cardValue & 0xf0) >> 4;
 	uint8_t value = cardValue & 0x0f;
-	return std::string(m_colorCollection[color]).append( m_valueCollection[value - 1].c_str());
+	return std::string(m_colorCollection[color]).append(m_valueCollection[value - 1].c_str());
 }
 
 void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
@@ -48,7 +88,7 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 	CvFont font2;
 	cvInitFont(&font2, CV_FONT_ITALIC, 0.5, 0.5, 0, 1);
 
-	cvPutText(test, "hello ", CvPoint(10, 10), &font2, cvScalar(1, 0.5, 0, 0.7));
+	cvPutText(test, "中文行不行 hello ", CvPoint(10, 10), &font2, cvScalar(1, 0.5, 0, 0.7));
 	cvShowImage("opencv_demo", test);
 
 	imshow("fs", mat1);
@@ -58,43 +98,56 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 }
 void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards)
 {
-	cv::Mat mBack = image_map["deskimg"];
-	int extraCardX = 1280 / 2 - 120;
-	int	extraCardY = 720 / 2 - 50;
-	for (auto v : extraCards) {
-		cv::Mat	copyContent = GetCardImage( v);
-		auto mat3 = mBack(cv::Rect(extraCardX, extraCardY, copyContent.cols, copyContent.rows));
-		copyContent.copyTo(mat3);
-		extraCardX += 40;
-	}
-	int p0X = 280;
-	int p0Y = 540;
-	for (auto v : PlayerCards0) {
-		cv::Mat	copyContent = GetCardImage( v);
+	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, extraCards);
+	imshow("fs", mBack);
+}
+void OpenCVEntry::ShowCard(CardSet * cardSet)
+{
+	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
+	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard);
+}
+void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
+{
+	ShowPlay(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(),
+	  lastIdentity,  playerIdentity, lastPlayCards, outPlayCards);
+}
+void OpenCVEntry::ShowPlay(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
+{
+	static std::vector<std::string> IdentityString = { "lord", "Farmer 1", "Farmer 2" };
+	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, {});
+	int p0X = 1280 / 2 - lastPlayCards.size() * 40;
+	int	p0Y = 100;
+
+	for (auto v : lastPlayCards) {
+		cv::Mat	copyContent = GetCardImage(v);
 		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p0X += 40;
 	}
-
-	int p1X = 60;
-	int	p1Y = 80;
-	for (auto v : PlayerCards1) {
-		cv::Mat	copyContent = GetCardImage( v);
-		auto mat3 = mBack(cv::Rect(p1X, p1Y, copyContent.cols, copyContent.rows));
-		copyContent.copyTo(mat3);
-		p1Y += 30;
+	if (outPlayCards.size() > 0) {
+		p0X = 1280 / 2 - (outPlayCards.size() - 1) * 40;
+		p0Y = 350;
+		for (auto v : outPlayCards) {
+			cv::Mat	copyContent = GetCardImage(v);
+			auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
+			copyContent.copyTo(mat3);
+			p0X += 40;
+		}
+	}
+	else {
+		cv::putText(mBack, "can not take", CvPoint(1280 / 2 - 100, 400.0), cv::FONT_HERSHEY_PLAIN, 2.0, cvScalar(255, 128, 0, 192));
 	}
 
-	int p2X = 1280 - 60 * 2 - 54;
-	int p2Y = 80;
-	for (auto v : PlayerCards2) {
-		cv::Mat	copyContent = GetCardImage(v);
-		auto mat3 = mBack(cv::Rect(p2X, p2Y, copyContent.cols, copyContent.rows));
-		copyContent.copyTo(mat3);
-		p2Y += 30;
-	}
+	cv::putText(mBack, "Last Player:" + IdentityString[lastIdentity], CvPoint(450, 60), cv::FONT_HERSHEY_PLAIN, 1.5, cvScalar(255, 255, 255, 255));
+	auto getColor = [playerIdentity](int i) {
+		return i == playerIdentity ? cvScalar(32, 255, 32, 255) : cvScalar(32, 255, 255, 255);
+	};
+	cv::putText(mBack, IdentityString[0], CvPoint(1280 / 2, 700), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(0));
+	cv::putText(mBack, IdentityString[1], CvPoint(1280 - 140, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(1));
+	cv::putText(mBack, IdentityString[2], CvPoint(0, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(2));
 
-	imshow("fs", mBack);
+	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
+	imshow("play card", mBack);
 }
 void OpenCVEntry::Wait(int delay)
 {

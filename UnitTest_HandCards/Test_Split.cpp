@@ -85,17 +85,31 @@ namespace UnitTest_Split
 			set.DealChain(0, CardIndex_3, CardIndex_6,2);
 			//set.DealIndex(0, CardIndex_4, 2);
 			set.DealIndex(2, CardIndex_7, 2);
+			set.DealIndex(1, CardIndex_A, 1);
 			set.DealIndex(1, CardIndex_9, 1);
 			set.DealIndex(1, CardIndex_J, 3);
 			set.DealIndex(2, CardIndex_Q, 1);
 			set.DealIndex(2, CardIndex_K, 2);
-			set.DealIndex(1, CardIndex_A, 1);
 			set.Update();
 			//auto& extraCards = set.RandomFillLeft();
 			
 			GameTable table(set);
-			table.Take(EIdentity::Lord,EIdentity::Farmer1,CardStyle::DoubleChainStyle(CardIndex_3,CardIndex_5));
-			auto str=table.GetPlayStrategy(EIdentity::Lord);
+			CardVector lastPlayCard({ 0x16,0x36,});
+			//CardStyle lastPlayStyle = CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5);
+			CardStyle lastPlayStyle = CardStyle::FromCardsValue(lastPlayCard);
+			EIdentity::EIdentity_ lastPlayIdentity = EIdentity::Farmer1;
+			EIdentity::EIdentity_ curPlayIdentity = EIdentity::Farmer2;
+			auto thisStyle= table.Take(curPlayIdentity, lastPlayIdentity, lastPlayStyle);
+			auto cards = table.GetHandCard(curPlayIdentity)->GetCardsByStyle(thisStyle);
+
+			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
+			cv->ShowPlay(
+				table.GetHandCard(EIdentity::Lord)->ToCardValues(),
+				table.GetHandCard(EIdentity::Farmer1)->ToCardValues(), 
+				table.GetHandCard(EIdentity::Farmer2)->ToCardValues()
+				, lastPlayIdentity, curPlayIdentity, lastPlayCard, cards);
+			//cv->ShowCard(opt);
+			cv->Wait(30000);
 		}
 	};
 }

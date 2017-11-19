@@ -136,9 +136,13 @@ namespace UnitTest_HandCards
 			auto superior = new SuperiorDealStrategy(opt, 2);
 			opt->Optimized(superior, 1);
 			std::string s = opt->ToString2();
-			Logger::WriteMessage(s.c_str());
-			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
-			system(name.c_str());
+			Logger::WriteMessage(s.c_str()); 
+			OpenCVEntry *cv= new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
+			cv->ShowPlay(opt, 2,1, { 0x01,0x02 }, {0x23,0x33,0x43});
+			//cv->ShowCard(opt);
+			cv->Wait(30000);
+			//const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
+			//system(name.c_str());
 		}
 		TEST_METHOD(TestSmoothCard)
 		{

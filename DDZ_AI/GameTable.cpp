@@ -19,23 +19,24 @@ GameTable::~GameTable()
 {
 }
 
-void GameTable::Play(EIdentity::EIdentity_ identity)
+CardStyle GameTable::Play(EIdentity::EIdentity_ identity)
 {
 	auto playStyle = m_playerStrategy[identity]->Play();
 	auto &handCards = const_cast<HandCards&>(m_playerStrategy[identity]->GetHandCards());
 	handCards.RemoveCard(playStyle);
 	handCards.UpdateByFlag();
 	int size = handCards.Size();
+	return playStyle;
 }
 
-void GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
+CardStyle GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
 {
 	m_lastCardStyle = lastStyle;
 	//如果是王炸的话，则在此处就要不起
 	if (m_lastCardStyle == CardStyle::JokerBoom) {
-		return;
+		return CardStyle::Invalid;
 	}
-	m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
+	return m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
 }
 
 size_t GameTable::CardCount(EIdentity::EIdentity_ identity)const

@@ -20,8 +20,8 @@ public:
 	GameTable(const CardSet& cardSet);
 	~GameTable();
 	const CardStyle& GetLastCardStyle()const {return m_lastCardStyle; }
-	void Play(EIdentity::EIdentity_ identity);
-	void Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle);
+	CardStyle Play(EIdentity::EIdentity_ identity);
+	CardStyle Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle);
 	size_t CardCount(EIdentity::EIdentity_ identity)const;
 	bool IsStyleOtherCanNotTake(EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle)const;
 	bool inline IsFarmerCanNotTake(const CardStyle& lastStyle)const { return IsStyleOtherCanNotTake(EIdentity::Lord, lastStyle); }

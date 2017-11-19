@@ -125,10 +125,13 @@ size_t HandCards::Size()const
 CardVector HandCards::AvailableBoom()const
 {
 	CardVector r;
-	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+	for (uint8_t i = 0; i <= CardIndex_2; i++) {
 		if (CardCount[i] == 4) {
 			r.push_back(i);
 		}
+	}
+	if (CardCount[CardIndex_SmallJoker] + CardCount[CardIndex_LargeJoker] == 2) {
+		r.push_back(CardIndex_JokerBoom);
 	}
 	return r;
 }
@@ -335,10 +338,15 @@ bool HandCards::CanTake(const CardStyle & lastStyle)const
 	}
 	case ECardStyle::Triple_One: {
 		auto triples = AvailableTriple(true, lastStyle.StartValue);
-		return triples.size() > 0;
+		return triples.size() > 0 && Size() >= 4;
 		break;
 	}
 	case ECardStyle::Triple_Two: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		return triples.size() > 0 && Size() >= 5;
+		break;
+	}
+	case ECardStyle::Triple_Zero: {
 		auto triples = AvailableTriple(true, lastStyle.StartValue);
 		return triples.size() > 0;
 		break;
@@ -384,7 +392,120 @@ bool HandCards::CanTake(const CardStyle & lastStyle)const
 	return false;
 }
 
-CardVector  HandCards::GetCardsValue(uint8_t cardIndex, int count)
+bool HandCards::CanTake(const CardStyle & lastStyle, CardStyle &retStyle)const
+{
+	auto booms = AvailableBoom();
+	if (booms.size() > 0 && lastStyle.Style != ECardStyle::Boom) {
+		return true;
+	}
+	switch (lastStyle.Style)
+	{
+	case ECardStyle::Boom: {
+		auto booms = AvailableBoom(true, lastStyle.StartValue);
+		if (booms.size() > 0) {
+			retStyle = CardStyle::BoomStyle(booms[0]);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_One: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		if (triples.size() > 0 && Size() >= 4) {
+			retStyle = CardStyle::TripleOneStyle(triples[0], {});
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_Two: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		if (triples.size() > 0 && Size() >= 5) {
+			retStyle = CardStyle::TripleTwoStyle(triples[0], {});
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_Zero: {
+		auto triples = AvailableTriple(true, lastStyle.StartValue);
+		if (triples.size() > 0) {
+			retStyle = CardStyle::TripleZeroStyle(triples[0]);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Double: {
+		auto doubles = AvailableDouble(true, lastStyle.StartValue);
+		if (doubles.size() > 0) {
+			retStyle = CardStyle::DoubleStyle(doubles[0]);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Single: {
+		auto singles = AvailableSingle(true, lastStyle.StartValue);
+		if (singles.size() > 0) {
+			retStyle = CardStyle::SingleStyle(singles[0]);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Single_Chain: {
+		auto singleChains = AvailableSingleChain(true, lastStyle.StartValue, lastStyle.Length());
+		if (singleChains.size() > 0) {
+			retStyle = CardStyle::SingleChainStyle(singleChains[0], singleChains[0] + lastStyle.Length() - 1);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Double_Chain: {
+		auto doubleChains = AvailableDoubleChain(true, lastStyle.StartValue, lastStyle.Length());
+		if (doubleChains.size() > 0) {
+			retStyle = CardStyle::DoubleChainStyle(doubleChains[0], doubleChains[0] + lastStyle.Length() - 1);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_Chain_Zero: {
+		auto tripleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+
+		if (tripleChains.size() > 0) {
+			retStyle = CardStyle::TripleChainZeroStyle(tripleChains[0], tripleChains[0] + lastStyle.Length() - 1);
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_Chain_One: {
+		auto tripleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+		if (tripleChains.size() > 0 && Size() > lastStyle.Length() * 4) {
+			retStyle = CardStyle::TripleChainOneStyle(tripleChains[0], tripleChains[0] + lastStyle.Length() - 1, {});
+			return true;
+		}
+		return false;
+		break;
+	}
+	case ECardStyle::Triple_Chain_Two: {
+		auto tripleChains = AvailableTripleChain(true, lastStyle.StartValue, lastStyle.Length());
+		if (tripleChains.size() > 0 && Size() > lastStyle.Length() * 5) {
+			retStyle = CardStyle::TripleChainOneStyle(tripleChains[0], tripleChains[0] + lastStyle.Length() - 1, {});
+			return true;
+		}
+		return false;
+		break;
+	}
+	default:
+		break;
+	}
+	return false;
+}
+CardVector HandCards::GetCardsValue(uint8_t cardIndex, int count)const
 {
 	CardVector  r;
 	int sum = 0;
@@ -474,70 +595,70 @@ CardStyle HandCards::FindLessCardStyle(const CardStyle & style)const
 
 std::vector<uint8_t> HandCards::GetCardsValueByStyle(const CardStyle & style) const
 {
-		std::vector<uint8_t> r(15);
-		switch (style.Style) {
-		case ECardStyle::Single:
-			r[style.StartValue] = 1;
-			break;
-		case ECardStyle::Double:
-			r[style.StartValue] = 2;
-			break;
-		case ECardStyle::Triple_Zero:
-			r[style.StartValue] = 3;
-			break;
-		case ECardStyle::Triple_One:
-			r[style.StartValue] = 3;
-			r[style.Extra[0]] += 1;
-			break;
-		case ECardStyle::Triple_Two:
-			r[style.StartValue] = 3;
-			r[style.Extra[0]] += 2;
-			break;
-		case ECardStyle::Triple_Chain_Zero:
-			for (int i = style.StartValue; i <= style.EndValue; i++) {
-				r[i] = 3;
-			}
-			break;
-		case ECardStyle::Triple_Chain_One:
-			for (int i = style.StartValue; i <= style.EndValue; i++) {
-				r[i] = 3;
-			}
-			for (auto v : style.Extra) {
-				r[v] += 1;
-			}
-			break;
-		case ECardStyle::Triple_Chain_Two:
-			for (int i = style.StartValue; i <= style.EndValue; i++) {
-				r[i] = 3;
-			}
-			for (auto v : style.Extra) {
-				r[v] += 2;
-			}
-			break;
-		case ECardStyle::Single_Chain:
-			for (int i = style.StartValue; i <= style.EndValue; i++) {
-				r[i] = 1;
-			}
-			break;
-		case ECardStyle::Double_Chain:
-			for (int i = style.StartValue; i <= style.EndValue; i++) {
-				r[i] = 2;
-			}
-			break;
-		case ECardStyle::Quad_Two:
-			r[style.StartValue] = 4;
-			r[style.Extra[0]] += 1;
-			r[style.Extra[1]] += 1;;
-			break;
-		case ECardStyle::Boom:
-			r[style.StartValue] = 4;
-			if (style.StartValue == CardIndex_JokerBoom) {
-				r[CardIndex_SmallJoker] = 1;
-				r[CardIndex_LargeJoker] = 1;
-			}
-			break;
+	std::vector<uint8_t> r(15);
+	switch (style.Style) {
+	case ECardStyle::Single:
+		r[style.StartValue] = 1;
+		break;
+	case ECardStyle::Double:
+		r[style.StartValue] = 2;
+		break;
+	case ECardStyle::Triple_Zero:
+		r[style.StartValue] = 3;
+		break;
+	case ECardStyle::Triple_One:
+		r[style.StartValue] = 3;
+		r[style.Extra[0]] += 1;
+		break;
+	case ECardStyle::Triple_Two:
+		r[style.StartValue] = 3;
+		r[style.Extra[0]] += 2;
+		break;
+	case ECardStyle::Triple_Chain_Zero:
+		for (int i = style.StartValue; i <= style.EndValue; i++) {
+			r[i] = 3;
 		}
-		return r;
+		break;
+	case ECardStyle::Triple_Chain_One:
+		for (int i = style.StartValue; i <= style.EndValue; i++) {
+			r[i] = 3;
+		}
+		for (auto v : style.Extra) {
+			r[v] += 1;
+		}
+		break;
+	case ECardStyle::Triple_Chain_Two:
+		for (int i = style.StartValue; i <= style.EndValue; i++) {
+			r[i] = 3;
+		}
+		for (auto v : style.Extra) {
+			r[v] += 2;
+		}
+		break;
+	case ECardStyle::Single_Chain:
+		for (int i = style.StartValue; i <= style.EndValue; i++) {
+			r[i] = 1;
+		}
+		break;
+	case ECardStyle::Double_Chain:
+		for (int i = style.StartValue; i <= style.EndValue; i++) {
+			r[i] = 2;
+		}
+		break;
+	case ECardStyle::Quad_Two:
+		r[style.StartValue] = 4;
+		r[style.Extra[0]] += 1;
+		r[style.Extra[1]] += 1;;
+		break;
+	case ECardStyle::Boom:
+		r[style.StartValue] = 4;
+		if (style.StartValue == CardIndex_JokerBoom) {
+			r[CardIndex_SmallJoker] = 1;
+			r[CardIndex_LargeJoker] = 1;
+		}
+		break;
+	}
+	return r;
 }
 
 std::vector<uint8_t> HandCards::GetCardsByStyle(const CardStyle & style) const
