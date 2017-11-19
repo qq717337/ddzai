@@ -169,7 +169,6 @@
     <ClInclude Include="HandleNotTake.h" />
     <ClInclude Include="HandleResult.h" />
     <ClInclude Include="HandleTwoStepPlay.h" />
-    <ClInclude Include="HandleTwoStepWinTake.h" />
     <ClInclude Include="OpenCVEntry.h" />
     <ClInclude Include="PlayStrategyHandle.h" />
     <ClInclude Include="CardConst.h" />
@@ -212,7 +211,6 @@
     <ClCompile Include="HandleNotTake.cpp" />
     <ClCompile Include="HandleResult.cpp" />
     <ClCompile Include="HandleTwoStepPlay.cpp" />
-    <ClCompile Include="HandleTwoStepWinTake.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />
     <ClCompile Include="PlayStrategyHandle.cpp" />
     <ClCompile Include="CardConst.cpp" />

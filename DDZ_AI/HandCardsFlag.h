@@ -61,6 +61,7 @@ public:
 	void RemoveCard(const CardStyle& style);
 	void AddCard(uint8_t color, uint8_t cardIndex);
 	void AddCard(uint8_t cardValue);
+	void AddCards(CardVector cardValues);
 	//如果是false则全部置为0，否则置为全新的一副牌
 	virtual void Reset(bool createNewCard);
 	virtual size_t Size()const;

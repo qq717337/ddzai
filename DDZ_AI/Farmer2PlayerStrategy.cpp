@@ -5,12 +5,12 @@
 #include "MinStepSplitStrategy.h"
 #include "HandleLetFarmer2WinPlay.h"
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
-Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue,table)
+Farmer2PlayerStrategy::Farmer2PlayerStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
 	m_handCards = std::make_shared<HandCards>(cardsValue);
 }
@@ -21,7 +21,10 @@ CardStyle Farmer2PlayerStrategy::takeLord(const CardStyle & lastStyle)
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		return ret;
 	}
-	if (m_handlerCanTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+	if (m_handlerBoomTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//炸弹可以接的情况
+		return ret;
+	}
+	if (m_handlerAvailableTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
 		return ret;
 	}
 	return CardStyle::Invalid;
@@ -31,7 +34,7 @@ CardStyle Farmer2PlayerStrategy::takeFarmer(const CardStyle & lastStyle)
 {
 	auto& optTakeStyle = m_minStepSplitStrategy->GetOptimiumStyle();
 	auto& optBoomTakeStyle = m_minStepSplitStrategy->GetOptimiumBoomStyle();
-	if (optTakeStyle.size() == 0 && optBoomTakeStyle.size()==0) {
+	if (optTakeStyle.size() == 0 && optBoomTakeStyle.size() == 0) {
 		return CardStyle::Invalid;
 	}
 	if (optTakeStyle.size() > 0) {
@@ -39,7 +42,7 @@ CardStyle Farmer2PlayerStrategy::takeFarmer(const CardStyle & lastStyle)
 	}
 	if (optBoomTakeStyle.size() > 0) {
 		//判断地主能不能接住以及还有几回合走完确定要不要使用炸弹
-		
+
 	}
 	return CardStyle::Invalid;
 }
@@ -90,7 +93,7 @@ bool Farmer2PlayerStrategy::OtherCanTake(const CardStyle & style) const
 	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
 }
 
-bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
+bool Farmer2PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const
 {
 	return false;
 }

@@ -4,7 +4,8 @@
 
 cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, CardVector extraCards)
 {
-	cv::Mat mBack = image_map["deskimg"];
+	cv::Mat mBack(image_map["deskimg"].rows, image_map["deskimg"].cols,0);
+	image_map["deskimg"].copyTo(mBack);
 	int extraCardX = 1280 / 2 - 120;
 	int	extraCardY = 720 / 2 - 50;
 	for (auto v : extraCards) {
@@ -39,6 +40,43 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 		copyContent.copyTo(mat3);
 		p2Y += 30;
 	}
+	return mBack;
+}
+
+cv::Mat OpenCVEntry::showPlayInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
+{
+	static std::vector<std::string> IdentityString = { "lord", "Farmer 1", "Farmer 2" };
+	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, {});
+	int p0X = 1280 / 2 - lastPlayCards.size() * 40;
+	int	p0Y = 100;
+
+	for (auto v : lastPlayCards) {
+		cv::Mat	copyContent = GetCardImage(v);
+		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
+		copyContent.copyTo(mat3);
+		p0X += 40;
+	}
+	if (outPlayCards.size() > 0) {
+		p0X = 1280 / 2 - (outPlayCards.size() - 1) * 40;
+		p0Y = 350;
+		for (auto v : outPlayCards) {
+			cv::Mat	copyContent = GetCardImage(v);
+			auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
+			copyContent.copyTo(mat3);
+			p0X += 40;
+		}
+	}
+	else {
+		cv::putText(mBack, "can not take", CvPoint(1280 / 2 - 100, 400.0), cv::FONT_HERSHEY_PLAIN, 2.0, cvScalar(255, 128, 0, 192));
+	}
+
+	cv::putText(mBack, "Last Player:" + IdentityString[lastIdentity], CvPoint(450, 60), cv::FONT_HERSHEY_PLAIN, 1.5, cvScalar(255, 255, 255, 255));
+	auto getColor = [playerIdentity](int i) {
+		return i == playerIdentity ? cvScalar(32, 255, 32, 255) : cvScalar(32, 255, 255, 255);
+	};
+	cv::putText(mBack, IdentityString[0], CvPoint(1280 / 2, 700), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(0));
+	cv::putText(mBack, IdentityString[1], CvPoint(1280 - 140, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(1));
+	cv::putText(mBack, IdentityString[2], CvPoint(0, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(2));
 	return mBack;
 }
 
@@ -91,7 +129,7 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 	cvPutText(test, "中文行不行 hello ", CvPoint(10, 10), &font2, cvScalar(1, 0.5, 0, 0.7));
 	cvShowImage("opencv_demo", test);
 
-	imshow("fs", mat1);
+	cv::imshow("fs", mat1);
 	//cvShowImage("fss", &mat1);
 	//cv::waitKey(5000);
 	//cv::destroyAllWindows();
@@ -99,7 +137,7 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards)
 {
 	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, extraCards);
-	imshow("fs", mBack);
+	cv::imshow("fs", mBack);
 }
 void OpenCVEntry::ShowCard(CardSet * cardSet)
 {
@@ -109,45 +147,18 @@ void OpenCVEntry::ShowCard(CardSet * cardSet)
 void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
 {
 	ShowPlay(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(),
-	  lastIdentity,  playerIdentity, lastPlayCards, outPlayCards);
+		lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
 }
 void OpenCVEntry::ShowPlay(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
 {
-	static std::vector<std::string> IdentityString = { "lord", "Farmer 1", "Farmer 2" };
-	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, {});
-	int p0X = 1280 / 2 - lastPlayCards.size() * 40;
-	int	p0Y = 100;
-
-	for (auto v : lastPlayCards) {
-		cv::Mat	copyContent = GetCardImage(v);
-		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
-		copyContent.copyTo(mat3);
-		p0X += 40;
-	}
-	if (outPlayCards.size() > 0) {
-		p0X = 1280 / 2 - (outPlayCards.size() - 1) * 40;
-		p0Y = 350;
-		for (auto v : outPlayCards) {
-			cv::Mat	copyContent = GetCardImage(v);
-			auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
-			copyContent.copyTo(mat3);
-			p0X += 40;
-		}
-	}
-	else {
-		cv::putText(mBack, "can not take", CvPoint(1280 / 2 - 100, 400.0), cv::FONT_HERSHEY_PLAIN, 2.0, cvScalar(255, 128, 0, 192));
-	}
-
-	cv::putText(mBack, "Last Player:" + IdentityString[lastIdentity], CvPoint(450, 60), cv::FONT_HERSHEY_PLAIN, 1.5, cvScalar(255, 255, 255, 255));
-	auto getColor = [playerIdentity](int i) {
-		return i == playerIdentity ? cvScalar(32, 255, 32, 255) : cvScalar(32, 255, 255, 255);
-	};
-	cv::putText(mBack, IdentityString[0], CvPoint(1280 / 2, 700), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(0));
-	cv::putText(mBack, IdentityString[1], CvPoint(1280 - 140, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(1));
-	cv::putText(mBack, IdentityString[2], CvPoint(0, 40), cv::FONT_HERSHEY_PLAIN, 1.5, getColor(2));
-
+	auto mBack = showPlayInternal(PlayerCards0, PlayerCards1, PlayerCards2, lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
-	imshow("play card", mBack);
+	cv::imshow("play card", mBack);
+}
+void OpenCVEntry::WritePlay(cv::String name, CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
+{
+	auto mBack = showPlayInternal(PlayerCards0, PlayerCards1, PlayerCards2, lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
+	cv::imwrite(name, mBack);
 }
 void OpenCVEntry::Wait(int delay)
 {

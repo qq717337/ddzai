@@ -24,17 +24,17 @@ protected:
 	std::unique_ptr<PlayStrategyHandle>m_handlerTwoStepPlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerAvoidOtherWinPlay;
 
-	std::unique_ptr<PlayStrategyHandle>m_handlerCanTake;
+	std::unique_ptr<PlayStrategyHandle>m_handlerAvailableTake;
+	std::unique_ptr<PlayStrategyHandle>m_handlerBoomTake;
 	std::unique_ptr<PlayStrategyHandle>m_handlerOptimiumTake;
-	//检测两部可以走完的情况下是否可以压死获取胜利
-	std::unique_ptr<PlayStrategyHandle>m_handlerCheckTwoStepWinTake;
 public:
 	virtual void Init();
 	virtual CardStyle Play() = 0;
 	virtual CardStyle Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle) = 0;
 	virtual bool OtherCanTake(const CardStyle& style)const = 0;
 
-	virtual bool IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const = 0;
+	virtual bool IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2 = nullptr) const = 0;
+
 	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle() = 0;
 	virtual EIdentity::EIdentity_ Identity()const = 0;
 	const CardStyle& GetLastCardStyle()const;

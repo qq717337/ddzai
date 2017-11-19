@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest_Split
@@ -71,45 +70,126 @@ namespace UnitTest_Split
 			//auto s = cards->ToString();
 			//Logger::WriteMessage(s.c_str());
 			MinStepSplitStrategy strategy(std::make_shared<HandCards>(std::vector<uint8_t>{0x33, 0x44, 0x15, 0x45,
-				0x26, 0x46, 0x37, 0x47, 0x18, 0x38, 0x49, 0x1a, 0x1b, 0x2c, 0x2d, 0x4d, 0x3d, 0x1d ,0x1,0x2}, true));
+				0x26, 0x46, 0x37, 0x47, 0x18, 0x38, 0x49, 0x1a, 0x1b, 0x2c, 0x2d, 0x4d, 0x3d, 0x1d, 0x1, 0x2}, true));
 			strategy.Split();
 			auto&minStepSplitType = strategy.MinStepSplit();
 		}
 		TEST_METHOD(TestGameTable)
 		{
-			CardSet set;
-			set.DealIndex(0, CardIndex_2, 2);
-			set.DealIndex(0, CardIndex_LargeJoker, 1);
-			set.DealIndex(0, CardIndex_SmallJoker, 1);
-			set.DealIndex(0, CardIndex_4, 1);
-			set.DealChain(0, CardIndex_3, CardIndex_6,2);
-			//set.DealIndex(0, CardIndex_4, 2);
-			set.DealIndex(2, CardIndex_7, 2);
-			set.DealIndex(1, CardIndex_A, 1);
-			set.DealIndex(1, CardIndex_9, 1);
-			set.DealIndex(1, CardIndex_J, 3);
-			set.DealIndex(2, CardIndex_Q, 1);
-			set.DealIndex(2, CardIndex_K, 2);
-			set.Update();
+			CardSet* opt=new CardSet();
+			opt->PlayerCardSet[0] = new HandCards(CardVector{ 0x4b,0x2d,0x4d,0x2f });
+			opt->PlayerCardSet[1] = new HandCards(CardVector{ 0x24,0x44,0x25,0x26,0x27,0x37,0x48,0x19,0x29,0x39,0x1f });
+			opt->PlayerCardSet[2] = new HandCards(CardVector{ 0x13,0x23,0x33,0x43,0x14,0x16,0x46,0x17,0x18,0x28,0x1a,0x3a,0x4a,0x2b,0x3b });
+
 			//auto& extraCards = set.RandomFillLeft();
-			
-			GameTable table(set);
-			CardVector lastPlayCard({ 0x16,0x36,});
+
+			GameTable table(*opt);
+			CardVector lastPlayCard({ 0x1e,0x2e,0x3e,0x4e });
 			//CardStyle lastPlayStyle = CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5);
 			CardStyle lastPlayStyle = CardStyle::FromCardsValue(lastPlayCard);
-			EIdentity::EIdentity_ lastPlayIdentity = EIdentity::Farmer1;
-			EIdentity::EIdentity_ curPlayIdentity = EIdentity::Farmer2;
-			auto thisStyle= table.Take(curPlayIdentity, lastPlayIdentity, lastPlayStyle);
+			EIdentity::EIdentity_ lastPlayIdentity = EIdentity::Lord;
+			EIdentity::EIdentity_ curPlayIdentity = EIdentity::Farmer1;
+			auto thisStyle = table.Take(curPlayIdentity, lastPlayIdentity, lastPlayStyle);
 			auto cards = table.GetHandCard(curPlayIdentity)->GetCardsByStyle(thisStyle);
 
 			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
 			cv->ShowPlay(
 				table.GetHandCard(EIdentity::Lord)->ToCardValues(),
-				table.GetHandCard(EIdentity::Farmer1)->ToCardValues(), 
+				table.GetHandCard(EIdentity::Farmer1)->ToCardValues(),
 				table.GetHandCard(EIdentity::Farmer2)->ToCardValues()
 				, lastPlayIdentity, curPlayIdentity, lastPlayCard, cards);
 			//cv->ShowCard(opt);
 			cv->Wait(30000);
+		}
+		EIdentity::EIdentity_ NextPlayerIdentity(EIdentity::EIdentity_ identity) {
+			switch (identity) {
+			case EIdentity::Lord:
+				return EIdentity::Farmer1;
+			case EIdentity::Farmer1:
+				return EIdentity::Farmer2;
+			case EIdentity::Farmer2:
+				return EIdentity::Lord;
+			}
+			return EIdentity::Lord;;
+		}
+		TEST_METHOD(TestNewGame)
+		{
+			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
+			SmoothCard *opt = new SmoothCard();
+			opt->Optimized(nullptr, 3, 3);
+			std::string s = opt->ToString2();
+			Logger::WriteMessage(s.c_str());
+			opt->PlayerCardSet[0]->AddCards(opt->ExtraCard);
+			opt->PlayerCardSet[0]->UpdateByFlag();
+			opt->PlayerCardSet[1]->UpdateByFlag();
+			opt->PlayerCardSet[2]->UpdateByFlag();
+			//CardSet *opt=new CardSet();
+			//opt->PlayerCardSet[0] = new HandCards(CardVector{ 0x34,0x15,0x35,0x45,0x36,0x47,0x38,0x49,0x2a,0x1b,0x4b,0x2d,0x4d,0x1e,0x2e,0x3e,0x4e,0x2f,0x1,0x2 });
+			//opt->PlayerCardSet[1] = new HandCards(CardVector{ 0x24,0x44,0x25,0x26,0x27,0x37,0x48,0x19,0x29,0x39,0x1c,0x2c,0x3c,0x4c,0x1d,0x3d,0x1f });
+			//opt->PlayerCardSet[2] = new HandCards(CardVector{ 0x13,0x23,0x33,0x43,0x14,0x16,0x46,0x17,0x18,0x28,0x1a,0x3a,0x4a,0x2b,0x3b,0x3f,0x4f });
+			//
+			//cv->ShowCard(opt);
+			GameTable table(*opt);
+			EIdentity::EIdentity_ lastPlayIdentity = EIdentity::Lord;
+			EIdentity::EIdentity_ currentIdentity = EIdentity::Lord;
+			CardVector lastPlayCardsValue;
+			CardStyle lastPlayStyle = CardStyle::FromCardsValue(lastPlayCardsValue);
+			int step = 0;
+			while (true) {
+				step++;
+				if (step > 50) {
+					Logger::WriteMessage("一般不会出现这个多的次数，哪里死循环了");
+					return;
+				}
+
+				for (int i = 0; i < 3; i++) {
+
+				const_cast<HandCards*>(table.GetHandCard(EIdentity::Lord))->UpdateByFlag();
+				const_cast<HandCards*>(table.GetHandCard(EIdentity::Farmer1))->ToCardValues();
+				const_cast<HandCards*>(table.GetHandCard(EIdentity::Farmer2))->ToCardValues();
+				Logger::WriteMessage(table.GetHandCard(EIdentity::EIdentity_(i))->ToString().c_str());
+					if (table.CardCount(EIdentity::EIdentity_(i)) == 0) {
+						Logger::WriteMessage((IdentityNameTable[i] + "获得胜利").c_str());
+						return;
+					}
+				}
+				auto currentPlayerHandCards = table.GetHandCard(currentIdentity);
+				HandCards a(currentPlayerHandCards->Data());
+				CardStyle r;
+				if (currentIdentity == lastPlayIdentity) {
+					r = table.Play(currentIdentity);
+					Logger::WriteMessage(("Play:"+IdentityNameTable[lastPlayIdentity]+":"+IdentityNameTable[currentIdentity]).c_str());
+					Logger::WriteMessage(r.ToString().c_str());
+				}
+				else {
+					r = table.Take(currentIdentity, lastPlayIdentity, lastPlayStyle);
+					Logger::WriteMessage(("Take:" + IdentityNameTable[lastPlayIdentity] + ":" + IdentityNameTable[currentIdentity]).c_str());
+					Logger::WriteMessage(r.ToString().c_str());
+				}
+
+				auto outCards = a.GetCardsByStyle(r); 
+				std::ostringstream ostr;
+				ostr <<  "D:\\CommondCode\\DDZ_AI\\DDZ_AI\\OutputImage\\"<<step<<".png";
+
+				cv->WritePlay(
+					ostr.str(),
+					table.GetHandCard(EIdentity::Lord)->ToCardValues(),
+					table.GetHandCard(EIdentity::Farmer1)->ToCardValues(),
+					table.GetHandCard(EIdentity::Farmer2)->ToCardValues(), 
+					lastPlayIdentity, currentIdentity, lastPlayCardsValue, outCards);
+
+				if (r.Valid()){ //如果不是要不起，那么更新最后出牌风格为我接的，如果是我出的，然后再次是我出
+					lastPlayIdentity = currentIdentity;
+					lastPlayStyle = r;
+					auto lastHandCard = table.GetHandCard(lastPlayIdentity);
+					lastPlayCardsValue = outCards;
+					//currentPlayerHandCards.SubCardStyle(r)
+				}
+				currentIdentity = NextPlayerIdentity(currentIdentity);
+			}
+
+			//cv->ShowCard(opt);
+			cv->Wait(-1);
 		}
 	};
 }

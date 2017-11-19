@@ -23,7 +23,7 @@ public:
 	void RemoveJokerBoom();
 	virtual void UpdateByFlag();
 
-	virtual std::string ToString();
+	virtual std::string ToString()const;
 	virtual void Reset(bool createNewCard)override;
 	virtual size_t Size() const override;
 

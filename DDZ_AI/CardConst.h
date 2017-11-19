@@ -32,6 +32,8 @@ enum ECardIndex {
 };
 const int CardIndex_JokerBoom = CardIndex_SmallJoker;
 extern std::string CardNameTable[CARD_VALUE_LEN];
+extern std::string IdentityNameTable[3];
+
 namespace ECardStyle {
 	enum ECardStyle_ {
 		Invalid = 0,
@@ -51,8 +53,8 @@ namespace ECardStyle {
 }
 namespace ESituationSafeLevel {
 	enum ESituationSafeLevel_ {
-		AllPlayerMinStepGreater2,
-		AllPlayerMinStepWithOutBoomGreater2,
-		AllPlayerBoomGreater2,
+		AllPlayerMinStepGreater,
+		AllPlayerMinStepWithOutBoomGreater,
+		AllPlayerBoomCountLess,
 	};
 }

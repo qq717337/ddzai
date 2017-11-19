@@ -10,6 +10,9 @@ void SplitStrategy::sortSplitType()
 
 void SplitStrategy::Reset()
 {
+	m_hasSplit = false;
+	m_hasGetAvailable = false;
+	m_hasGetOptimium = false;
 	m_splitTypeVector.clear();
 	m_splitMinStepVector.clear();
 	m_optimiumStyle.clear();
@@ -18,27 +21,26 @@ void SplitStrategy::Reset()
 
 const SplitType & SplitStrategy::MinStepSplit() const
 {
+	if (!m_hasSplit) {
+		const_cast<SplitStrategy*>(this)->Split();
+	}
 	//VECTOR_MIN_INDEX(index, m_splitMinStepVector);
 	return m_splitTypeVector[0];
 }
 
 void SplitStrategy::Split()
 {
-	SplitIsolate();
-	SplitBoom();
-	SplitDoubleChain();
-	SplitTripleChain();
-	SplitSingleChain();
-	SplitTriple();
-	SplitIsolate();
+	m_hasSplit = true;
 }
 
 void SplitStrategy::OptimiumTake(const CardStyle & style)
 {
+	m_hasGetOptimium = true;
 }
 
 void SplitStrategy::AvailableTake(const CardStyle & style)
 {
+	m_hasGetAvailable = true;
 }
 
 std::vector<const SplitType*> SplitStrategy::GetSplitType(int moreStepThanMinStep)

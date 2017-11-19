@@ -154,6 +154,13 @@ void HandCardsFlag::AddCard(uint8_t cardValue)
 	Flags[index][color] = 1;
 }
 
+void HandCardsFlag::AddCards(CardVector cardValues)
+{
+	for (auto v : cardValues) {
+		AddCard(v);
+	}
+}
+
 void HandCardsFlag::Reset(bool createNewCard)
 {
 	int i, j = 0;

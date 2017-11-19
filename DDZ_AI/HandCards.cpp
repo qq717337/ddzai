@@ -89,7 +89,7 @@ void HandCards::UpdateByFlag()
 	CardCount[CardIndex_LargeJoker] = Flags[CardIndex_LargeJoker][0];
 }
 
-std::string HandCards::ToString()
+std::string HandCards::ToString()const
 {
 	std::ostringstream ostr;
 	ostr << "{";

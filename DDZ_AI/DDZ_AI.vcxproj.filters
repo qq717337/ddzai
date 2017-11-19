@@ -159,9 +159,6 @@
     <ClInclude Include="PriorityTakeSplitStrategy.h">
       <Filter>头文件\Robot\Split</Filter>
     </ClInclude>
-    <ClInclude Include="HandleTwoStepWinTake.h">
-      <Filter>头文件\Robot\Handle</Filter>
-    </ClInclude>
     <ClInclude Include="HandleBoomTake.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
@@ -265,9 +262,6 @@
     </ClCompile>
     <ClCompile Include="PriorityTakeSplitStrategy.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="HandleTwoStepWinTake.cpp">
-      <Filter>源文件\Robot</Filter>
     </ClCompile>
     <ClCompile Include="HandleAvoidOtherWinPlay.cpp">
       <Filter>源文件\Robot</Filter>

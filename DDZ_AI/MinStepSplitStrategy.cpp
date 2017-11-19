@@ -5,6 +5,8 @@
 
 void MinStepSplitStrategy::Split()
 {
+	SplitStrategy::Split();
+
 	m_splitTypeVector.clear();
 	m_splitMinStepVector.clear();
 	//void(MinStepSplitStrategy::*ptrnonstatic)(std::function<void(void)>) = &MinStepSplitStrategy::IterSplitHandleFunc;
@@ -27,6 +29,10 @@ void MinStepSplitStrategy::Split()
 
 void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 {
+	SplitStrategy::OptimiumTake(style);
+	m_optimiumBoomStyle.clear();
+	m_optimiumStyle.clear();
+
 	auto availableSplitType = GetSplitType(2);
 	auto & booms = availableSplitType[0]->GetBoom();
 	if (style.Style == ECardStyle::Boom) {
@@ -168,6 +174,9 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 
 void MinStepSplitStrategy::AvailableTake(const CardStyle & style)
 {
+	SplitStrategy::AvailableTake(style);
+	m_availableStyle.clear();
+
 	HandCards*	handCards = m_cards.get();
 
 	if (style == CardStyle::JokerBoom) {

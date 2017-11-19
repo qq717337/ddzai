@@ -36,7 +36,11 @@ CardStyle GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ 
 	if (m_lastCardStyle == CardStyle::JokerBoom) {
 		return CardStyle::Invalid;
 	}
-	return m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
+	auto playStyle = m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
+	auto &handCards = const_cast<HandCards&>(m_playerStrategy[identity]->GetHandCards());
+	handCards.RemoveCard(playStyle);
+	handCards.UpdateByFlag();
+	return playStyle;
 }
 
 size_t GameTable::CardCount(EIdentity::EIdentity_ identity)const

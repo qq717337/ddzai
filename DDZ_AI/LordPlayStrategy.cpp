@@ -31,22 +31,21 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	CardStyle ret(CardStyle::Invalid);
 
 	std::vector<CardStyle> x;
-	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle,true, x);	
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {
 		return x[0];
 	}
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		return ret;
 	}
-	if (m_handlerCheckTwoStepWinTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+	//if (m_handlerOptimiumTake->Handle(this, m_keepBigSplitStrategy.get(), ret)) {//有保留大牌可接牌的情况
+	//	return ret;
+	//}
+	if (m_handlerBoomTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
 		return ret;
 	}
-	if (m_handlerOptimiumTake->Handle(this, m_keepBigSplitStrategy.get(), ret)) {//有保留大牌可接牌的情况
+	if (m_handlerAvailableTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//以上不符合 但是可以接牌，进行后续判断
 		return ret;
-	}
-
-	if (m_handlerCanTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//以上不符合 但是可以接牌，进行后续判断
-
 	}
 	//都不符合就选择不接
 	return ret;
@@ -57,15 +56,20 @@ bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 	return m_table->GetHandCard(EIdentity::Farmer1)->CanTake(style) || m_table->GetHandCard(EIdentity::Farmer2)->CanTake(style);
 }
 
-bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
+bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const
 {
+	const SplitType& f1_minSplit = m_table->GetPlayStrategy(EIdentity::Farmer1)->m_minStepSplitStrategy->MinStepSplit();
+	const SplitType& f2_minSplit = m_table->GetPlayStrategy(EIdentity::Farmer2)->m_minStepSplitStrategy->MinStepSplit();
 	switch (level)
 	{
-	case ESituationSafeLevel::AllPlayerMinStepGreater2:
+	case ESituationSafeLevel::AllPlayerMinStepGreater:
+		return f1_minSplit.MinStepCount(false) > param1 && f2_minSplit.MinStepCount(false) > param1;
 		break;
-	case ESituationSafeLevel::AllPlayerMinStepWithOutBoomGreater2:
+	case ESituationSafeLevel::AllPlayerMinStepWithOutBoomGreater:
+		return f1_minSplit.MinStepCount(true) > param1 && f2_minSplit.MinStepCount(true) > param1;
 		break;
-	case ESituationSafeLevel::AllPlayerBoomGreater2:
+	case ESituationSafeLevel::AllPlayerBoomCountLess:
+		return f1_minSplit.GetBoom().size() + f2_minSplit.GetBoom().size() < param1;
 		break;
 	default:
 		break;

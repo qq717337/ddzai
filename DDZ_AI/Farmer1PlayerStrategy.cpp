@@ -11,7 +11,10 @@ CardStyle Farmer1PlayerStrategy::takeLord(const CardStyle & lastStyle)
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		return ret;
 	}
-	if (m_handlerCanTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+	if (m_handlerBoomTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		return ret;
+	}
+	if (m_handlerAvailableTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
 		return ret;
 	}
 	return CardStyle::Invalid;
@@ -93,7 +96,7 @@ CardStyle Farmer1PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
 
 	std::vector<CardStyle> x;
-	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle,true, x);
+	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {
 		return x[0];
 	}
@@ -110,7 +113,7 @@ bool Farmer1PlayerStrategy::OtherCanTake(const CardStyle & style) const
 	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
 }
 
-bool Farmer1PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level) const
+bool Farmer1PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const
 {
 	return false;
 }

@@ -133,7 +133,7 @@ SplitStrategyBase::~SplitStrategyBase()
 void SplitStrategyBase::SplitIsolate() {
 	std::vector<CardVector > isolateCards = m_cards->IsolateCards(true);
 	if (isolateCards[CardIndex_SmallJoker][0] == 1 && isolateCards[CardIndex_LargeJoker][0] == 1) {
-		m_splitType->AddBoom(CardIndex_LargeJoker);
+		m_splitType->AddBoom(CardIndex_JokerBoom);
 	}
 	else {
 		if (isolateCards[CardIndex_SmallJoker][0] > 0) {

@@ -7,7 +7,7 @@
 #include "HandleLastShotPlay.h"
 #include "HandleAvoidOtherWinPlay.h"
 #include "HandleTwoStepPlay.h"
-#include "HandleTwoStepWinTake.h"
+#include "HandleBoomTake.h"
 #include "GameTable.h"
 const CardStyle & PlayStrategyBase::GetLastCardStyle() const
 {
@@ -79,6 +79,7 @@ PlayStrategyBase::PlayStrategyBase(int identity, const CardVector & cardsValue, 
 {
 	m_table = table;
 	m_handCards = std::make_shared<HandCards>(cardsValue);
+	m_minStepSplitStrategy = std::make_shared<MinStepSplitStrategy>(m_handCards);
 	//不可以在父类的构造函数中调用子类的虚方法
 	//尝试在此处调用Init函数会报链接错误
 }
@@ -117,7 +118,7 @@ void PlayStrategyBase::Init()
 	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
 	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
 
-	m_handlerCanTake = std::make_unique<HandleCanTake>();
+	m_handlerAvailableTake = std::make_unique<HandleCanTake>();
 	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
-	m_handlerCheckTwoStepWinTake = std::make_unique<HandleTwoStepWinTake>();
+	m_handlerBoomTake = std::make_unique<HandleBoomTake>();
 }

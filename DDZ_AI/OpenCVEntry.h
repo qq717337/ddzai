@@ -11,7 +11,9 @@ class OpenCVEntry
 private:
 	std::wstring m_cardPath;
 	std::map<std::string, cv::Mat>image_map;
+	
 	cv::Mat showCardInternal(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards);
+	cv::Mat showPlayInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 public:
 	OpenCVEntry(const wchar_t* cardImagePath);
 	std::string GetCardName(uint8_t cardValue);
@@ -24,6 +26,8 @@ public:
 	
 	void ShowPlay(CardSet* cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 	void ShowPlay(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2,int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
+	void WritePlay(cv::String name, CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
+
 	void Wait(int delay);
 	void DestroyAllWindow();
 	~OpenCVEntry();
