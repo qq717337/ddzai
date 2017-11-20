@@ -3,6 +3,10 @@
 #include<cstdlib>
 #include <cstdarg>
 #include<cstring>
+#include <log4cpp/Category.hh>
+#include <log4cpp/Appender.hh>
+#include <log4cpp/FileAppender.hh>
+#include <log4cpp/OstreamAppender.hh>
 
 #ifndef		CHECK
 #define CHECK(condition)								\
@@ -20,7 +24,6 @@ enum class LogLevel :int64_t {
 	Info = 1,
 	Debug = 2,
 };
-
 class Log {
 private:
 	static void Write(LogLevel level, const char* level_str, const char* format, va_list val) {
@@ -34,8 +37,19 @@ private:
 	// a trick to use static variable in header file. 
 	// May be not good, but avoid to use an additional cpp file
 	static LogLevel& GetLevel() { static LogLevel level = LogLevel::Debug; return level; }
-
+	//static getAppender 
+	// static log4cpp::Appender* appender = new log4cpp::FileAppender("default", "D:\\CommondCode\\DDZ_AI\Log\\1.log");
 public:
+	static void InfoF(const std::string& s) {
+		static log4cpp::Appender* syslogAppender = new log4cpp::OstreamAppender("syslogdummy", &std::cout);
+		static log4cpp::Appender* appender = new log4cpp::FileAppender("default", "D:\\CommondCode\\DDZ_AI\\Log\\1.log");
+		auto& root=log4cpp::Category::getRoot();
+		if (root.getAllAppenders().size() == 0) {
+			// root.addAppender(syslogAppender);
+			root.addAppender(appender);
+		}
+		root.info(s);
+	}
 	static void ResetLogLevel(LogLevel level) {
 		GetLevel() = level;
 	}

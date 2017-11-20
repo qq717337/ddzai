@@ -21,8 +21,8 @@ bool HandleBoomTake::Handle(PlayStrategyBase * playStrategy, SplitStrategy * spl
 		}
 	}
 	if (!bestBoom.Valid()) {
-		const HandCards& cards = playStrategy->GetHandCards();
-		auto booms = cards.AvailableBoom();
+		const HandCards* cards = playStrategy->GetHandCards();
+		auto booms = cards->AvailableBoom();
 		if (booms.size() > 0) {
 			bestBoom = CardStyle(ECardStyle::Boom, booms[0]);
 		}

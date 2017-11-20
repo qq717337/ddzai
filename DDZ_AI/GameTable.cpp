@@ -2,7 +2,7 @@
 #include "GameTable.h"
 
 
-GameTable::GameTable(const CardSet& cardSet)
+GameTable::GameTable(const CardSet& cardSet):debug_step(0)
 {
 	LordPlayStrategy* lordStrategy = new LordPlayStrategy(cardSet.PlayerCardSet[0]->Data(), this);
 	Farmer1PlayerStrategy*farmer1Strategy = new Farmer1PlayerStrategy(cardSet.PlayerCardSet[1]->Data(), this);
@@ -22,10 +22,6 @@ GameTable::~GameTable()
 CardStyle GameTable::Play(EIdentity::EIdentity_ identity)
 {
 	auto playStyle = m_playerStrategy[identity]->Play();
-	auto &handCards = const_cast<HandCards&>(m_playerStrategy[identity]->GetHandCards());
-	handCards.RemoveCard(playStyle);
-	handCards.UpdateByFlag();
-	int size = handCards.Size();
 	return playStyle;
 }
 
@@ -37,16 +33,13 @@ CardStyle GameTable::Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ 
 		return CardStyle::Invalid;
 	}
 	auto playStyle = m_playerStrategy[identity]->Take(lastIdentity, lastStyle);
-	auto &handCards = const_cast<HandCards&>(m_playerStrategy[identity]->GetHandCards());
-	handCards.RemoveCard(playStyle);
-	handCards.UpdateByFlag();
 	return playStyle;
 }
 
 size_t GameTable::CardCount(EIdentity::EIdentity_ identity)const
 {
-	auto& handCards = m_playerStrategy[identity]->GetHandCards();
-	return handCards.Size();
+	auto handCards = m_playerStrategy[identity]->GetHandCards();
+	return handCards->Size();
 }
 
 bool GameTable::IsStyleOtherCanNotTake(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)const
@@ -62,7 +55,11 @@ bool GameTable::IsStyleOtherCanNotTake(EIdentity::EIdentity_ lastIdentity, const
 
 const HandCards* GameTable::GetHandCard(EIdentity::EIdentity_ identity) const
 {
-	return &m_playerStrategy[identity]->GetHandCards();
+	return m_playerStrategy[identity]->GetHandCards();
+}
+HandCards* GameTable::GetHandCard(EIdentity::EIdentity_ identity)
+{
+	return const_cast<HandCards*>(m_playerStrategy[identity]->GetHandCards());
 }
 const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const
 {

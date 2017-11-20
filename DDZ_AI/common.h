@@ -392,26 +392,6 @@ namespace Common {
 		return 0;
 	}
 
-	/*!
-	* \brief Do inplace softmax transformaton on p_rec
-	* \param p_rec The input/output vector of the values.
-	*/
-	inline void Softmax(std::vector<double>* p_rec) {
-		std::vector<double> &rec = *p_rec;
-		double wmax = rec[0];
-		for (size_t i = 1; i < rec.size(); ++i) {
-			wmax = std::max(rec[i], wmax);
-		}
-		double wsum = 0.0f;
-		for (size_t i = 0; i < rec.size(); ++i) {
-			rec[i] = std::exp(rec[i] - wmax);
-			wsum += rec[i];
-		}
-		for (size_t i = 0; i < rec.size(); ++i) {
-			rec[i] /= static_cast<double>(wsum);
-		}
-	}
-
 	template<typename T1, typename T2>
 	inline void SortForPair(std::vector<T1>& keys, std::vector<T2>& values, size_t start, bool is_reverse = false) {
 		std::vector<std::pair<T1, T2>> arr;

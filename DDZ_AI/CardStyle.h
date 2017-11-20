@@ -8,7 +8,7 @@
 class CardStyle
 {
 private:
-	std::string StyleString();
+	std::string StyleString()const;
 public:
 	int Style;
 	uint8_t StartValue;
@@ -22,7 +22,7 @@ public:
 	CardStyle(int style, uint8_t startValue, uint8_t endValue, const CardVector& extra);
 	CardStyle(int style, uint8_t startValue, const CardVector & extra);
 	CardStyle(int style, uint8_t startValue, uint8_t endValue, uint8_t extra);
-	int  GetCardsCount();
+	int  GetCardsCount()const;
 	CardStyle& operator=(const CardStyle& in);
 	bool operator==(const CardStyle& in)const;
 	bool operator!=(const CardStyle & in)const;
@@ -41,7 +41,7 @@ public:
 	static CardStyle TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector &extra);
 	static CardStyle FromCardsValue(const CardVector &cards);
 	int Compare(const CardStyle& other)const;
-	std::string  ToString();
+	std::string  ToString()const;
 	const static CardStyle Invalid ;
 	const static CardStyle JokerBoom;
 	inline int Length()const { return EndValue - StartValue + 1; }

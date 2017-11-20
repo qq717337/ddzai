@@ -18,6 +18,7 @@ bool PlayStrategyBase::CheckIfWin(const SplitStrategy * split, const CardStyle &
 	CardStyle r;
 	if (split->MinStepSplit().GetLastShotCardStyle(&r)) {
 		if (r.Compare(style) > 0) {
+			styleList.push_back(std::move(r));
 			return true;
 		}
 	}
@@ -113,7 +114,7 @@ PlayStrategyBase::~PlayStrategyBase()
 
 void PlayStrategyBase::Init()
 {
-	m_handlerMinStepPlay = std::make_unique<HandleMinValuePlay>();
+	m_handlerMinValuePlay = std::make_unique<HandleMinValuePlay>();
 	m_handlerLastShotPlay = std::make_unique<HandleLastShotPlay>();
 	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
 	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();

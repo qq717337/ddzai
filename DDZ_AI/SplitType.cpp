@@ -72,7 +72,7 @@ bool SplitType::GetLastShotCardStyle(CardStyle* ref) const {
 			}
 			else {
 				if (Double.size() * 2 == TripleChain[0].Length()) {
-					*ref = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector { Double[0], Double[0] });
+					*ref = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector { Double[0], Double[0] });
 					return true;
 				}
 				else {
@@ -337,7 +337,7 @@ CardStyle SplitType::GetTripleStyle()const {
 			r = CardStyle(ECardStyle::Triple_Two, Triple[0], Triple[0], { Double[0] });
 		}
 		else {
-			CardStyle(ECardStyle::Triple_Zero, Triple[0], Triple[0]);
+			r = CardStyle(ECardStyle::Triple_Zero, Triple[0], Triple[0]);
 		}
 	}
 	return r;

@@ -56,7 +56,7 @@ std::vector<const SplitType*> SplitStrategy::GetSplitType(int moreStepThanMinSte
 	return r;
 }
 
-SplitStrategy::SplitStrategy(std::shared_ptr<HandCards> cards) :SplitStrategyBase(cards)
+SplitStrategy::SplitStrategy(std::shared_ptr<HandCards> cards) :SplitStrategyBase(cards), m_hasSplit(false),m_hasGetOptimium(false),m_availableStyle(false)
 {
 }
 

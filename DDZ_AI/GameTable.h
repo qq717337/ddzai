@@ -28,7 +28,10 @@ public:
 	bool inline IsLordCanNotTake(const CardStyle& lastStyle)const { return IsStyleOtherCanNotTake(EIdentity::Farmer1, lastStyle); }
 
 	const HandCards* GetHandCard(EIdentity::EIdentity_ identity)const;
+	HandCards* GetHandCard(EIdentity::EIdentity_ identity);
 	const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const;
 	static const bool ShouldAskLord(const SplitType& splitInfo, const HandCards& cards);
+
+	int debug_step;
 };
 

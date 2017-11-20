@@ -19,7 +19,7 @@ protected:
 	std::shared_ptr<HandCards> m_handCards;
 
 	std::shared_ptr<SplitStrategy>m_minStepSplitStrategy;
-	std::unique_ptr<PlayStrategyHandle>m_handlerMinStepPlay;
+	std::unique_ptr<PlayStrategyHandle>m_handlerMinValuePlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerLastShotPlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerTwoStepPlay;
 	std::unique_ptr<PlayStrategyHandle>m_handlerAvoidOtherWinPlay;
@@ -49,8 +49,8 @@ public:
 	virtual void Reset(const  std::set<uint8_t, CardSetCompare>& cardsValue);
 
 	const PlayStrategyBase *GetStrategyPtr(EIdentity::EIdentity_ identity);
-	inline const HandCards& GetHandCards()const {
+	inline const HandCards* GetHandCards()const {
 		_ASSERT(m_handCards);
-		return *m_handCards.get();
+		return m_handCards.get();
 	}
 };

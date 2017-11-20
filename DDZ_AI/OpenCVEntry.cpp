@@ -134,32 +134,42 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 	//cv::waitKey(5000);
 	//cv::destroyAllWindows();
 }
-void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards)
+void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards, std::vector<TextInfo> infos)
 {
 	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, extraCards);
+	for (auto& info : infos) {
+		cv::putText(mBack, info.text, info.pos, 0, info.size, info.color);
+	}
 	cv::imshow("fs", mBack);
 }
-void OpenCVEntry::ShowCard(CardSet * cardSet)
+
+void OpenCVEntry::ShowCard(CardSet * cardSet, std::vector<TextInfo> infos)
 {
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
-	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard);
+	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard,infos);
 }
+
 void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
 {
 	ShowPlay(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(),
 		lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
 }
+
 void OpenCVEntry::ShowPlay(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
 {
 	auto mBack = showPlayInternal(PlayerCards0, PlayerCards1, PlayerCards2, lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
 	cv::imshow("play card", mBack);
 }
-void OpenCVEntry::WritePlay(cv::String name, CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
+void OpenCVEntry::WritePlay(cv::String name, CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards, std::vector<TextInfo> infos)
 {
 	auto mBack = showPlayInternal(PlayerCards0, PlayerCards1, PlayerCards2, lastIdentity, playerIdentity, lastPlayCards, outPlayCards);
+	for (auto& info : infos) {
+		cv::putText(mBack, info.text, info.pos, 0, info.size, info.color);
+	}
 	cv::imwrite(name, mBack);
 }
+
 void OpenCVEntry::Wait(int delay)
 {
 	cvWaitKey(delay);
@@ -169,7 +179,6 @@ void OpenCVEntry::DestroyAllWindow()
 {
 	cvDestroyAllWindows();
 }
-
 
 OpenCVEntry::~OpenCVEntry()
 {

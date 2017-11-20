@@ -114,7 +114,7 @@ CardVector CardStyle::Index() {
 }
 
 
-int  CardStyle::GetCardsCount() {
+int  CardStyle::GetCardsCount()const {
 	switch (Style) {
 	case ECardStyle::Single:
 		return 1;
@@ -269,8 +269,8 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 						}
 					}
 
-					auto	startValue = std::min(value.begin(), value.end());
-					auto 	endValue = std::max(value.begin(), value.end());
+					auto	startValue = std::min_element(value.begin(), value.end());
+					auto 	endValue = std::max_element(value.begin(), value.end());
 					return CardStyle(ECardStyle::Triple_Chain_One, *startValue, *endValue, extra);
 				}
 			}
@@ -307,8 +307,8 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				extra.push_back(kv.first);
 			}
 		}
-		auto	startValue = std::min(value.begin(), value.end());
-		auto 	endValue = std::max(value.begin(), value.end());
+		auto	startValue = std::min_element(value.begin(), value.end());
+		auto 	endValue = std::max_element(value.begin(), value.end());
 		return CardStyle(ECardStyle::Triple_Chain_One, *startValue, *endValue, extra);
 		if (tripleCount == 0) {
 			return CardStyle(ECardStyle::Double_Chain, indexCards[0], indexCards[9]);
@@ -342,8 +342,8 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				extra.push_back(kv.first);
 			}
 		}
-		auto	startValue = std::min(value.begin(), value.end());
-		auto 	endValue = std::max(value.begin(), value.end());
+		auto	startValue = std::min_element(value.begin(), value.end());
+		auto 	endValue = std::max_element(value.begin(), value.end());
 		if (tripleCount == 4) {
 			return CardStyle(ECardStyle::Triple_Chain_Zero, *startValue, *endValue);
 		}
@@ -377,8 +377,8 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				extra.push_back(kv.first);
 			}
 		}
-		auto	startValue = std::min(value.begin(), value.end());
-		auto 	endValue = std::max(value.begin(), value.end());
+		auto	startValue = std::min_element(value.begin(), value.end());
+		auto 	endValue = std::max_element(value.begin(), value.end());
 		if (tripleCount == 5) {
 			return CardStyle(ECardStyle::Triple_Chain_Zero, *startValue, *endValue);
 		}
@@ -508,7 +508,7 @@ int CardStyle::Compare(const CardStyle & style)const
 	}
 	return 0;
 }
-std::string CardStyle::StyleString() {
+std::string CardStyle::StyleString()const {
 	switch (Style)
 	{
 	case ECardStyle::Invalid:
@@ -542,7 +542,7 @@ std::string CardStyle::StyleString() {
 	}
 	return "";
 }
-std::string CardStyle::ToString() {
+std::string CardStyle::ToString()const {
 	if (Style == ECardStyle::Boom && StartValue > CardIndex_2) {
 		return "Joker Boom";
 	}

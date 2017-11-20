@@ -6,20 +6,24 @@
 
 CardStyle LordPlayStrategy::Play()
 {
-	CardStyle r;
+	CardStyle ret;
 	m_minStepSplitStrategy->Split();
-	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
-		return r;
+	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		DEBUG_LOG("HandleLastShotPlay  " + ret.ToString());
+		return ret;
 	}
-	if (m_handlerTwoStepPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
-		return r;
+	if (m_handlerTwoStepPlay->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		DEBUG_LOG("HandleTwoStepPlay  " + ret.ToString());
+		return ret;
 	}
-	if (m_handlerAvoidOtherWinPlay->Handle(this, m_minStepSplitStrategy.get(), r)) {
-		return r;
+	if (m_handlerAvoidOtherWinPlay->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		DEBUG_LOG("HandleAvoidOtherWinPlay  " + ret.ToString());
+		return ret;
 	}
 
-	m_handlerMinStepPlay->Handle(this, m_minStepSplitStrategy.get(), r);
-	return r;
+	m_handlerMinValuePlay->Handle(this, m_minStepSplitStrategy.get(), ret);
+	DEBUG_LOG("HandleMinValuePlay  " + ret.ToString());
+	return ret;
 }
 
 CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle)
@@ -33,20 +37,22 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {
+		DEBUG_LOG("CheckIfWin=true  "+lastStyle.ToString());
 		return x[0];
 	}
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
+		DEBUG_LOG("HandleOptimiumTake  "+ret.ToString());
 		return ret;
 	}
-	//if (m_handlerOptimiumTake->Handle(this, m_keepBigSplitStrategy.get(), ret)) {//有保留大牌可接牌的情况
-	//	return ret;
-	//}
 	if (m_handlerBoomTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
+		DEBUG_LOG("HandleBoomTake  " + ret.ToString());
 		return ret;
 	}
 	if (m_handlerAvailableTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//以上不符合 但是可以接牌，进行后续判断
+		DEBUG_LOG("HandleAvailableTake  " + ret.ToString());
 		return ret;
 	}
+	DEBUG_LOG("不接");
 	//都不符合就选择不接
 	return ret;
 }
@@ -102,12 +108,10 @@ EIdentity::EIdentity_ LordPlayStrategy::Identity()const
 
 LordPlayStrategy::LordPlayStrategy(const CardVector & cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	//m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
 LordPlayStrategy::LordPlayStrategy(const std::set<uint8_t, CardSetCompare>& cardsValue, GameTable* table) : PlayStrategyBase(Identity(), cardsValue, table)
 {
-	//m_handCards = std::make_shared<HandCards>(cardsValue);
 }
 
 void LordPlayStrategy::Init()
