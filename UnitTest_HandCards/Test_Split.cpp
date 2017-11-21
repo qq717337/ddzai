@@ -115,8 +115,8 @@ namespace UnitTest_Split
 		TEST_METHOD(TestNewGame)
 		{
 			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
-			SmoothCard *opt = new SmoothCard();
-			opt->Optimized(nullptr, 2, 2);
+			OptimizedCard *opt = new OptimizedCard();
+			opt->Optimized(nullptr);
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
 			opt->PlayerCardSet[0]->AddCards(opt->ExtraCard);
