@@ -46,4 +46,6 @@ public:
 	const static CardStyle JokerBoom;
 	inline int Length()const { return EndValue - StartValue + 1; }
 	inline bool Valid()const { return Style!=ECardStyle::Invalid; }
+	// «∑Ò «¥Û≈∆
+	bool IsBigCard()const;
 };

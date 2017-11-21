@@ -10,5 +10,9 @@ HandleCanTake::~HandleCanTake()
 
 bool HandleCanTake::Handle(PlayStrategyBase * playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
 {
-	return splitStrategy->GetAvailableStyle().size()>0;
+	auto& avStyle = splitStrategy->GetAvailableStyle();
+	if (avStyle.size() > 0) {
+		result = avStyle[0];
+		return true;
+	}
 }

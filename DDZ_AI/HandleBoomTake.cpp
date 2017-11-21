@@ -18,6 +18,7 @@ bool HandleBoomTake::Handle(PlayStrategyBase * playStrategy, SplitStrategy * spl
 		if (v.Style().Compare(lastStyle) > 0) {//找到了可以
 			bestBoom = v;
 			hasOptBoom = true;
+			break;
 		}
 	}
 	if (!bestBoom.Valid()) {

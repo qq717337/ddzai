@@ -34,6 +34,10 @@ CardStyle Farmer2PlayerStrategy::takeLord(const CardStyle & lastStyle)
 
 CardStyle Farmer2PlayerStrategy::takeFarmer(const CardStyle & lastStyle)
 {
+	if (lastStyle.IsBigCard()) {
+		return CardStyle::Invalid;
+	}
+
 	auto& optTakeStyle = m_minStepSplitStrategy->GetOptimiumStyle();
 	auto& optBoomTakeStyle = m_minStepSplitStrategy->GetOptimiumBoomStyle();
 	if (optTakeStyle.size() == 0 && optBoomTakeStyle.size() == 0) {

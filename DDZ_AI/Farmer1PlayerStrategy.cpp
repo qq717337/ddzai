@@ -26,6 +26,9 @@ CardStyle Farmer1PlayerStrategy::takeLord(const CardStyle & lastStyle)
 
 CardStyle Farmer1PlayerStrategy::takeFarmer(const CardStyle & lastStyle)
 {
+	if (lastStyle.IsBigCard()) {
+		return CardStyle::Invalid;
+	}
 	//因为Farmer2已经经过了地主要不起的情况，所以不需要再对其进行防止。需要防止的就是该玩家新出的牌会导致地主获胜
 	//不压的情况
 	//1.要不起

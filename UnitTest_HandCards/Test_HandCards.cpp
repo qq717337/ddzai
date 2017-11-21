@@ -50,9 +50,9 @@ namespace UnitTest_HandCards
 		}
 		TEST_METHOD(TestCardStyle)
 		{
-			uint8_t a[] = { 0x13,0x23,0x33,0x14,0x24,0x34 };
-			std::vector<uint8_t> x(a, a + 6);
-			CardStyle s = CardStyle::FromCardsValue(x);
+			CardVector a({0x28,0x16,0x18,0x36,0x1e,0x38,0x19,0x29,0x49,0x2e});
+			
+			CardStyle s = CardStyle::FromCardsValue(a);
 			Assert::AreEqual(s.StartValue, uint8_t(0));
 			Assert::AreEqual(s.EndValue, uint8_t(1));
 			Assert::AreEqual(s.Style, int(ECardStyle::Triple_Chain_Zero));

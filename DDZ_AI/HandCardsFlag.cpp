@@ -84,6 +84,8 @@ void HandCardsFlag::RemoveCard(uint8_t cardValue)
 void HandCardsFlag::RemoveCard(const CardStyle & style)
 {
 	switch (style.Style) {
+	case ECardStyle::Invalid:
+		return;
 	case ECardStyle::Single:
 		RemoveIndex(style.StartValue, 1);
 		break;
