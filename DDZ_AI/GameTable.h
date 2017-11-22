@@ -29,6 +29,7 @@ public:
 
 	const HandCards* GetHandCard(EIdentity::EIdentity_ identity)const;
 	HandCards* GetHandCard(EIdentity::EIdentity_ identity);
+	uint8_t BiggestCardValue(EIdentity::EIdentity_ identity, int count);
 	const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const;
 	static const bool ShouldAskLord(const SplitType& splitInfo, const HandCards& cards);
 

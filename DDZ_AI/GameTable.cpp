@@ -61,6 +61,38 @@ HandCards* GameTable::GetHandCard(EIdentity::EIdentity_ identity)
 {
 	return const_cast<HandCards*>(m_playerStrategy[identity]->GetHandCards());
 }
+uint8_t GameTable::BiggestCardValue(EIdentity::EIdentity_ identity,int count)
+{
+	if (identity == EIdentity::Lord) {
+		int max = 0;
+		auto f1_cards = GetHandCard(EIdentity::Farmer1);
+		for (int i = CardIndex_LargeJoker; i >= CardIndex_3; --i) {
+			auto i_count = f1_cards->Count(i);
+			if (i_count >= count) {
+				max = i;
+				break;
+			}
+		}
+		auto f2_cards = GetHandCard(EIdentity::Farmer2);
+		for (int i = CardIndex_LargeJoker; i >= CardIndex_3; --i) {
+			auto i_count = f2_cards->Count(i);
+			if (i_count >= count && i>=max) {
+				return i;
+			}
+		}
+		return max;
+	}
+	else {
+		auto lord_cards = GetHandCard(EIdentity::Lord);
+		for (int i = CardIndex_LargeJoker; i >= CardIndex_3; --i) {
+			auto i_count=lord_cards->Count(i);
+			if (i_count >= count) {
+				return i;
+			}
+		}
+	}
+	return 0;
+}
 const PlayStrategyBase* GameTable::GetPlayStrategy(EIdentity::EIdentity_ identity) const
 {
 	return m_playerStrategy[identity].get();

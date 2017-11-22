@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "HandleCanOptimiumTake.h"
+#include "HandleOptimiumTake.h"
 #include "SplitStrategy.h"
 #include "PlayStrategyBase.h"
 
-HandleCanOptimiumTake::~HandleCanOptimiumTake()
+HandleOptimiumTake::~HandleOptimiumTake()
 {
 }
 
-bool HandleCanOptimiumTake::Handle(PlayStrategyBase * playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
+bool HandleOptimiumTake::Handle(PlayStrategyBase * playStrategy, SplitStrategy * splitStrategy, CardStyle & result)
 {
 	if (playStrategy->GetLastCardStyle().Style == ECardStyle::Boom) {
 		return false;

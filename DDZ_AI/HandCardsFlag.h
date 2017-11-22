@@ -99,6 +99,7 @@ public:
 	inline CardVector  AvailableTripleChain(bool isBigger, uint8_t cardStartIndex, int len)const {
 		return AvailableChain(isBigger, cardStartIndex, len, 3);
 	}
+	inline uint8_t* Flag_Ptr() {return &Flags[0][0] ; }
 #pragma endregion
 
 };

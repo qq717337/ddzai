@@ -15,9 +15,10 @@ private:
 	std::set<uint8_t, CardSetCompare> CardsSet;
 public:
 	HandCards();
-	HandCards(const HandCards&) = delete;
-	HandCards(const CardVector &  cardValues, bool updateSet = true); 
+	HandCards(HandCardsFlag& handCardsFlag);
+	HandCards(const CardVector& cardValues, bool updateSet = true); 
 	HandCards(const std::set<uint8_t, CardSetCompare>& cardValues, bool updateSet = true);
+
 	~HandCards();
 	bool HasCard(uint8_t cardValue);
 	void RemoveJokerBoom();

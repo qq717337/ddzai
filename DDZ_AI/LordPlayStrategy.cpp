@@ -33,6 +33,9 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
 	//先判断使用哪一种拆分策略，或者一开始创建多个SplitStrategy，然后再传入不同的Handle里面进行处理
 	CardStyle ret(CardStyle::Invalid);
+	if (m_minStepSplitStrategy->GetAvailableStyle().size() == 0) {
+		return ret;
+	}
 
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
@@ -60,6 +63,11 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 {
 	return m_table->GetHandCard(EIdentity::Farmer1)->CanTake(style) || m_table->GetHandCard(EIdentity::Farmer2)->CanTake(style);
+}
+
+bool LordPlayStrategy::OtherBiggestCardValue(int compareCount) const
+{
+	return m_table->BiggestCardValue(EIdentity::Farmer1,compareCount);
 }
 
 bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const

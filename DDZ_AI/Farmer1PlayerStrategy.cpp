@@ -110,7 +110,9 @@ CardStyle Farmer1PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 	m_minStepSplitStrategy->Split();
 	m_minStepSplitStrategy->OptimiumTake(lastStyle);
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
-
+	if (m_minStepSplitStrategy->GetAvailableStyle().size() == 0) {
+		return CardStyle::Invalid;
+	}
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {
@@ -128,6 +130,11 @@ CardStyle Farmer1PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 bool Farmer1PlayerStrategy::OtherCanTake(const CardStyle & style) const
 {
 	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
+}
+
+bool Farmer1PlayerStrategy::OtherBiggestCardValue(int compareCount) const
+{
+	return m_table->BiggestCardValue(EIdentity::Lord, compareCount);
 }
 
 bool Farmer1PlayerStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const

@@ -52,6 +52,7 @@ public:
 	virtual void Reset();
 	SplitType();
 	~SplitType();
+	SplitType(const SplitType& rhs);
 	SplitType&operator=(const SplitType& rhs);
 	inline bool SplitType::operator==(const SplitType & rhs) const
 	{

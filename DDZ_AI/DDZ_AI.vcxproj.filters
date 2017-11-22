@@ -144,12 +144,6 @@
     <ClInclude Include="HandleTwoStepPlay.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
-    <ClInclude Include="HandleCanTake.h">
-      <Filter>头文件\Robot\Handle</Filter>
-    </ClInclude>
-    <ClInclude Include="HandleCanOptimiumTake.h">
-      <Filter>头文件\Robot\Handle</Filter>
-    </ClInclude>
     <ClInclude Include="HandleAvoidOtherWinPlay.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
@@ -175,6 +169,12 @@
       <Filter>头文件\Robot\Logic</Filter>
     </ClInclude>
     <ClInclude Include="HandleLetFarmer2WinPlay.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleOptimiumTake.h">
+      <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleAvailableTake.h">
       <Filter>头文件\Robot\Handle</Filter>
     </ClInclude>
   </ItemGroup>
@@ -245,12 +245,6 @@
     <ClCompile Include="TakeCardSplitStrategy.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
-    <ClCompile Include="HandleCanOptimiumTake.cpp">
-      <Filter>源文件\Robot</Filter>
-    </ClCompile>
-    <ClCompile Include="HandleCanTake.cpp">
-      <Filter>源文件\Robot</Filter>
-    </ClCompile>
     <ClCompile Include="HandleMinValuePlay.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
@@ -259,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="HandleLastShotPlay.cpp">
       <Filter>源文件\Robot</Filter>
-    </ClCompile>
-    <ClCompile Include="PriorityTakeSplitStrategy.cpp">
-      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="HandleAvoidOtherWinPlay.cpp">
       <Filter>源文件\Robot</Filter>
@@ -275,10 +266,19 @@
     <ClCompile Include="SmoothCard.cpp">
       <Filter>源文件\DealCards</Filter>
     </ClCompile>
-    <ClCompile Include="HandleResult.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="HandleLetFarmer2WinPlay.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="PriorityTakeSplitStrategy.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleResult.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleOptimiumTake.cpp">
+      <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="HandleAvailableTake.cpp">
       <Filter>源文件\Robot</Filter>
     </ClCompile>
   </ItemGroup>

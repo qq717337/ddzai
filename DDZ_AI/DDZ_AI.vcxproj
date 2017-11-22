@@ -161,8 +161,8 @@
     <ClInclude Include="GameTable.h" />
     <ClInclude Include="HandleAvoidOtherWinPlay.h" />
     <ClInclude Include="HandleBoomTake.h" />
-    <ClInclude Include="HandleCanOptimiumTake.h" />
-    <ClInclude Include="HandleCanTake.h" />
+    <ClInclude Include="HandleOptimiumTake.h" />
+    <ClInclude Include="HandleAvailableTake.h" />
     <ClInclude Include="HandleLastShotPlay.h" />
     <ClInclude Include="HandleLetFarmer2WinPlay.h" />
     <ClInclude Include="HandleMinValuePlay.h" />
@@ -203,8 +203,8 @@
     <ClCompile Include="GameTable.cpp" />
     <ClCompile Include="HandleAvoidOtherWinPlay.cpp" />
     <ClCompile Include="HandleBoomTake.cpp" />
-    <ClCompile Include="HandleCanOptimiumTake.cpp" />
-    <ClCompile Include="HandleCanTake.cpp" />
+    <ClCompile Include="HandleOptimiumTake.cpp" />
+    <ClCompile Include="HandleAvailableTake.cpp" />
     <ClCompile Include="HandleLastShotPlay.cpp" />
     <ClCompile Include="HandleLetFarmer2WinPlay.cpp" />
     <ClCompile Include="HandleMinValuePlay.cpp" />

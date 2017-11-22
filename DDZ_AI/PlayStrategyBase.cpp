@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "PlayStrategyBase.h"
 #include "MinStepSplitStrategy.h"
-#include "HandleCanOptimiumTake.h"
-#include "HandleCanTake.h"
+#include "HandleOptimiumTake.h"
+#include "HandleAvailableTake.h"
 #include "HandleMinValuePlay.h"
 #include "HandleLastShotPlay.h"
 #include "HandleAvoidOtherWinPlay.h"
@@ -119,7 +119,7 @@ void PlayStrategyBase::Init()
 	m_handlerTwoStepPlay = std::make_unique<HandleTwoStepPlay>();
 	m_handlerAvoidOtherWinPlay = std::make_unique<HandleAvoidOtherWinPlay>();
 
-	m_handlerAvailableTake = std::make_unique<HandleCanTake>();
-	m_handlerOptimiumTake = std::make_unique<HandleCanOptimiumTake>();
+	m_handlerAvailableTake = std::make_unique<HandleAvailableTake>();
+	m_handlerOptimiumTake = std::make_unique<HandleOptimiumTake>();
 	m_handlerBoomTake = std::make_unique<HandleBoomTake>();
 }

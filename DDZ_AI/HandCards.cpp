@@ -10,6 +10,12 @@ CardCount(CardVector(CARD_VALUE_LEN))
 	UpdateByFlag();
 }
 
+HandCards::HandCards(HandCardsFlag & handCardsFlag)
+{
+	std::memcpy(&Flags[0][0], handCardsFlag.Flag_Ptr(), CARD_VALUE_LEN * 4 * sizeof(uint8_t));
+	UpdateByFlag();
+}
+
 HandCards::HandCards(const CardVector & cardValues, bool updateSet) :
 	HandCardsFlag(false),
 	CardsSet(std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end())),

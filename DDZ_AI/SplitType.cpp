@@ -11,6 +11,16 @@ SplitType::SplitType()
 SplitType::~SplitType()
 {
 }
+SplitType::SplitType(const SplitType & rhs)
+{
+		VECTOR_COPY(rhs.Boom, Boom);
+		VECTOR_COPY(rhs.Single, Single);
+		VECTOR_COPY(rhs.Double, Double);
+		VECTOR_COPY(rhs.Triple, Triple);
+		VECTOR_COPY(rhs.SingleChain, SingleChain);
+		VECTOR_COPY(rhs.DoubleChain, DoubleChain);
+		VECTOR_COPY(rhs.TripleChain, TripleChain);
+}
 SplitType & SplitType::operator=(const SplitType & rhs)
 {
 	if (this != &rhs)

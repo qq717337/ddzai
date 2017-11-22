@@ -131,6 +131,9 @@ SplitStrategyBase::~SplitStrategyBase()
 
 //提取出孤立的牌，且将大小王炸也提取出来
 void SplitStrategyBase::SplitIsolate() {
+	if (m_cards->Size() == 0) {
+		return;
+	}
 	std::vector<CardVector > isolateCards = m_cards->IsolateCards(true);
 	if (isolateCards[CardIndex_SmallJoker][0] == 1 && isolateCards[CardIndex_LargeJoker][0] == 1) {
 		m_splitType->AddBoom(CardIndex_JokerBoom);
@@ -164,6 +167,9 @@ void SplitStrategyBase::SplitIsolate() {
 }
 
 void SplitStrategyBase::SplitBoom(bool once) {
+	if (m_cards->Size() <4) {
+		return;
+	}
 	UPDATE_BOOM
 		for (auto iter = m_booms.begin(); iter != m_booms.end(); ) {
 			uint8_t v = *iter;
@@ -182,6 +188,9 @@ void SplitStrategyBase::SplitBoom(bool once) {
 }
 
 void SplitStrategyBase::SplitTriple(bool once) {
+	if (m_cards->Size() <3) {
+		return;
+	}
 	UPDATE_TRIPLE
 		for (auto iter = m_triples.begin(); iter != m_triples.end(); ) {
 			uint8_t v = *iter;
@@ -194,6 +203,9 @@ void SplitStrategyBase::SplitTriple(bool once) {
 }
 
 void SplitStrategyBase::SplitTripleChain(bool once) {
+	if (m_cards->Size() < 6) {
+		return;
+	}
 	UPDATE_TRIPLECHAIN
 		for (auto iter = m_tripleChains.begin(); iter != m_tripleChains.end(); ) {
 			CardRange v = *iter;
@@ -206,6 +218,9 @@ void SplitStrategyBase::SplitTripleChain(bool once) {
 }
 
 void SplitStrategyBase::SplitDoubleChain(bool once) {
+	if (m_cards->Size() < 6) {
+		return;
+	}
 	UPDATE_DOUBLECHAIN
 		for (auto iter = m_doubleChains.begin(); iter != m_doubleChains.end(); ) {
 			CardRange v = *iter;
@@ -219,6 +234,9 @@ void SplitStrategyBase::SplitDoubleChain(bool once) {
 
 void SplitStrategyBase::SplitSingleChain(bool once)
 {
+	if (m_cards->Size() <5) {
+		return;
+	}
 	UPDATE_SINGLECHAIN
 		for (auto iter = m_singleChains.begin(); iter != m_singleChains.end();) {
 			CardRange v = *iter;
@@ -232,6 +250,9 @@ void SplitStrategyBase::SplitSingleChain(bool once)
 
 void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 {
+	if (m_cards->Size() <8) {
+		return;
+	}
 	uint8_t boomIndex = 0xff;
 	bool couldTrunc = CouldTruncBoom(&boomIndex);
 	if (boomIndex == 0xff)return;
@@ -250,7 +271,7 @@ void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 	m_cards->UpdateByFlag();
 }
 
-CardVector  SplitStrategyBase::FindInChain(const std::vector<CardRange>& chain, size_t count)
+CardVector SplitStrategyBase::FindInChain(const std::vector<CardRange>& chain, size_t count)
 {
 	CardVector  r;
 	for (auto& c : chain) {
@@ -325,6 +346,9 @@ void SplitStrategyBase::Restore()
 
 void SplitStrategyBase::SplitIntersectChain()
 {
+	if (m_cards->Size() <5) {
+		return;
+	}
 	//UPDATE_SINGLECHAIN
 	int index = GetLongestSingleChain();
 	if (index < 0)return;

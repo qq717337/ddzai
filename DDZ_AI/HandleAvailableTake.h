@@ -1,12 +1,12 @@
 #pragma once
 #include "PlayStrategyHandle.h"
-class HandleCanTake :
+class HandleAvailableTake :
 	public PlayStrategyHandle
 {
 public:
-	HandleCanTake()=default;
-	~HandleCanTake();
+	HandleAvailableTake()=default;
+	~HandleAvailableTake();
 	virtual bool Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result)override;
-	HandleCanTake(const HandleCanTake&) = delete;
+	HandleAvailableTake(const HandleAvailableTake&) = delete;
 };
 

@@ -18,7 +18,7 @@ void SplitMemnto::Restore(SplitType * ref)
 
 HandCardsMemnto::HandCardsMemnto(const HandCards & ref)
 {
-	memcpy(&_Data[0][0],&ref.Flags[0][0], CARD_VALUE_LEN * 4 * sizeof(uint8_t));
+	std::memcpy(&_Data[0][0],&ref.Flags[0][0], CARD_VALUE_LEN * 4 * sizeof(uint8_t));
 }
 
 HandCardsMemnto::~HandCardsMemnto()
@@ -28,6 +28,6 @@ HandCardsMemnto::~HandCardsMemnto()
 
 void HandCardsMemnto::Restore(HandCards * ref)
 {
-	memcpy(&( ref->Flags[0][0]),&_Data[0][0], CARD_VALUE_LEN * 4 * sizeof(uint8_t));
+	std::memcpy(&( ref->Flags[0][0]),&_Data[0][0], CARD_VALUE_LEN * 4 * sizeof(uint8_t));
 	ref->UpdateByFlag();
 }
