@@ -9,6 +9,31 @@
 #include "HandleTwoStepPlay.h"
 #include "HandleBoomTake.h"
 #include "GameTable.h"
+
+void PlayStrategyBase::RealAvoidStyle()
+{
+	m_realAvoidStyle.clear();
+	if (Identity() == EIdentity::Lord) {
+		auto f1_str = GetStrategyPtr(EIdentity::Farmer1);
+		auto f2_str = GetStrategyPtr(EIdentity::Farmer2);
+		auto& avoid1 = f1_str->GetLastCardStyle();
+		auto& avoid2 = f2_str->GetLastCardStyle();
+		if (avoid1.Valid()) {
+			m_realAvoidStyle.push_back(std::move(avoid1));
+		}
+		if (avoid2.Valid()) {
+			m_realAvoidStyle.push_back(std::move(avoid2));
+		}
+	}
+	else {
+		auto l_str = GetStrategyPtr(EIdentity::Lord);
+		auto& avoid = l_str->GetLastCardStyle();
+		if (avoid.Valid()) {
+			m_realAvoidStyle.push_back(std::move(avoid));
+		}
+	}
+}
+
 const CardStyle & PlayStrategyBase::GetLastCardStyle() const
 {
 	return m_table->GetLastCardStyle();

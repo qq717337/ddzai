@@ -27,6 +27,7 @@ protected:
 	std::unique_ptr<PlayStrategyHandle>m_handlerAvailableTake;
 	std::unique_ptr<PlayStrategyHandle>m_handlerBoomTake;
 	std::unique_ptr<PlayStrategyHandle>m_handlerOptimiumTake;
+	std::vector<CardStyle> m_realAvoidStyle;
 public:
 	virtual void Init();
 	virtual CardStyle Play() = 0;
@@ -35,7 +36,8 @@ public:
 
 	virtual bool IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2 = nullptr) const = 0;
 
-	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle() = 0;
+	virtual std::vector<ECardStyle::ECardStyle_> AvoidPlayStyle()=0;
+	void RealAvoidStyle();
 	virtual EIdentity::EIdentity_ Identity()const = 0;
 	const CardStyle& GetLastCardStyle()const;
 
@@ -53,5 +55,8 @@ public:
 	inline const HandCards* GetHandCards()const {
 		_ASSERT(m_handCards);
 		return m_handCards.get();
+	}
+	inline std::vector<CardStyle>& GetRealAvoidStyle() {
+		return m_realAvoidStyle;
 	}
 };
