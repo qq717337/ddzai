@@ -6,7 +6,6 @@ class SplitStrategy;
 //有牌可接，但是需要判断要不要接，等各种if判断拆分成Chain of Responsibility
 class PlayStrategyHandle
 {
-	PlayStrategyHandle*m_nextStrategyHandler;
 public:
 	PlayStrategyHandle(const PlayStrategyHandle&) = delete;
 	PlayStrategyHandle() = default;
@@ -14,7 +13,4 @@ public:
 
 	virtual bool Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result) = 0;
 	virtual ~PlayStrategyHandle();
-	inline void setNextStrategy(PlayStrategyHandle* nextStrategy) {
-		m_nextStrategyHandler = nextStrategy;
-	}
 };

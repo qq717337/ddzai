@@ -31,17 +31,22 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 	m_minStepSplitStrategy->Split();
 	m_minStepSplitStrategy->OptimiumTake(lastStyle);
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
+	m_mustTake = false;
 	//先判断使用哪一种拆分策略，或者一开始创建多个SplitStrategy，然后再传入不同的Handle里面进行处理
 	CardStyle ret(CardStyle::Invalid);
 
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {
-		DEBUG_LOG("CheckIfWin=true  "+lastStyle.ToString());
+		DEBUG_LOG("CheckIfWin=true  " + lastStyle.ToString());
 		return x[0];
 	}
+
+	m_mustTake = m_mustTake = m_table->GetHandCard(EIdentity::Farmer1)->LastShot().Valid() ||
+		m_mustTake = m_table->GetHandCard(EIdentity::Farmer2)->LastShot().Valid();
+
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
-		DEBUG_LOG("HandleOptimiumTake  "+ret.ToString());
+		DEBUG_LOG("HandleOptimiumTake  " + ret.ToString());
 		return ret;
 	}
 	if (m_handlerBoomTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {
@@ -64,7 +69,7 @@ bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 
 bool LordPlayStrategy::OtherBiggestCardValue(int compareCount) const
 {
-	return m_table->BiggestCardValue(EIdentity::Farmer1,compareCount);
+	return m_table->BiggestCardValue(EIdentity::Farmer1, compareCount);
 }
 
 bool LordPlayStrategy::IsSafeSituation(ESituationSafeLevel::ESituationSafeLevel_ level, int param1, void* param2) const

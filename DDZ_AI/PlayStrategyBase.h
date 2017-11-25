@@ -28,7 +28,11 @@ protected:
 	std::unique_ptr<PlayStrategyHandle>m_handlerBoomTake;
 	std::unique_ptr<PlayStrategyHandle>m_handlerOptimiumTake;
 	std::vector<CardStyle> m_realAvoidStyle;
+	
+	bool m_mustTake;
 public:
+	//是否是必须要接，指示对方只有一手牌就可以取得胜利，如果有，在接牌的时候还要额外考虑不被胜利的情况
+	bool MustTake();
 	virtual void Init();
 	virtual CardStyle Play() = 0;
 	virtual CardStyle Take(EIdentity::EIdentity_ lastIdentity, const CardStyle & lastStyle) = 0;

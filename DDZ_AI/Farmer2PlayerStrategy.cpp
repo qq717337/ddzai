@@ -86,6 +86,7 @@ CardStyle Farmer2PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 	m_minStepSplitStrategy->Split();
 	m_minStepSplitStrategy->OptimiumTake(lastStyle);
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
+	m_mustTake = false;
 
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
@@ -94,6 +95,7 @@ CardStyle Farmer2PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 		return x[0];
 	}
 	if (lastIdentity == EIdentity::Lord) {
+		m_mustTake = m_table->GetHandCard(EIdentity::Lord)->LastShot().Valid();//如果地主是最后一手，则必须要接
 		return takeLord(lastStyle);
 	}
 	else {
