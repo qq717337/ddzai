@@ -86,9 +86,7 @@ CardStyle Farmer2PlayerStrategy::Take(EIdentity::EIdentity_ lastIdentity, const 
 	m_minStepSplitStrategy->Split();
 	m_minStepSplitStrategy->OptimiumTake(lastStyle);
 	m_minStepSplitStrategy->AvailableTake(lastStyle);
-	if (m_minStepSplitStrategy->GetAvailableStyle().size() == 0) {
-		return CardStyle::Invalid;
-	}
+
 	std::vector<CardStyle> x;
 	bool isWin = CheckIfWin(m_minStepSplitStrategy.get(), lastStyle, true, x);
 	if (isWin) {

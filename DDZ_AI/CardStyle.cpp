@@ -151,6 +151,17 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	for (size_t i = 0; i < length; ++i) {
 		indexCards[i] = HandCardsFlag::CardValueToIndex(cards[i]);
 	}
+	if (cards.size() >= 5) {
+		bool isChain = true;
+	for (int i = 1; i < indexCards.size(); i++) {
+		if (indexCards[i] - indexCards[i - 1] != 1) {
+			isChain = false;
+		}
+	}
+	if (isChain)
+		return CardStyle::SingleChainStyle(*indexCards.begin(), *(indexCards.end() - 1));
+
+	}
 	switch (length) {
 	case 1: {
 		uint8_t v = indexCards[0];
