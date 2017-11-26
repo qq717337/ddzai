@@ -44,7 +44,6 @@ public:
 	CardVector  FindInChain(const std::vector<CardRange>&chain, size_t count);
 	virtual bool CouldTruncBoom(uint8_t * boomIndex = NULL);
 	int GetLongestSingleChain();
-
 	virtual void Backup();
 	virtual void Restore();
 

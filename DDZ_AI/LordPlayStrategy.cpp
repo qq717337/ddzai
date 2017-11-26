@@ -42,8 +42,7 @@ CardStyle LordPlayStrategy::Take(EIdentity::EIdentity_ lastIdentity, const CardS
 		return x[0];
 	}
 
-	m_mustTake = m_mustTake = m_table->GetHandCard(EIdentity::Farmer1)->LastShot().Valid() ||
-		m_mustTake = m_table->GetHandCard(EIdentity::Farmer2)->LastShot().Valid();
+	m_mustTake = m_table->GetHandCard(EIdentity::Farmer1)->LastShot().Valid() || m_table->GetHandCard(EIdentity::Farmer2)->LastShot().Valid();
 
 	if (m_handlerOptimiumTake->Handle(this, m_minStepSplitStrategy.get(), ret)) {//有最小步数可接牌的情况
 		DEBUG_LOG("HandleOptimiumTake  " + ret.ToString());

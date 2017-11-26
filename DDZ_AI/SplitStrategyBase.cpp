@@ -167,7 +167,7 @@ void SplitStrategyBase::SplitIsolate() {
 }
 
 void SplitStrategyBase::SplitBoom(bool once) {
-	if (m_cards->Size() <4) {
+	if (m_cards->Size() < 4) {
 		return;
 	}
 	UPDATE_BOOM
@@ -188,7 +188,7 @@ void SplitStrategyBase::SplitBoom(bool once) {
 }
 
 void SplitStrategyBase::SplitTriple(bool once) {
-	if (m_cards->Size() <3) {
+	if (m_cards->Size() < 3) {
 		return;
 	}
 	UPDATE_TRIPLE
@@ -234,7 +234,7 @@ void SplitStrategyBase::SplitDoubleChain(bool once) {
 
 void SplitStrategyBase::SplitSingleChain(bool once)
 {
-	if (m_cards->Size() <5) {
+	if (m_cards->Size() < 5) {
 		return;
 	}
 	UPDATE_SINGLECHAIN
@@ -250,13 +250,14 @@ void SplitStrategyBase::SplitSingleChain(bool once)
 
 void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 {
-	if (m_cards->Size() <8) {
+	if (m_cards->Size() < 8) {
 		return;
 	}
 	uint8_t boomIndex = 0xff;
 	bool couldTrunc = CouldTruncBoom(&boomIndex);
 	if (boomIndex == 0xff)return;
 	if (couldTrunc) {
+		m_splitType->m_isSplitBoom = true;
 		m_splitType->AddTriple(boomIndex);
 		m_cards->RemoveIndex(boomIndex, 3);
 	}
@@ -346,7 +347,7 @@ void SplitStrategyBase::Restore()
 
 void SplitStrategyBase::SplitIntersectChain()
 {
-	if (m_cards->Size() <5) {
+	if (m_cards->Size() < 5) {
 		return;
 	}
 	//UPDATE_SINGLECHAIN

@@ -3,28 +3,30 @@
 #include "common_algorithm.h"
 #include <algorithm>
 #include <unordered_set>
+#include "Recorder.h"
 
-SplitType::SplitType()
+SplitType::SplitType() :m_isSplitBoom(false)
 {
 }
 
 SplitType::~SplitType()
 {
 }
-SplitType::SplitType(const SplitType & rhs)
+SplitType::SplitType(const SplitType & rhs) :m_isSplitBoom(false)
 {
-		VECTOR_COPY(rhs.Boom, Boom);
-		VECTOR_COPY(rhs.Single, Single);
-		VECTOR_COPY(rhs.Double, Double);
-		VECTOR_COPY(rhs.Triple, Triple);
-		VECTOR_COPY(rhs.SingleChain, SingleChain);
-		VECTOR_COPY(rhs.DoubleChain, DoubleChain);
-		VECTOR_COPY(rhs.TripleChain, TripleChain);
+	VECTOR_COPY(rhs.Boom, Boom);
+	VECTOR_COPY(rhs.Single, Single);
+	VECTOR_COPY(rhs.Double, Double);
+	VECTOR_COPY(rhs.Triple, Triple);
+	VECTOR_COPY(rhs.SingleChain, SingleChain);
+	VECTOR_COPY(rhs.DoubleChain, DoubleChain);
+	VECTOR_COPY(rhs.TripleChain, TripleChain);
 }
 SplitType & SplitType::operator=(const SplitType & rhs)
 {
 	if (this != &rhs)
 	{
+		m_isSplitBoom = rhs.m_isSplitBoom;
 		VECTOR_COPY(rhs.Boom, Boom);
 		VECTOR_COPY(rhs.Single, Single);
 		VECTOR_COPY(rhs.Double, Double);
@@ -34,6 +36,16 @@ SplitType & SplitType::operator=(const SplitType & rhs)
 		VECTOR_COPY(rhs.TripleChain, TripleChain);
 	}
 	return *this;
+}
+
+void SplitType::Backup()const
+{
+	Recorder<SplitType>::Push(new SplitMemnto(*this));
+}
+
+void SplitType::Restore()const
+{
+	Recorder<SplitType>::Pop(const_cast<SplitType*>(this));
 }
 
 size_t SplitType::MinStepCount(bool exceptBoom)const
@@ -82,7 +94,7 @@ bool SplitType::GetLastShotCardStyle(CardStyle* ref) const {
 			}
 			else {
 				if (Double.size() * 2 == TripleChain[0].Length()) {
-					*ref = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector { Double[0], Double[0] });
+					*ref = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector{ Double[0], Double[0] });
 					return true;
 				}
 				else {
@@ -245,7 +257,7 @@ CardStyle SplitType::MinValueCardStyle()const {
 	}
 	if (tripleLen > 0 && Triple[0] <= minIndex) {
 		minIndex = Triple[0];
-		r = GetTripleStyle();
+		r = GetTripleStyles()[0];
 	}
 	if (SingleChain.size() > 0 && SingleChain[0].Start <= minIndex) {
 		minIndex = SingleChain[0].Start;
@@ -300,20 +312,24 @@ CardStyle SplitType::GetTripleChainStyle()const {
 
 	if (singleLen >= chainLen) {
 		if (doubleLen < chainLen) {
-			r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector (Single.begin(), Single.begin() + chainLen));
+			r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector(Single.begin(), Single.begin() + chainLen));
+			Single.erase(Single.begin(), Single.begin() + chainLen);
 		}
 		else {
 			if (Single[0] + Single[1] < Double[0] + Double[1]) {
-				r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector (Single.begin(), Single.begin() + chainLen));
+				r = CardStyle(ECardStyle::Triple_Chain_One, TripleChain[0].Start, TripleChain[0].End, CardVector(Single.begin(), Single.begin() + chainLen));
+				Single.erase(Single.begin(), Single.begin() + chainLen);
 			}
 			else {
-				r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector (Double.begin(), Double.begin() + chainLen));
+				r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector(Double.begin(), Double.begin() + chainLen));
+				Double.erase(Double.begin(), Double.begin() + chainLen);
 			}
 		}
 	}
 	else {
 		if (doubleLen >= chainLen) {
-			r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector (Double.begin(), Double.begin() + chainLen));
+			r = CardStyle(ECardStyle::Triple_Chain_Two, TripleChain[0].Start, TripleChain[0].End, CardVector(Double.begin(), Double.begin() + chainLen));
+			Double.erase(Double.begin(), Double.begin() + chainLen);
 		}
 		else {
 			r = CardStyle(ECardStyle::Triple_Chain_Zero, TripleChain[0].Start, TripleChain[0].End);
@@ -322,38 +338,50 @@ CardStyle SplitType::GetTripleChainStyle()const {
 	return r;
 }
 
-CardStyle SplitType::GetTripleStyle()const {
-	CardStyle r;
+std::vector<CardStyle> SplitType::GetTripleStyles(bool erase)const {
+	std::vector<CardStyle> r;
 	if (Triple.size() == 0) {
-		return CardStyle::Invalid;
+		return std::vector<CardStyle>();
 	}
-	size_t singleLen = Single.size();
-	size_t  doubleLen = Double.size();
-	if (singleLen > 0) {
-		if (doubleLen == 0) {
-			r = CardStyle(ECardStyle::Triple_One, Triple[0], Triple[0], { Single[0] });
-		}
-		else {
-			if (Single[0] < Double[0]) {
-				r = CardStyle(ECardStyle::Triple_One, Triple[0], Triple[0], { Single[0] });
+	for (auto & v : Triple) {
+		size_t singleLen = Single.size();
+		size_t  doubleLen = Double.size();
+		if (singleLen > 0) {
+			if (doubleLen == 0) {
+				r.emplace_back(ECardStyle::Triple_One, v, v, std::vector<uint8_t>({ Single[0] }));
+				if (erase)
+					Single.erase(Single.begin());
 			}
 			else {
-				r = CardStyle(ECardStyle::Triple_Two, Triple[0], Triple[0], { Double[0] });
+				if (Single[0] < Double[0]) {
+					r.emplace_back(ECardStyle::Triple_One, v, v, std::vector<uint8_t>({ Single[0] }));
+					if (erase)
+						Single.erase(Single.begin());
+				}
+				else {
+					r.emplace_back(ECardStyle::Triple_Two, v, v, std::vector<uint8_t>({ Double[0] }));
+					if (erase)
+						Double.erase(Double.begin());
+				}
 			}
 		}
-	}
-	else {
-		if (doubleLen > 0) {
-			r = CardStyle(ECardStyle::Triple_Two, Triple[0], Triple[0], { Double[0] });
-		}
 		else {
-			r = CardStyle(ECardStyle::Triple_Zero, Triple[0], Triple[0]);
+			if (doubleLen > 0) {
+				r.emplace_back(ECardStyle::Triple_Two, v, v, std::vector<uint8_t>({ Double[0] }));
+				if (erase)
+					Double.erase(Double.begin());
+			}
+			else {
+				r.emplace_back(ECardStyle::Triple_Zero, v, v);
+			}
 		}
+
 	}
 	return r;
 }
 std::vector<CardStyle> SplitType::GetAllSplitStyle() const
 {
+	Backup();
 	std::vector<CardStyle> availableStyle;
 	auto singleChainStyle = GetSingleChainStyle();
 	if (singleChainStyle.Valid()) {
@@ -369,53 +397,22 @@ std::vector<CardStyle> SplitType::GetAllSplitStyle() const
 		availableStyle.push_back(std::move(tripleChainStyle));
 	}
 
-	auto tripleStyle = GetTripleStyle();
-	if (tripleStyle.Valid()) {
-		availableStyle.push_back(std::move(tripleStyle));
+	auto tripleStyle = GetTripleStyles();
+	if (!tripleStyle.empty()) {
+		availableStyle.insert(availableStyle.end(), tripleStyle.begin(), tripleStyle.end());
 	}
 
-	if (Double.size() > 0) {
-		for (auto v : Double) {
-			bool ignoreThisDouble = false;
-			for (auto& style : availableStyle) {
-				if (style.Style == ECardStyle::Triple_Two || style.Style == ECardStyle::Triple_Chain_Two) {
-					for (auto eachExtra : style.Extra) {
-						if (eachExtra == v) {
-							ignoreThisDouble = true;
-							break;
-						}
-					}
-				}
-			}
-			if (!ignoreThisDouble) {
-				availableStyle.emplace_back(ECardStyle::Double, v);
-			}
-		}
+	for (auto v : Double) {
+		availableStyle.emplace_back(ECardStyle::Double, v);
+	}
+	for (auto v : Single) {
+		availableStyle.emplace_back(ECardStyle::Single, v);
 	}
 
-	if (Single.size() > 0) {
-		for (auto v : Single) {
-			bool ignoreThisSingle = false;
-			for (auto & style : availableStyle) {
-				if (style.Style == ECardStyle::Triple_One || style.Style == ECardStyle::Triple_Chain_One) {
-					for (auto eachExtra : style.Extra) {
-						if (eachExtra == v) {
-							ignoreThisSingle = true;
-							break;
-						}
-					}
-				}
-			}
-			if (!ignoreThisSingle) {
-				availableStyle.emplace_back(ECardStyle::Single, v);
-			}
-		}
+	for (auto v : Boom) {
+		availableStyle.emplace_back(ECardStyle::Boom, v);
 	}
-
-	if (Boom.size() > 0) {
-		availableStyle.emplace_back(ECardStyle::Boom, Boom[0]);
-	}
-
+	Restore();
 	return availableStyle;
 }
 size_t SplitType::CardCount() const {
@@ -430,6 +427,64 @@ size_t SplitType::CardCount() const {
 		sum += v.Length() * 3;
 	}
 	return sum;
+}
+size_t SplitType::CauseExtraSingleDoubleStep(CardRange& range) const
+{
+	size_t sum = 0;
+	for (uint8_t i = range.Start; i <= range.End; i++) {
+		if (InSingle(i) || InDouble(i)) {
+			++sum;
+		}
+	}
+	return sum;
+}
+bool SplitType::RequireSingle(size_t requireCount, CardVector & out, bool splitDouble) const
+{
+	for (auto& v : Single) {
+		out.push_back(v);
+		if (out.size() == requireCount) {
+			return true;
+		}
+	}
+	bool hasSplitDouble = false;
+	if (requireCount - out.size() >= 2) {
+		for (auto&v : Double) {
+			out.push_back(v);
+			out.push_back(v);
+			hasSplitDouble = true;
+			if (requireCount - out.size() < 2) {
+				break;
+			}
+		}
+	}
+	bool isSucc = RequireSingleFromChain(requireCount - out.size(), out);
+	return isSucc;
+}
+bool SplitType::RequireDouble(size_t requireCount, CardVector & out, bool splitTriple) const
+{
+	for (auto& v : Double) {
+		out.push_back(v);
+		if (out.size() == requireCount) {
+			return true;
+		}
+	}
+	if (requireCount == 1) {
+		bool isSucc = RequireSingleFromChain(requireCount - out.size(), out, false);
+		if (isSucc)
+			return true;
+		else {
+			if (Triple.empty() == false) {
+				out.push_back(Triple[0]);
+			}
+		}
+	}
+	else {
+		bool isSucc = RequireSingleFromChain(requireCount - out.size(), out, true);
+		if (isSucc)
+			return true;
+	}
+
+	return false;
 }
 bool SplitType::RequireSingleFromChain(size_t requireCount, CardVector & out, bool forceSplit)const
 {
@@ -584,9 +639,9 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 	CardVector  tripleSlice(tripleIsolateCards.begin(), tripleIsolateCards.end());
 
 	std::vector< uint8_t> randSingleIndex;
-	perm<uint8_t>(ls,randSingleIndex);
+	perm<uint8_t>(ls, randSingleIndex);
 	std::vector< uint8_t> randDoubleIndex;
-	perm<uint8_t>(ld,randDoubleIndex);
+	perm<uint8_t>(ld, randDoubleIndex);
 	std::vector< uint8_t> randTripleIndex;
 	perm<uint8_t>(lt, randTripleIndex);
 
@@ -689,6 +744,13 @@ void SplitType::Reset()
 	SingleChain.clear();  //至少5张
 	DoubleChain.clear(); //至少3张
 	TripleChain.clear();//至少2张
+}
+void SplitType::Sort()
+{
+	std::sort(Boom.begin(), Boom.end());
+	std::sort(Triple.begin(), Triple.end());
+	std::sort(Double.begin(), Double.end());
+	std::sort(Single.begin(), Single.end());
 }
 #define OUTPUT_SPLITTYPE_VALUE(variable_name,x) if(x.size()>0){\
 ostr << variable_name<<":{";\

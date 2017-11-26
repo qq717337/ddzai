@@ -17,6 +17,7 @@ void MinStepSplitStrategy::Split()
 		SplitIsolate();
 		func();
 		SplitIsolate();
+		m_splitType->Sort();
 		auto itFinder = std::find(m_splitTypeVector.begin(), m_splitTypeVector.end(), *m_splitType);
 		if (m_splitTypeVector.size() == 0 || itFinder == m_splitTypeVector.end()) {
 			m_splitMinStepVector.push_back(m_splitType->MinStepCount());
@@ -105,7 +106,7 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 					splitTypeRef->RequireDoubleFromChain(1, extra);
 				}
 			}
-			if (style.Style == ECardStyle::Triple_Zero || style.Style != ECardStyle::Triple_Zero && extra.size() > 0) {
+			if (style.Style == ECardStyle::Triple_Zero || style.Style != ECardStyle::Triple_Zero && extra.empty()==false) {
 				for (auto v : okTriple) {
 					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v, extra));
 					//m_optimiumStyle.emplace_back(CardStyle(style.Style, v, extra));
@@ -202,8 +203,15 @@ void MinStepSplitStrategy::AvailableTake(const CardStyle & style)
 	case ECardStyle::Triple_One:
 	case ECardStyle::Triple_Two: {
 		auto biggerTriple = handCards->AvailableTriple(true, style.StartValue);
+		CardVector extra;
+		if (style.Style == ECardStyle::Triple_One) {
+			m_splitType->RequireSingle(1, extra, true);
+		}
+		if (style.Style == ECardStyle::Triple_Two) {
+			m_splitType->RequireDouble(2, extra, true);
+		}
 		for (auto& v : biggerTriple) {
-			m_availableStyle.emplace_back(CardStyle(style.Style, v));
+			m_availableStyle.emplace_back(CardStyle(style.Style, v,v,extra));
 		}
 		break;
 	}

@@ -99,9 +99,6 @@
     <ClInclude Include="Recorder.h">
       <Filter>头文件\HandCards</Filter>
     </ClInclude>
-    <ClInclude Include="SplitStrategy.h">
-      <Filter>源文件\Robot</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -176,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="HandleAvailableTake.h">
       <Filter>头文件\Robot\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="SplitStrategy.h">
+      <Filter>头文件\Robot\Split</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -45,9 +45,10 @@ bool HandleAvoidOtherWinPlay::Handle(PlayStrategyBase * playStrategy, SplitStrat
 		if (tripleChainStyle.Valid()) {
 			availableStyle.emplace_back(tripleChainStyle);
 		}
-		CardStyle tripleStyle = p.GetTripleStyle();
-		if (tripleStyle.Valid()) {
-			if (tripleStyle.Style != ECardStyle::Triple_Chain_Zero) {
+		auto tripleStyles = p.GetTripleStyles();
+		if (!tripleStyles.empty()) {
+			auto tripleStyle = tripleStyles[0];
+			if (tripleStyle.Style != ECardStyle::Triple_Zero) {
 				availableStyle.emplace_back(tripleStyle);
 			}
 			else {

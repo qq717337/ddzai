@@ -92,7 +92,7 @@ bool HandleMinValuePlay::Handle(PlayStrategyBase* playStrategy, SplitStrategy * 
 	}
 	if (tripleLen > 0 && _triple[0] <= minIndex) {
 		minIndex = _triple[0];
-		r = split.GetTripleStyle();
+		r = split.GetTripleStyles()[0];
 	}
 	if (singleChainLen > 0 && _singleChain[0].Start <= minIndex) {
 		minIndex = _singleChain[0].Start;
