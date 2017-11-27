@@ -182,7 +182,6 @@ void OpenCVEntry::DestroyAllWindow()
 
 OpenCVEntry::~OpenCVEntry()
 {
-	DestroyAllWindow();
 }
 
 const cv::Mat OpenCVEntry::GetCardImage(uint8_t cardValue, bool rotate)

@@ -26,6 +26,7 @@ public:
 
 	virtual std::string ToString()const;
 	virtual void Reset(bool createNewCard)override;
+	virtual void Reset(const CardVector& cardValues);
 	virtual size_t Size() const override;
 
 	//可以通过判断上一次是否对卡牌造成改变来决定是否需要重新Update

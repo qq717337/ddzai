@@ -114,6 +114,26 @@ void HandCards::Reset(bool createNewCard)
 	UpdateByFlag();
 }
 
+void HandCards::Reset(const CardVector & cardValues)
+{
+	CardsSet = std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end());
+
+	int  j = 0;
+	for (auto &v : cardValues) {
+		if (v < 0x10) {
+			int index = 12 + v;
+			Flags[index][0] = 1;
+		}
+		else {
+			uint8_t cardType = (v & 0xf0) >> 4;
+			uint8_t	cardValue = v & 0x0f;
+			uint8_t	valueIndex = cardValue - 3;
+			Flags[valueIndex][cardType - 1] = 1;
+		}
+	}
+	UpdateByFlag();
+}
+
 void HandCards::RemoveJokerBoom() {
 	RemoveIndex(CardIndex_SmallJoker, 1);
 	RemoveIndex(CardIndex_LargeJoker, 1);

@@ -16,6 +16,9 @@ private:
 		return m_playerStrategy[identity].get();
 	}
 	CardStyle m_lastCardStyle;
+	EIdentity::EIdentity_ m_curIdentity;
+	EIdentity::EIdentity_ m_lastIdentity;
+
 public:
 	GameTable(const CardSet& cardSet);
 	~GameTable();
@@ -34,5 +37,19 @@ public:
 	static const bool ShouldAskLord(const SplitType& splitInfo, const HandCards& cards);
 
 	int debug_step;
+	//回溯需要进行到游戏结束才能知道游戏结果，所以需要保存的是整个当前的手牌还有角色 还有上一个牌局
+	static EIdentity::EIdentity_ NextPlayerIdentity(EIdentity::EIdentity_ identity) {
+		switch (identity) {
+		case EIdentity::Lord:
+			return EIdentity::Farmer1;
+		case EIdentity::Farmer1:
+			return EIdentity::Farmer2;
+		case EIdentity::Farmer2:
+			return EIdentity::Lord;
+		}
+		return EIdentity::Lord;;
+	}
+	void SaveTable();
+	void LoadTable(const std::string &f);
 };
 

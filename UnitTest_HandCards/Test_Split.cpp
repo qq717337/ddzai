@@ -91,6 +91,7 @@ namespace UnitTest_Split
 			EIdentity::EIdentity_ curPlayIdentity = EIdentity::Lord;
 			auto thisStyle = table.Take(curPlayIdentity, lastPlayIdentity, lastPlayStyle);
 			auto cards = table.GetHandCard(curPlayIdentity)->GetCardsByStyle(thisStyle);
+			table.SaveTable();
 
 			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
 			cv->ShowPlay(
@@ -100,6 +101,7 @@ namespace UnitTest_Split
 				, lastPlayIdentity, curPlayIdentity, lastPlayCard, cards);
 			//cv->ShowCard(opt);
 			cv->Wait(30000);
+			table.LoadTable("");
 		}
 		EIdentity::EIdentity_ NextPlayerIdentity(EIdentity::EIdentity_ identity) {
 			switch (identity) {

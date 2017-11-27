@@ -59,6 +59,10 @@ public:
 	inline const HandCards* GetHandCards()const {
 		_ASSERT(m_handCards);
 		return m_handCards.get();
+	}	
+	inline HandCards* GetHandCards(){
+		_ASSERT(m_handCards);
+		return m_handCards.get();
 	}
 	inline std::vector<CardStyle>& GetRealAvoidStyle() {
 		return m_realAvoidStyle;
