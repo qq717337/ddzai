@@ -115,7 +115,7 @@ void SplitStrategyBase::recursivelyFindTwoChain(CardRange findRange, int findSta
 	}
 }
 
-SplitStrategyBase::SplitStrategyBase(std::shared_ptr<HandCards> cards) :m_cards(cards), m_splitType(new SplitType())
+SplitStrategyBase::SplitStrategyBase(std::shared_ptr<HandCards> cards) :m_cards(cards), m_truncBoom(true), m_splitType(new SplitType())
 //m_triples(m_cards->AvailableTriple()),
 //m_booms(m_cards->AvailableBoom()),
 //m_tripleChains(m_cards->AvailableTripleChainRange()),
@@ -187,6 +187,11 @@ void SplitStrategyBase::SplitBoom(bool once) {
 	m_cards->UpdateByFlag();
 }
 
+void SplitStrategyBase::Config(bool truncBoom)
+{
+	m_truncBoom = truncBoom;
+}
+
 void SplitStrategyBase::SplitTriple(bool once) {
 	if (m_cards->Size() < 3) {
 		return;
@@ -240,6 +245,16 @@ void SplitStrategyBase::SplitSingleChain(bool once)
 	UPDATE_SINGLECHAIN
 		for (auto iter = m_singleChains.begin(); iter != m_singleChains.end();) {
 			CardRange v = *iter;
+			size_t notMatchCount = 0;
+			for (auto b = v.Start; b <= v.End; b++) {
+				if (m_cards->Count(b) > 1) {
+					++notMatchCount;
+				}
+			}
+			if (notMatchCount > v.Length() / 2) {
+				++iter;
+				continue;
+			}
 			m_splitType->AddSingleChain(v.Start, v.End);
 			m_cards->RemoveChain(v.Start, v.End, 1);
 			iter = m_singleChains.erase(iter);
@@ -250,6 +265,10 @@ void SplitStrategyBase::SplitSingleChain(bool once)
 
 void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 {
+	if (!m_truncBoom) {
+		SplitSingleChain(once);
+		return;
+	}
 	if (m_cards->Size() < 8) {
 		return;
 	}

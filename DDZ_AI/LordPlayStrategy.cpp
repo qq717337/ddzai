@@ -7,6 +7,7 @@
 CardStyle LordPlayStrategy::Play()
 {
 	CardStyle ret;
+	m_minStepSplitStrategy->Config(false);
 	m_minStepSplitStrategy->Split();
 	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), ret)) {
 		DEBUG_LOG("HandleLastShotPlay  " + ret.ToString());
@@ -66,7 +67,7 @@ bool LordPlayStrategy::OtherCanTake(const CardStyle & style) const
 	return m_table->GetHandCard(EIdentity::Farmer1)->CanTake(style) || m_table->GetHandCard(EIdentity::Farmer2)->CanTake(style);
 }
 
-bool LordPlayStrategy::OtherBiggestCardValue(int compareCount) const
+uint8_t LordPlayStrategy::OtherBiggestCardValue(int compareCount) const
 {
 	return m_table->BiggestCardValue(EIdentity::Farmer1, compareCount);
 }

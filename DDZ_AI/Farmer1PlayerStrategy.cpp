@@ -82,6 +82,7 @@ Farmer1PlayerStrategy::Farmer1PlayerStrategy(const std::set<uint8_t, CardSetComp
 CardStyle Farmer1PlayerStrategy::Play()
 {
 	CardStyle ret;
+	m_minStepSplitStrategy->Config(false);
 	m_minStepSplitStrategy->Split();
 	if (m_handlerLastShotPlay->Handle(this, m_minStepSplitStrategy.get(), ret)) {
 		DEBUG_LOG("HandleLastShotPlay  " + ret.ToString());
@@ -132,7 +133,7 @@ bool Farmer1PlayerStrategy::OtherCanTake(const CardStyle & style) const
 	return m_table->GetHandCard(EIdentity::Lord)->CanTake(style);
 }
 
-bool Farmer1PlayerStrategy::OtherBiggestCardValue(int compareCount) const
+uint8_t Farmer1PlayerStrategy::OtherBiggestCardValue(int compareCount) const
 {
 	return m_table->BiggestCardValue(EIdentity::Lord, compareCount);
 }

@@ -17,6 +17,7 @@ public:
 	SplitStrategyBase(std::shared_ptr<HandCards> cards);
 	virtual ~SplitStrategyBase();
 private:
+	bool m_truncBoom;
 protected:
 	CardRange findNextRepeatCardRange(CardRange range);
 	CardRange getIntersectSingleChainPart(CardRange singleChainRange, bool trimHead, bool trimTail);
@@ -32,6 +33,7 @@ protected:
 	std::vector<CardRange> m_singleChains;
 public:
 	void SplitIsolate();
+	void Config(bool truncBoom);
 
 	void SplitTriple(bool once = true);
 	void SplitBoom(bool once = true);

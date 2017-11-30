@@ -3,6 +3,7 @@
 #include <algorithm>
 //typedef void(MinStepSplitStrategy::*MYFUN)();
 
+
 void MinStepSplitStrategy::Split()
 {
 	SplitStrategy::Split();
