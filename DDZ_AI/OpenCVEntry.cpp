@@ -1,5 +1,9 @@
 #include "stdafx.h"
+#ifdef _WIN32
 #include "common_windows.h"
+#else
+#include "common.h"
+#endif
 #include "OpenCVEntry.h"
 
 cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, CardVector extraCards)
@@ -83,7 +87,11 @@ cv::Mat OpenCVEntry::showPlayInternal(CardVector PlayerCards0, CardVector Player
 OpenCVEntry::OpenCVEntry(const wchar_t* cardImagePath) :m_cardPath(cardImagePath)
 {
 	std::map<std::string, std::string> filesName;
+#ifdef _WIN32
 	Common::GetFilesWindows(m_cardPath, filesName);
+#else
+	Common::GetFiles(m_cardPath, filesName);
+#endif
 	for (auto & v : filesName) {
 		cv::Mat m = cv::imread(v.second);
 		image_map.emplace(v.first, m);

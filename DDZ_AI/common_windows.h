@@ -1,4 +1,5 @@
 #pragma once
+#ifdef _WIN32
 #include <string>
 #include <map>
 #include <Windows.h>
@@ -66,3 +67,4 @@ namespace Common {
 		}
 	}
 }
+#endif
