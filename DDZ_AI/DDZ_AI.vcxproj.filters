@@ -288,6 +288,9 @@
     <ClInclude Include="rapidjson\writer.h">
       <Filter>头文件\rapidjson</Filter>
     </ClInclude>
+    <ClInclude Include="c_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="HandleAvailableTake.cpp">
       <Filter>源文件\Robot</Filter>
+    </ClCompile>
+    <ClCompile Include="c_api.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

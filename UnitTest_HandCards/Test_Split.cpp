@@ -1,6 +1,6 @@
 #include "stdafx.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
+#include "../DDZ_AI/c_api.h"
 namespace UnitTest_Split
 {
 	TEST_CLASS(UnitTest4)
@@ -103,16 +103,14 @@ namespace UnitTest_Split
 			cv->Wait(30000);
 			table.LoadTable("");
 		}
-		EIdentity::EIdentity_ NextPlayerIdentity(EIdentity::EIdentity_ identity) {
-			switch (identity) {
-			case EIdentity::Lord:
-				return EIdentity::Farmer1;
-			case EIdentity::Farmer1:
-				return EIdentity::Farmer2;
-			case EIdentity::Farmer2:
-				return EIdentity::Lord;
-			}
-			return EIdentity::Lord;;
+		TEST_METHOD(TestCAPI)
+		{
+			uint8_t ret[16];
+			uint8_t c0[]{ 0x34, 0x44, 0x36, 0x17, 0x38, 0x49, 0x2a, 0x3c, 0x1d, 0x2d, 0x4d, 0x1e, 0x2e, 0x4e, 0x3f, 0x1 };
+			uint8_t c1[]{ 0x14,0x26,0x46,0x18,0x28,0x48,0x3a,0x1b,0x2b,0x3b,0x3e,0x1f,0x2 };
+			uint8_t c2[]{ 0x33,0x45,0x39,0x1a,0x4a,0x4b,0x1c,0x3d };
+			uint8_t lastPlayCard[]{ 0x13,0x24,0x35,0x46 ,0x17 };
+			auto len=RobotPlay(ret, 16, 13, 8, c0, c1, c2, 5, lastPlayCard, 2, 0);
 		}
 		TEST_METHOD(TestNewGame)
 		{
@@ -201,7 +199,7 @@ namespace UnitTest_Split
 				table.GetHandCard(EIdentity::Lord)->UpdateByFlag();
 				table.GetHandCard(EIdentity::Farmer1)->UpdateByFlag();
 				table.GetHandCard(EIdentity::Farmer2)->UpdateByFlag();
-				currentIdentity = NextPlayerIdentity(currentIdentity);
+				currentIdentity =GameTable::NextPlayerIdentity(currentIdentity);
 			}
 			win:
 			Log::InfoF("/////////////////////////////////////////////////////////////////////////////////////\n");
