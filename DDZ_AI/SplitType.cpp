@@ -469,7 +469,7 @@ bool SplitType::RequireDouble(size_t requireCount, CardVector & out, bool splitT
 		}
 	}
 	if (requireCount == 1) {
-		bool isSucc = RequireSingleFromChain(requireCount - out.size(), out, false);
+		bool isSucc = RequireDoubleFromChain(requireCount - out.size(), out, false);
 		if (isSucc)
 			return true;
 		else {
@@ -479,7 +479,7 @@ bool SplitType::RequireDouble(size_t requireCount, CardVector & out, bool splitT
 		}
 	}
 	else {
-		bool isSucc = RequireSingleFromChain(requireCount - out.size(), out, true);
+		bool isSucc = RequireDoubleFromChain(requireCount - out.size(), out, true);
 		if (isSucc)
 			return true;
 	}

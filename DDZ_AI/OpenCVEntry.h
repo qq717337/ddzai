@@ -44,6 +44,6 @@ public:
 	void Wait(int delay);
 	void DestroyAllWindow();
 	~OpenCVEntry();
-	const cv::Mat GetCardImage(uint8_t cardValue, bool rotate = false);
+	const cv::Mat GetCardImage(uint8_t cardValue, int rotate = -1);
 };
 

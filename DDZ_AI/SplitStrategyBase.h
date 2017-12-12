@@ -51,22 +51,22 @@ public:
 
 #pragma region INLINE_FUNCTION
 	inline SplitType* _Split_Ptr() { return m_splitType.get(); }
-	inline CardVector   FindBoomInSingleChain() {
+	inline CardVector FindBoomInSingleChain() {
 		UPDATE_BOOM
 			UPDATE_SINGLECHAIN
 			return FindInChain(m_singleChains, 4);
 	}
-	inline CardVector   FindTripleInSingleChain() {
+	inline CardVector FindTripleInSingleChain() {
 		UPDATE_TRIPLE
 			UPDATE_SINGLECHAIN
 			return FindInChain(m_singleChains, 3);
 	}
-	inline CardVector   FindBoomInDoubleChain() {
+	inline CardVector FindBoomInDoubleChain() {
 		UPDATE_BOOM
 			UPDATE_DOUBLECHAIN
 			return FindInChain(m_doubleChains, 4);
 	}
-	inline CardVector   FindTripleInDoubleChain() {
+	inline CardVector FindTripleInDoubleChain() {
 		UPDATE_TRIPLE
 			UPDATE_DOUBLECHAIN
 			return FindInChain(m_doubleChains, 3);

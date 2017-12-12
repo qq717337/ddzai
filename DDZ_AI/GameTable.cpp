@@ -165,8 +165,8 @@ void GameTable::SaveTable()
 		fwrite(str.c_str(), 1, str.size(), fp);
 		fclose(fp);
 	};
-	std::thread save(saveHandler, std::string(buffer.GetString(), buffer.GetSize()), "2.json");
-	save.detach();
+	std::thread th_save(saveHandler, std::string(buffer.GetString(), buffer.GetSize()), "2.json");
+	th_save.detach();
 }
 
 void GameTable::LoadTable(const std::string & f)

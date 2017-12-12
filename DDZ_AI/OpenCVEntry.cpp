@@ -8,7 +8,7 @@
 
 cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, CardVector extraCards)
 {
-	cv::Mat mBack(image_map["deskimg"].rows, image_map["deskimg"].cols,0);
+	cv::Mat mBack(image_map["deskimg"].rows, image_map["deskimg"].cols, 0);
 	image_map["deskimg"].copyTo(mBack);
 	int extraCardX = 1280 / 2 - 120;
 	int	extraCardY = 720 / 2 - 50;
@@ -30,7 +30,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int p1X = 1280 - 60 * 2 - 54;
 	int p1Y = 80;
 	for (auto v : PlayerCards1) {
-		cv::Mat	copyContent = GetCardImage(v);
+		cv::Mat	copyContent = GetCardImage(v, cv::ROTATE_90_CLOCKWISE);
 		auto mat3 = mBack(cv::Rect(p1X, p1Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p1Y += 30;
@@ -39,7 +39,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int p2X = 60;
 	int	p2Y = 80;
 	for (auto v : PlayerCards2) {
-		cv::Mat	copyContent = GetCardImage(v);
+		cv::Mat	copyContent = GetCardImage(v, cv::ROTATE_90_COUNTERCLOCKWISE);
 		auto mat3 = mBack(cv::Rect(p2X, p2Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p2Y += 30;
@@ -154,7 +154,7 @@ void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, C
 void OpenCVEntry::ShowCard(CardSet * cardSet, std::vector<TextInfo> infos)
 {
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
-	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard,infos);
+	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard, infos);
 }
 
 void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
@@ -192,15 +192,12 @@ OpenCVEntry::~OpenCVEntry()
 {
 }
 
-const cv::Mat OpenCVEntry::GetCardImage(uint8_t cardValue, bool rotate)
+const cv::Mat OpenCVEntry::GetCardImage(uint8_t cardValue, int rotate)
 {
-	if (rotate) {
+	if (rotate>-1) {
 		cv::Mat src = image_map[GetCardName(cardValue)];
-
-		cv::Mat srcCopy(cvSize(src.rows, src.cols), src.depth(), src.channels());
-		cvTranspose(&src, &srcCopy);
-		//cv::flip(&srcCopy, NULL, 1);
-		return srcCopy;
+		cv::rotate(src, src, rotate);
+		return src;
 	}
 	else {
 		return image_map[GetCardName(cardValue)];

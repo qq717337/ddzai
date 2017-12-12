@@ -22,7 +22,7 @@ private:
 public:
 	GameTable(const CardSet& cardSet);
 	~GameTable();
-	const CardStyle& GetLastCardStyle()const {return m_lastCardStyle; }
+	const CardStyle& GetLastCardStyle()const { return m_lastCardStyle; }
 	CardStyle Play(EIdentity::EIdentity_ identity);
 	CardStyle Take(EIdentity::EIdentity_ identity, EIdentity::EIdentity_ lastIdentity, const CardStyle& lastStyle);
 	size_t CardCount(EIdentity::EIdentity_ identity)const;

@@ -107,7 +107,7 @@ void  MinStepSplitStrategy::OptimiumTake(const CardStyle & style)
 					splitTypeRef->RequireDoubleFromChain(1, extra);
 				}
 			}
-			if (style.Style == ECardStyle::Triple_Zero || style.Style != ECardStyle::Triple_Zero && extra.empty()==false) {
+			if (style.Style == ECardStyle::Triple_Zero || style.Style != ECardStyle::Triple_Zero && extra.empty() == false) {
 				for (auto v : okTriple) {
 					VECTOR_INSERT_UNIQUE(m_optimiumStyle, CardStyle(style.Style, v, extra));
 					//m_optimiumStyle.emplace_back(CardStyle(style.Style, v, extra));
@@ -209,10 +209,14 @@ void MinStepSplitStrategy::AvailableTake(const CardStyle & style)
 			m_splitType->RequireSingle(1, extra, true);
 		}
 		if (style.Style == ECardStyle::Triple_Two) {
-			m_splitType->RequireDouble(2, extra, true);
+			m_splitType->RequireDouble(1, extra, true);
 		}
-		for (auto& v : biggerTriple) {
-			m_availableStyle.emplace_back(CardStyle(style.Style, v,v,extra));
+		if (!extra.empty()) {
+			for (auto& v : biggerTriple) {
+				if (extra[0] != v) {
+					m_availableStyle.emplace_back(CardStyle(style.Style, v, v, extra));
+				}
+			}
 		}
 		break;
 	}
@@ -355,7 +359,7 @@ void MinStepSplitStrategy::insertOptimumChain(const SplitType* splitTypeRef, con
 
 			auto retHandle = HandleResult(CardStyle(inStyle.Style, bestStartIndex, bestStartIndex + gapLen)).AddBonusStep(overflowLen);
 			VECTOR_INSERT_UNIQUE(m_optimiumStyle, retHandle)
-			//m_optimiumStyle.push_back(std::move(retHandle));
+				//m_optimiumStyle.push_back(std::move(retHandle));
 		}
 	}
 }
