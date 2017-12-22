@@ -144,6 +144,7 @@ namespace UnitTest_HandCards
 			//const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
 			//system(name.c_str());
 		}
+
 		TEST_METHOD(TestSmoothCard)
 		{
 			SmoothCard *opt = new SmoothCard();
@@ -153,6 +154,7 @@ namespace UnitTest_HandCards
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
 			system(name.c_str());
 		}
+
 		TEST_METHOD(TestSplitType)
 		{
 			SplitType splitType;
@@ -186,6 +188,13 @@ namespace UnitTest_HandCards
 			auto menGet = new HandCards();
 			bool isGet = Recorder<HandCards>::Get("liu", menGet);
 			Recorder<HandCards>::Remove("liu");
+		}
+
+		TEST_METHOD(TestTips)
+		{
+			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x36,0x17,0x18,0x1f,0x2f });
+			auto tips=v.FindAvailableTake(CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5), true);
+			Assert::AreEqual(tips.empty(), false);
 		}
 	};
 }

@@ -40,7 +40,18 @@ public:
 	virtual CardVector  AvailableSingle(bool bigger, uint8_t cardIndex)const;
 	virtual CardVector  AvailableChain(int len, int count)const override;
 	virtual CardVector  AvailableChain(int len, int count,bool bigger,uint8_t cardIndex)const;
-	std::vector<CardVector > IsolateCards(bool sub=false);
+	CardVector AvailableChain_LaiZi(int len, int count, uint8_t cardStartIndex);
+	CardVector AvailableSingleChain_LaiZi(uint8_t cardStartIndex, int len);
+	CardVector AvailableDoubleChain_LaiZi(uint8_t cardStartIndex, int len);
+	CardVector AvailableTripleChain_LaiZi(uint8_t cardStartIndex, int len);
+	bool FindAvailableTriple_LaiZi(bool hasLaizi, uint8_t cardIndex, CardVector& triples); 
+
+	CardVector RequireSingle(int count, CardVector& excludeIndex, bool hasLaiZi);
+	CardVector RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi);
+	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len);
+	std::vector<CardVector> IsolateCards(bool sub=false);
+	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi);
+
 	bool CanTake(const CardStyle& lastStyle)const;
 	bool HandCards::CanTake(const CardStyle & lastStyle, CardStyle &retStyle)const;
 	CardVector GetCardsValue(uint8_t cardIndex, int count)const;
