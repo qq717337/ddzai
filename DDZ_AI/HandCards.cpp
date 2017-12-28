@@ -151,7 +151,7 @@ size_t HandCards::Size()const
 CardVector HandCards::AvailableBoom()const
 {
 	CardVector r;
-	for (uint8_t i = 0; i <= CardIndex_2; i++) {
+	for (uint8_t i = 0; i <= CardIndex_2; ++i) {
 		if (CardCount[i] == 4) {
 			r.push_back(i);
 		}
@@ -165,7 +165,7 @@ CardVector HandCards::AvailableBoom()const
 CardVector HandCards::AvailableTriple()const
 {
 	CardVector r;
-	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+	for (uint8_t i = 0; i <= CardIndex_2; ++i) {
 		if (CardCount[i] >= 3) {
 			r.push_back(i);
 		}
@@ -176,7 +176,7 @@ CardVector HandCards::AvailableTriple()const
 CardVector  HandCards::AvailableDouble()const
 {
 	CardVector r;
-	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+	for (uint8_t i = 0; i <= CardIndex_2; ++i) {
 		if (CardCount[i] >= 2) {
 			r.push_back(i);
 		}
@@ -186,8 +186,38 @@ CardVector  HandCards::AvailableDouble()const
 CardVector  HandCards::AvailableSingle()const
 {
 	CardVector r;
-	for (uint8_t i = 0; i < CARD_VALUE_LEN; i++) {
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; ++i) {
 		if (CardCount[i] >= 1) {
+			r.push_back(i);
+		}
+	}
+	return r;
+}
+CardVector HandCards::PerfectTriple(int startIndex) const
+{
+	CardVector r;
+	for (uint8_t i = startIndex; i <= CardIndex_2; ++i) {
+		if (CardCount[i] == 3) {
+			r.push_back(i);
+		}
+	}
+	return r;
+}
+CardVector HandCards::PerfectDouble(int startIndex) const
+{
+	CardVector r;
+	for (uint8_t i = startIndex; i <= CardIndex_2; ++i) {
+		if (CardCount[i] == 2) {
+			r.push_back(i);
+		}
+	}
+	return r;
+}
+CardVector HandCards::PerfectSingle(int startIndex) const
+{
+	CardVector r;
+	for (uint8_t i = startIndex; i < CARD_VALUE_LEN; ++i) {
+		if (CardCount[i] == 1) {
 			r.push_back(i);
 		}
 	}
@@ -346,6 +376,113 @@ std::vector<CardVector> HandCards::IsolateCards(bool sub)
 		UpdateByFlag();
 	}
 	return isolateCards;
+}
+
+std::vector<CardStyle> HandCards::FindAvailablePlay()
+{
+	std::vector<CardStyle> r;
+	auto _booms = AvailableBoom();
+	auto _tripleChain = AvailableTripleChainRange();
+	auto _doubleChain = AvailableDoubleChainRange();
+	auto _singleChain = AvailableSingleChainRange();
+	auto _triple = PerfectTriple(CardIndex_3);
+	auto _double = PerfectDouble(CardIndex_3);
+	auto _single = PerfectSingle(CardIndex_3);
+	auto tripleLen = _triple.size();
+	auto doubleLen = _double.size();
+	auto singleLen = _single.size();
+	auto tripleChainLen = _tripleChain.size();
+	auto doubleChainLen = _doubleChain.size();
+	auto singleChainLen = _singleChain.size();
+	int minIndex = CardIndex_LargeJoker + 1;
+	if (tripleChainLen > 0)
+	{
+		minIndex = _tripleChain[0].Start;
+		tripleChainLen = _tripleChain[0].Length();
+		bool hasTripleChain = false;
+		if (singleLen >= tripleChainLen)
+		{
+			hasTripleChain = true;
+			CardVector headSingle(_single.begin(), _single.begin() + tripleChainLen);
+			r.push_back(CardStyle::TripleChainOneStyle(_tripleChain[0].Start, _tripleChain[0].End, headSingle));
+		}
+		if (doubleLen >= tripleChainLen)
+		{
+			hasTripleChain = true;
+			CardVector headDouble(_double.begin(), _double.begin() + tripleChainLen);
+			r.push_back(CardStyle::TripleChainTwoStyle(_tripleChain[0].Start, _tripleChain[0].End, headDouble));
+		}
+		if (!hasTripleChain)
+		{
+			r.push_back(CardStyle::TripleChainZeroStyle(_tripleChain[0].Start, _tripleChain[0].End));
+		}
+	}
+	if (doubleChainLen > 0)
+	{
+		r.push_back(CardStyle::DoubleChainStyle(_doubleChain[0].Start, _doubleChain[0].End));
+	}
+	if (singleChainLen > 0)
+	{
+		r.push_back(CardStyle::SingleChainStyle(_singleChain[0].Start, _singleChain[0].End));
+	}
+	if (tripleLen > 0)
+	{
+		for (auto t : _triple)
+		{
+			if (_tripleChain.size() > 0)
+			{
+				if (t >= _tripleChain[0].Start && t <= _tripleChain[0].End)
+				{
+					continue;
+				}
+			}
+			bool hasTriple = false;
+			if (singleLen >= 1)
+			{
+				hasTriple = true;
+				CardVector headSingle(_single.begin(), ++_single.begin());
+				r.push_back(CardStyle::TripleOneStyle(t, headSingle));
+			}
+			if (doubleLen >= 1)
+			{
+				hasTriple = true;
+				CardVector headDouble(_double.begin(), ++_double.begin());
+				r.push_back(CardStyle::TripleTwoStyle(t, headDouble));
+			}
+			if (!hasTriple)
+			{
+				r.push_back(CardStyle::TripleZeroStyle(t));
+			}
+
+		}
+	}
+	if (r.size() == 0)
+	{
+		_double.insert(_double.end(), _single.begin(), _single.end());
+		std::sort(_double.begin(), _double.end());
+		for (auto v : _double)
+		{
+			if (CardCount[v] == 1)
+			{
+				r.push_back(CardStyle::SingleStyle(v));
+			}
+			if (CardCount[v] == 2)
+			{
+				r.push_back(CardStyle::DoubleStyle(v));
+			}
+		}
+	}
+	if (r.size() == 0)
+	{
+		for (auto v : _booms)
+		{
+			r.push_back(CardStyle::BoomStyle(v));
+		}
+	}
+
+
+	std::sort(r.begin(), r.end(), [](const CardStyle& x, const CardStyle& y) {return x.StartValue < y.StartValue; });
+	return r;
 }
 
 bool HandCards::CanTake(const CardStyle & lastStyle)const
@@ -828,6 +965,8 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	std::vector<CardStyle> r;
 	switch (lastStyle.Style)
 	{
+	case ECardStyle::Invalid:
+		return FindAvailablePlay();
 	case ECardStyle::Boom: {
 		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		if (booms.empty() && hasLaiZi) {
@@ -999,7 +1138,7 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	default:
 		break;
 	}
-	if (lastStyle.Style != ECardStyle::Boom) {
+	if (lastStyle.Style != ECardStyle::Invalid && lastStyle.Style != ECardStyle::Boom) {
 		CardVector booms;
 		if (hasLaiZi) {
 			booms = AvailableTriple();

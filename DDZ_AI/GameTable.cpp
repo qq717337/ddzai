@@ -187,7 +187,7 @@ void GameTable::LoadTable(const std::string & f)
 
 	if (d.HasParseError())
 	{
-		printf("GetParseError %s\n", d.GetParseError());
+		printf("GetParseError %d\n", d.GetParseError());
 	}
 	m_lastCardStyle.Style = d["Last_Style"].GetInt();
 	m_lastCardStyle.StartValue = d["Last_Start"].GetInt();

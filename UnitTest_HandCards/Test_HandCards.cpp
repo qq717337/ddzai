@@ -50,8 +50,8 @@ namespace UnitTest_HandCards
 		}
 		TEST_METHOD(TestCardStyle)
 		{
-			CardVector a({0x28,0x16,0x18,0x36,0x1e,0x38,0x19,0x29,0x49,0x2e});
-			
+			CardVector a({ 0x28,0x16,0x18,0x36,0x1e,0x38,0x19,0x29,0x49,0x2e });
+
 			CardStyle s = CardStyle::FromCardsValue(a);
 			Assert::AreEqual(s.StartValue, uint8_t(0));
 			Assert::AreEqual(s.EndValue, uint8_t(1));
@@ -136,8 +136,8 @@ namespace UnitTest_HandCards
 			auto superior = new SuperiorDealStrategy(opt, 2);
 			opt->Optimized(superior, 1);
 			std::string s = opt->ToString2();
-			Logger::WriteMessage(s.c_str()); 
-			OpenCVEntry *cv= new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
+			Logger::WriteMessage(s.c_str());
+			OpenCVEntry *cv = new OpenCVEntry(L"D:\\CommondCode\\DDZ_AI\\DDZ_AI\\CardsImage");
 			//cv->ShowPlay(opt, 2,1, { 0x01,0x02 }, {0x23,0x33,0x43});
 			cv->ShowCard(opt, { OpenCVEntry::TextInfo(CvPoint(550,35),CvScalar(255,255,255),1.0,"Optimized Card") });
 			cv->Wait(30000);
@@ -148,7 +148,7 @@ namespace UnitTest_HandCards
 		TEST_METHOD(TestSmoothCard)
 		{
 			SmoothCard *opt = new SmoothCard();
-			opt->Optimized(nullptr,3,3);
+			opt->Optimized(nullptr, 3, 3);
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
@@ -193,7 +193,8 @@ namespace UnitTest_HandCards
 		TEST_METHOD(TestTips)
 		{
 			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x36,0x17,0x18,0x1f,0x2f });
-			auto tips=v.FindAvailableTake(CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5), true);
+			auto tips = v.FindAvailableTake(CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5), true);
+			auto tips2 = v.FindAvailablePlay();
 			Assert::AreEqual(tips.empty(), false);
 		}
 	};

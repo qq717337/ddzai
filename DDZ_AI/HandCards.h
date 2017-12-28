@@ -34,6 +34,9 @@ public:
 	virtual CardVector  AvailableTriple()const override;
 	virtual CardVector  AvailableDouble()const override;
 	virtual CardVector  AvailableSingle()const override;
+	virtual CardVector  PerfectTriple(int startIndex)const;
+	virtual CardVector  PerfectDouble(int startIndex)const;
+	virtual CardVector  PerfectSingle(int startIndex)const;
 	virtual CardVector  AvailableBoom(bool bigger,uint8_t cardIndex)const;
 	virtual CardVector  AvailableTriple(bool bigger, uint8_t cardIndex)const;
 	virtual CardVector  AvailableDouble(bool bigger, uint8_t cardIndex)const;
@@ -50,6 +53,7 @@ public:
 	CardVector RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi);
 	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len);
 	std::vector<CardVector> IsolateCards(bool sub=false);
+	std::vector<CardStyle> FindAvailablePlay();
 	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi);
 
 	bool CanTake(const CardStyle& lastStyle)const;
