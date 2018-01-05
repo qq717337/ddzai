@@ -196,7 +196,7 @@ CardVector  HandCards::AvailableSingle()const
 CardVector HandCards::PerfectTriple(int startIndex) const
 {
 	CardVector r;
-	for (uint8_t i = startIndex; i <= CardIndex_2; ++i) {
+	for (uint8_t i = startIndex+1; i <= CardIndex_2; ++i) {
 		if (CardCount[i] == 3) {
 			r.push_back(i);
 		}
@@ -206,7 +206,7 @@ CardVector HandCards::PerfectTriple(int startIndex) const
 CardVector HandCards::PerfectDouble(int startIndex) const
 {
 	CardVector r;
-	for (uint8_t i = startIndex; i <= CardIndex_2; ++i) {
+	for (uint8_t i = startIndex+1; i <= CardIndex_2; ++i) {
 		if (CardCount[i] == 2) {
 			r.push_back(i);
 		}
@@ -216,7 +216,7 @@ CardVector HandCards::PerfectDouble(int startIndex) const
 CardVector HandCards::PerfectSingle(int startIndex) const
 {
 	CardVector r;
-	for (uint8_t i = startIndex; i < CARD_VALUE_LEN; ++i) {
+	for (uint8_t i = startIndex+1; i < CARD_VALUE_LEN; ++i) {
 		if (CardCount[i] == 1) {
 			r.push_back(i);
 		}
@@ -378,16 +378,16 @@ std::vector<CardVector> HandCards::IsolateCards(bool sub)
 	return isolateCards;
 }
 
-std::vector<CardStyle> HandCards::FindAvailablePlay()
+std::vector<CardStyle> HandCards::LongestStyle()
 {
 	std::vector<CardStyle> r;
 	auto _booms = AvailableBoom();
 	auto _tripleChain = AvailableTripleChainRange();
 	auto _doubleChain = AvailableDoubleChainRange();
 	auto _singleChain = AvailableSingleChainRange();
-	auto _triple = PerfectTriple(CardIndex_3);
-	auto _double = PerfectDouble(CardIndex_3);
-	auto _single = PerfectSingle(CardIndex_3);
+	auto _triple = PerfectTriple(CardIndex_3-1);
+	auto _double = PerfectDouble(CardIndex_3-1);
+	auto _single = PerfectSingle(CardIndex_3-1);
 	auto tripleLen = _triple.size();
 	auto doubleLen = _double.size();
 	auto singleLen = _single.size();
@@ -482,6 +482,56 @@ std::vector<CardStyle> HandCards::FindAvailablePlay()
 
 
 	std::sort(r.begin(), r.end(), [](const CardStyle& x, const CardStyle& y) {return x.StartValue < y.StartValue; });
+	return r;
+}
+
+CardStyle HandCards::MinValueStyle()
+{
+	CardStyle r=CardStyle::Invalid;
+	auto _booms = AvailableBoom();
+	auto _tripleChain = AvailableTripleChainRange();
+	auto _doubleChain = AvailableDoubleChainRange();
+	auto _singleChain = AvailableSingleChainRange();
+	constexpr int before3Index = CardIndex_3 - 1;
+	auto _triple = PerfectTriple(before3Index);
+	auto _double = PerfectDouble(before3Index);
+	auto _single = PerfectSingle(before3Index);
+	auto tripleLen = _triple.size();
+	auto doubleLen = _double.size();
+	auto singleLen = _single.size();
+	auto tripleChainLen = _tripleChain.size();
+	auto doubleChainLen = _doubleChain.size();
+	auto singleChainLen = _singleChain.size();
+
+	uint8_t minStartIndex = CardIndex_LargeJoker;
+
+	if (tripleChainLen > 0 && _tripleChain[0].Start<minStartIndex) {
+		minStartIndex = _tripleChain[0].Start;
+		r = CardStyle::TripleChainZeroStyle(_tripleChain[0].Start, _tripleChain[0].End);
+	}
+	if (doubleChainLen > 0 && _doubleChain[0].Start<minStartIndex) {
+		minStartIndex = _doubleChain[0].Start;
+		r = CardStyle::DoubleChainStyle(_doubleChain[0].Start, _doubleChain[0].End);
+	}
+	if (singleChainLen > 0 && _singleChain[0].Start<minStartIndex) {
+		minStartIndex = _singleChain[0].Start;
+		r = CardStyle::SingleChainStyle(_singleChain[0].Start, _singleChain[0].End);
+	}	
+	if (tripleLen > 0 && _triple[0]<minStartIndex) {
+		minStartIndex = _triple[0];
+		r = CardStyle::TripleZeroStyle(_triple[0]);
+	}
+	if (doubleLen > 0 && _double[0]<minStartIndex) {
+		minStartIndex = _double[0];
+		r = CardStyle::DoubleStyle(_double[0]);
+	}
+	if (singleLen > 0 && _single[0]<minStartIndex) {
+		minStartIndex = _single[0];
+		r = CardStyle::SingleStyle(_single[0]);
+	}
+	if (!r.Valid()&& _booms.size()>0) {
+		r = CardStyle::BoomStyle(_booms[0]);
+	}
 	return r;
 }
 
@@ -966,7 +1016,7 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	switch (lastStyle.Style)
 	{
 	case ECardStyle::Invalid:
-		return FindAvailablePlay();
+		return LongestStyle();
 	case ECardStyle::Boom: {
 		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		if (booms.empty() && hasLaiZi) {
@@ -1011,18 +1061,36 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 		break;
 	}
 	case ECardStyle::Double: {
+		auto perfectDoubles = PerfectDouble(lastStyle.StartValue);
 		auto doubles = AvailableDouble(true, lastStyle.StartValue);
-		if (doubles.empty() && hasLaiZi) {
-			doubles = AvailableSingle(true, lastStyle.StartValue);
+		for (auto v : doubles) {
+			if (std::any_of(perfectDoubles.begin(), perfectDoubles.end(), [v](uint8_t pv)->bool { return v == pv; })) {
+				continue;
+			}
+			else {
+				perfectDoubles.push_back(v);
+			}
 		}
-		for (auto & v : doubles) {
+		if (perfectDoubles.empty() && hasLaiZi) {
+			perfectDoubles = AvailableSingle(true, lastStyle.StartValue);
+		}
+		for (auto & v : perfectDoubles) {
 			r.push_back(std::move(CardStyle::DoubleStyle(v)));
 		}
 		break;
 	}
 	case ECardStyle::Single: {
+		auto perfectSingles = PerfectSingle(lastStyle.StartValue);
 		auto singles = AvailableSingle(true, lastStyle.StartValue);
-		for (auto & v : singles) {
+		for (auto v : singles) {
+			if (std::any_of(perfectSingles.begin(), perfectSingles.end(), [v](uint8_t pv)->bool { return v == pv; })) {
+				continue;
+			}
+			else {
+				perfectSingles.push_back(v);
+			}
+		}
+		for (auto & v : perfectSingles) {
 			r.push_back(std::move(CardStyle::SingleStyle(v)));
 		}
 		break;

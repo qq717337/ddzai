@@ -53,7 +53,9 @@ public:
 	CardVector RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi);
 	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len);
 	std::vector<CardVector> IsolateCards(bool sub=false);
-	std::vector<CardStyle> FindAvailablePlay();
+
+	std::vector<CardStyle> LongestStyle();
+	CardStyle MinValueStyle();
 	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi);
 
 	bool CanTake(const CardStyle& lastStyle)const;

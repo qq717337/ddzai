@@ -193,8 +193,8 @@ namespace UnitTest_HandCards
 		TEST_METHOD(TestTips)
 		{
 			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x36,0x17,0x18,0x1f,0x2f });
-			auto tips = v.FindAvailableTake(CardStyle::DoubleChainStyle(CardIndex_3, CardIndex_5), true);
-			auto tips2 = v.FindAvailablePlay();
+			auto tips = v.FindAvailableTake(CardStyle::DoubleStyle(CardIndex_3), true);
+			auto tips2 = v.MinValueStyle();
 			Assert::AreEqual(tips.empty(), false);
 		}
 	};

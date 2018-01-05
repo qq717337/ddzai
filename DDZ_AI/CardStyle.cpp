@@ -151,6 +151,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	for (size_t i = 0; i < length; ++i) {
 		indexCards[i] = HandCardsFlag::CardValueToIndex(cards[i]);
 	}
+	std::sort(indexCards.begin(), indexCards.end());
 	if (cards.size() >= 5) {
 		bool isChain = true;
 	for (int i = 1; i < indexCards.size(); i++) {
@@ -192,9 +193,14 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	}
 	case 4: {
 		auto m = cardCountMap(indexCards);
+		int8_t boom = -1;
 		int8_t triple = -1;
 		int8_t extra = -1;
+
 		for (auto &v : m) {
+			if (v.second == 4) {
+				boom = v.first;
+			}
 			if (v.second == 3) {
 				triple = v.first;
 			}
@@ -202,8 +208,11 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				extra = v.first;
 			}
 		}
+		if (boom > -1) {
+			return CardStyle::BoomStyle(boom);
+		}
 		if (triple > -1 && extra > -1) {
-			return CardStyle(ECardStyle::Triple_One,uint8_t(triple), uint8_t(triple), { uint8_t(extra) });
+			return CardStyle::TripleOneStyle(triple, { uint8_t(extra) });
 		}
 
 		break;
@@ -396,7 +405,6 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		break;
-
 	}
 	case 14: {
 		auto m = cardCountMap(indexCards);
@@ -414,6 +422,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
 			}
 		}
+		break;
 	}
 	case 15:
 	{
@@ -537,7 +546,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				case ECardStyle::Triple_Chain_One:
 				case ECardStyle::Triple_Chain_Two:
 					if ((EndValue - StartValue) == (style.EndValue - style.StartValue)) {
-						if (StartValue > style.EndValue) {
+						if (StartValue > style.StartValue) {
 							return 1;
 						}
 						else {
