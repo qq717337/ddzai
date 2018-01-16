@@ -33,7 +33,8 @@ public:
 	static CardStyle TripleOneStyle(uint8_t value, const CardVector &extra);
 	static CardStyle TripleTwoStyle(uint8_t value, const CardVector &extra);
 	static CardStyle BoomStyle(uint8_t value);
-	static CardStyle QuadTwoStyle(uint8_t value, const CardVector &extra);
+	static CardStyle QuadSingleStyle(uint8_t value, const CardVector &extra);
+	static CardStyle QuadDoubleStyle(uint8_t value, const CardVector &extra);
 	static CardStyle SingleChainStyle(uint8_t startValue, uint8_t endValue);
 	static CardStyle DoubleChainStyle(uint8_t startValue, uint8_t endValue);
 	static CardStyle TripleChainZeroStyle(uint8_t startValue, uint8_t endValue);

@@ -122,8 +122,10 @@ int  CardStyle::GetCardsCount()const {
 		return 2;
 	case ECardStyle::Boom:
 		return 4;
-	case ECardStyle::Quad_Two:
+	case ECardStyle::Quad_Single:
 		return 6;
+	case ECardStyle::Quad_Double:
+		return 8;
 	case ECardStyle::Triple_Zero:
 		return 3;
 	case ECardStyle::Triple_One:
@@ -270,7 +272,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 		}
 		else {
 			if (boom > -1 && extra.size() == 2)
-				return CardStyle(ECardStyle::Quad_Two, boom, boom, extra);
+				return CardStyle(ECardStyle::Quad_Single, boom, boom, extra);
 		}
 		break;
 
@@ -279,13 +281,14 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 		auto m = cardCountMap(indexCards);
 		CardVector tripleChain;
 		CardVector extra;
+		CardVector boom;
 		CardVector doubleChain;
 		for (auto &kv : m) {
 			if (kv.second == 3) {
 				tripleChain.push_back(kv.first);
 			}
 			if (kv.second == 4) {
-
+				boom.push_back(kv.first);
 				tripleChain.push_back(kv.first);
 				extra.push_back(kv.first);
 			}
@@ -309,6 +312,13 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			if (*min_max.second - *min_max.first == 1) {
 				return CardStyle(ECardStyle::Triple_Chain_One, *min_max.first, *min_max.second, extra);
 			}
+		}
+		if (boom.size() == 1 && doubleChain.size() == 2) {
+			return CardStyle::QuadDoubleStyle(boom[0], doubleChain);
+		}
+		if (boom.size() == 2) {
+			std::sort(boom.begin(), boom.end());
+			return CardStyle::QuadDoubleStyle(boom[1], { boom[0],boom[0] });
 		}
 		break;
 	}
@@ -485,9 +495,14 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 		return CardStyle(ECardStyle::Boom, value);
 	}
 
-	CardStyle CardStyle::QuadTwoStyle(uint8_t value, const CardVector & extra)
+	CardStyle CardStyle::QuadSingleStyle(uint8_t value, const CardVector & extra)
 	{
-		return CardStyle(ECardStyle::Quad_Two, value, value, extra);
+		return CardStyle(ECardStyle::Quad_Single, value, value, extra);
+	}
+
+	CardStyle CardStyle::QuadDoubleStyle(uint8_t value, const CardVector & extra)
+	{
+		return CardStyle(ECardStyle::Quad_Double, value, value, extra);
 	}
 
 	CardStyle CardStyle::SingleChainStyle(uint8_t startValue, uint8_t endValue)
@@ -534,6 +549,8 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				case ECardStyle::Triple_Two:
 				case ECardStyle::Triple_One:
 				case ECardStyle::Boom:
+				case ECardStyle::Quad_Double:
+				case ECardStyle::Quad_Single:
 					if (StartValue > style.StartValue) {
 						return 1;
 					}
@@ -599,8 +616,10 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			return("Triple_Chain_One");
 		case ECardStyle::Triple_Chain_Two:
 			return("Triple_Chain_Two");
-		case ECardStyle::Quad_Two:
-			return("Quad_Two");
+		case ECardStyle::Quad_Single:
+			return("Quad_Single");
+		case ECardStyle::Quad_Double:
+			return("Quad_Double");
 		default:
 			break;
 		}
@@ -636,7 +655,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 		switch (Style)
 		{
 		case ECardStyle::Boom:
-		case ECardStyle::Quad_Two:
+		case ECardStyle::Quad_Single:
 			return true;
 		case ECardStyle::Triple_Zero:
 		case ECardStyle::Triple_One:

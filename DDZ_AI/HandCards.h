@@ -54,7 +54,9 @@ public:
 	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len);
 	std::vector<CardVector> IsolateCards(bool sub=false);
 
+	//取最长的风格
 	std::vector<CardStyle> LongestStyle();
+	//按照最小值取风格
 	CardStyle MinValueStyle();
 	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi);
 
