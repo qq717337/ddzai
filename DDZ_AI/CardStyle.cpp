@@ -2,7 +2,6 @@
 #include "CardStyle.h"
 #include "HandCardsFlag.h"
 #include"common_algorithm.h"
-
 const CardStyle CardStyle::Invalid = CardStyle(ECardStyle::Invalid, 0, 0);
 const CardStyle CardStyle::JokerBoom = CardStyle(ECardStyle::Boom, CardIndex_JokerBoom);
 
@@ -156,13 +155,13 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 	std::sort(indexCards.begin(), indexCards.end());
 	if (cards.size() >= 5) {
 		bool isChain = true;
-	for (int i = 1; i < indexCards.size(); i++) {
-		if (indexCards[i] - indexCards[i - 1] != 1) {
-			isChain = false;
+		for (int i = 1; i < indexCards.size(); i++) {
+			if (indexCards[i] - indexCards[i - 1] != 1) {
+				isChain = false;
+			}
 		}
-	}
-	if (isChain)
-		return CardStyle::SingleChainStyle(*indexCards.begin(), *(indexCards.end() - 1));
+		if (isChain)
+			return CardStyle::SingleChainStyle(*indexCards.begin(), *(indexCards.end() - 1));
 
 	}
 	switch (length) {
@@ -224,7 +223,7 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 		auto m = cardCountMap(indexCards);
 		int8_t triple = -1;
 		int8_t extra = -1;
-		for(auto &v:m){
+		for (auto &v : m) {
 			if (v.second == 3) {
 				triple = v.first;
 			}
@@ -233,9 +232,9 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (triple > -1 && extra > -1) {
-			return CardStyle(ECardStyle::Triple_Two, uint8_t(triple), uint8_t(triple),{ uint8_t(extra) });
+			return CardStyle(ECardStyle::Triple_Two, uint8_t(triple), uint8_t(triple), { uint8_t(extra) });
 		}
-				
+
 		break;
 	}
 	case 6: {
@@ -261,18 +260,18 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (doubleChain.size() == 3) {
-			auto min_max = std::minmax_element(doubleChain.begin(), doubleChain.end());
-			return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
+			return CardStyle::DoubleChainStyle(*doubleChain.begin(), *(--doubleChain.end()));
 		}
 		if (tripleChain.size() == 2) {
-			auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
-			if (*min_max.second - *min_max.first == 1) {
-				return CardStyle(ECardStyle::Triple_Chain_Zero, *min_max.first, *min_max.second);
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 1 && max < CardIndex_2) {
+				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		else {
 			if (boom > -1 && extra.size() == 2)
-				return CardStyle(ECardStyle::Quad_Single, boom, boom, extra);
+				return CardStyle::QuadSingleStyle(boom, extra);
 		}
 		break;
 
@@ -302,22 +301,23 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (doubleChain.size() == 4) {
-			auto min_max = std::minmax_element(doubleChain.begin(), doubleChain.end());
-			if (*min_max.second - *min_max.first == 3) {
-				return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 3 && max < CardIndex_2) {
+				return CardStyle::DoubleChainStyle(min, max);
 			}
 		}
 		if (tripleChain.size() == 2) {
-			auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
-			if (*min_max.second - *min_max.first == 1) {
-				return CardStyle(ECardStyle::Triple_Chain_One, *min_max.first, *min_max.second, extra);
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 1 && max < CardIndex_2) {
+				return CardStyle::TripleChainOneStyle(min, max, extra);
 			}
 		}
 		if (boom.size() == 1 && doubleChain.size() == 2) {
 			return CardStyle::QuadDoubleStyle(boom[0], doubleChain);
 		}
 		if (boom.size() == 2) {
-			std::sort(boom.begin(), boom.end());
 			return CardStyle::QuadDoubleStyle(boom[1], { boom[0],boom[0] });
 		}
 		break;
@@ -336,9 +336,10 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (tripleChain.size() == 3) {
-			auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
-			if (*min_max.second - *min_max.first == 2) {
-				return CardStyle(ECardStyle::Triple_Chain_Zero, *min_max.first, *min_max.second);
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 2 && max < CardIndex_2) {
+				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		break;
@@ -360,15 +361,17 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (doubleChain.size() == 5) {
-			auto min_max = std::minmax_element(doubleChain.begin(), doubleChain.end());
-			if (*min_max.second - *min_max.first == 4) {
-				return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 4 && max < CardIndex_2) {
+				return CardStyle(ECardStyle::Double_Chain, min, max);
 			}
 		}
 		if (tripleChain.size() == 2 && extra.size() == 2) {
-			auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
-			if (*min_max.second - *min_max.first == 1) {
-				return CardStyle(ECardStyle::Triple_Chain_Two, *min_max.first, *min_max.second, extra);
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 1 && max < CardIndex_2) {
+				return CardStyle::TripleChainTwoStyle(min, max, extra);
 			}
 		}
 		break;
@@ -398,20 +401,22 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (doubleChain.size() == 6) {
-			auto min_max = std::minmax_element(doubleChain.begin(), doubleChain.end());
-			if (*min_max.second - *min_max.first == 5) {
-				return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 5) {
+				return CardStyle::DoubleChainStyle(min, max);
 			}
 		}
-		auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
+		auto min = *tripleChain.begin();
+		auto max = *(--tripleChain.end());
 		if (tripleChain.size() == 4) {
-			if (*min_max.second - *min_max.first == 3) {
-				return CardStyle(ECardStyle::Triple_Chain_Zero, *min_max.first, *min_max.second);
+			if (max - min == 3 && max < CardIndex_2) {
+				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		if (tripleChain.size() == 3 && extra.size() == 3) {
-			if (*min_max.second - *min_max.first == 2) {
-				return CardStyle(ECardStyle::Triple_Chain_One, *min_max.first, *min_max.second, extra);
+			if (max - min == 2 && max < CardIndex_2) {
+				return CardStyle::TripleChainOneStyle(min, max, extra);
 			}
 		}
 		break;
@@ -426,10 +431,10 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			}
 		}
 		if (doubleChain.size() == 7) {
-			auto min_max = std::minmax_element(doubleChain.begin(), doubleChain.end());
-
-			if (*min_max.second - *min_max.first == 6) {
-				return CardStyle(ECardStyle::Double_Chain, *min_max.first, *min_max.second);
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 6 && max < CardIndex_2) {
+				return CardStyle::DoubleChainStyle(min, max);
 			}
 		}
 		break;
@@ -447,248 +452,350 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				extra.push_back(kv.first);
 			}
 		}
-		auto min_max = std::minmax_element(tripleChain.begin(), tripleChain.end());
+		auto min = *tripleChain.begin();
+		auto max = *(--tripleChain.end());
 		if (tripleChain.size() == 5) {
-			if (*min_max.second - *min_max.first == 4) {
-				return CardStyle(ECardStyle::Triple_Chain_Zero, *min_max.first, *min_max.second);
+			if (max - min == 4 && max < CardIndex_2) {
+				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		if (tripleChain.size() == 3 && extra.size() == 3) {
-			if (*min_max.second - *min_max.first == 2) {
-				return CardStyle(ECardStyle::Triple_Chain_Two, *min_max.first, *min_max.second, extra);
+			if (max - min == 2 && max < CardIndex_2) {
+				return CardStyle::TripleChainTwoStyle(min, max, extra);
+			}
+		}
+		break;
+	}
+	case 16:
+	{
+		auto m = cardCountMap(indexCards);
+		CardVector tripleChain;
+		CardVector extra;
+		CardVector doubleChain;
+
+		for (auto& kv : m)
+		{
+			if (kv.second == 4) {
+				tripleChain.push_back(kv.first);
+				extra.push_back(kv.first);
+			}
+			if (kv.second == 3) {
+				tripleChain.push_back(kv.first);
+			}
+			if (kv.second == 2) {
+				doubleChain.push_back(kv.first);
+			}
+			if (kv.second == 1) {
+				extra.push_back(kv.first);
+			}
+		}
+		if (tripleChain.size() == 4 && extra.size() == 4)
+		{
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 3 && max < CardIndex_2)
+			{
+				return  CardStyle::TripleChainOneStyle(min, max, extra);
+			}
+		}
+		if (doubleChain.size() == 8)
+		{
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 7 && max < CardIndex_2)
+			{
+				return CardStyle::DoubleChainStyle(min, max);
+			}
+		}
+		break;
+	}
+	case 18:
+	{
+		auto m = cardCountMap(indexCards);
+		CardVector doubleChain;
+
+		for (auto& kv : m)
+		{
+			if (kv.second == 2)
+			{
+				doubleChain.push_back(kv.first);
+			}
+		}
+		auto min = *doubleChain.begin();
+		auto max = *(--doubleChain.end());
+
+		if (doubleChain.size() == 9 && max - min == 8 && max < CardIndex_2)
+		{
+			return CardStyle::DoubleChainStyle(min, max);
+		}
+		break;
+	}
+	case 20:
+	{
+		auto m = cardCountMap(indexCards);
+		CardVector tripleChain;
+		CardVector doubleChain;
+
+		for (auto& kv : m)
+		{
+			if (kv.second == 3)
+			{
+				tripleChain.push_back(kv.first);
+			}
+			if (kv.second == 2)
+			{
+				doubleChain.push_back(kv.first);
+			}
+		}
+		if (tripleChain.size() == 4 && doubleChain.size() == 4)
+		{
+			auto min = *tripleChain.begin();
+			auto max = *(--tripleChain.end());
+			if (max - min == 3 && max < CardIndex_2)
+			{
+				return CardStyle::TripleChainTwoStyle(min, max, doubleChain);
+			}
+		}
+		if (doubleChain.size() == 10)
+		{
+			auto min = *doubleChain.begin();
+			auto max = *(--doubleChain.end());
+			if (max - min == 9 && max < CardIndex_2)
+			{
+				return  CardStyle::DoubleChainStyle(min, max);
 			}
 		}
 		break;
 	}
 	}
-			 return CardStyle::Invalid;
+	return CardStyle::Invalid;
+}
+
+
+CardStyle CardStyle::SingleStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Single, value);
+}
+
+CardStyle CardStyle::DoubleStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Double, value);
+}
+
+CardStyle CardStyle::TripleZeroStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Triple_Zero, value);
+}
+
+CardStyle CardStyle::TripleOneStyle(uint8_t value, const CardVector &extra)
+{
+	return CardStyle(ECardStyle::Triple_One, value, value, extra);
+}
+
+CardStyle CardStyle::TripleTwoStyle(uint8_t value, const CardVector & extra)
+{
+	return CardStyle(ECardStyle::Triple_Two, value, value, extra);
+}
+
+CardStyle CardStyle::BoomStyle(uint8_t value)
+{
+	return CardStyle(ECardStyle::Boom, value);
+}
+
+CardStyle CardStyle::QuadSingleStyle(uint8_t value, const CardVector & extra)
+{
+	return CardStyle(ECardStyle::Quad_Single, value, value, extra);
+}
+
+CardStyle CardStyle::QuadDoubleStyle(uint8_t value, const CardVector & extra)
+{
+	return CardStyle(ECardStyle::Quad_Double, value, value, extra);
+}
+
+CardStyle CardStyle::SingleChainStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Single_Chain, startValue, endValue);
+}
+
+CardStyle CardStyle::DoubleChainStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Double_Chain, startValue, endValue);
+}
+
+CardStyle CardStyle::TripleChainZeroStyle(uint8_t startValue, uint8_t endValue)
+{
+	return CardStyle(ECardStyle::Triple_Chain_Zero, startValue, endValue);
+}
+
+CardStyle CardStyle::TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
+{
+	return CardStyle(ECardStyle::Triple_Chain_One, startValue, endValue, extra);
+}
+
+CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
+{
+	return CardStyle(ECardStyle::Triple_Chain_Two, startValue, endValue);
+}
+
+
+int CardStyle::Compare(const CardStyle & style)const
+{
+	bool isPBoom = Style == ECardStyle::Boom;
+	bool isABoom = style.Style == ECardStyle::Boom;
+
+	if (Style == style.Style &&  StartValue == EndValue &&  EndValue == style.EndValue) {
+		return 0;
 	}
 
-
-	CardStyle CardStyle::SingleStyle(uint8_t value)
-	{
-		return CardStyle(ECardStyle::Single, value);
-	}
-
-	CardStyle CardStyle::DoubleStyle(uint8_t value)
-	{
-		return CardStyle(ECardStyle::Double, value);
-	}
-
-	CardStyle CardStyle::TripleZeroStyle(uint8_t value)
-	{
-		return CardStyle(ECardStyle::Triple_Zero, value);
-	}
-
-	CardStyle CardStyle::TripleOneStyle(uint8_t value, const CardVector &extra)
-	{
-		return CardStyle(ECardStyle::Triple_One, value, value, extra);
-	}
-
-	CardStyle CardStyle::TripleTwoStyle(uint8_t value, const CardVector & extra)
-	{
-		return CardStyle(ECardStyle::Triple_Two, value, value, extra);
-	}
-
-	CardStyle CardStyle::BoomStyle(uint8_t value)
-	{
-		return CardStyle(ECardStyle::Boom, value);
-	}
-
-	CardStyle CardStyle::QuadSingleStyle(uint8_t value, const CardVector & extra)
-	{
-		return CardStyle(ECardStyle::Quad_Single, value, value, extra);
-	}
-
-	CardStyle CardStyle::QuadDoubleStyle(uint8_t value, const CardVector & extra)
-	{
-		return CardStyle(ECardStyle::Quad_Double, value, value, extra);
-	}
-
-	CardStyle CardStyle::SingleChainStyle(uint8_t startValue, uint8_t endValue)
-	{
-		return CardStyle(ECardStyle::Single_Chain, startValue, endValue);
-	}
-
-	CardStyle CardStyle::DoubleChainStyle(uint8_t startValue, uint8_t endValue)
-	{
-		return CardStyle(ECardStyle::Double_Chain, startValue, endValue);
-	}
-
-	CardStyle CardStyle::TripleChainZeroStyle(uint8_t startValue, uint8_t endValue)
-	{
-		return CardStyle(ECardStyle::Triple_Chain_Zero, startValue, endValue);
-	}
-
-	CardStyle CardStyle::TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
-	{
-		return CardStyle(ECardStyle::Triple_Chain_One, startValue, endValue, extra);
-	}
-
-	CardStyle CardStyle::TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector & extra)
-	{
-		return CardStyle(ECardStyle::Triple_Chain_Two, startValue, endValue);
-	}
-
-
-	int CardStyle::Compare(const CardStyle & style)const
-	{
-		bool isPBoom = Style == ECardStyle::Boom;
-		bool isABoom = style.Style == ECardStyle::Boom;
-
-		if (Style == style.Style &&  StartValue == EndValue &&  EndValue == style.EndValue) {
-			return 0;
-		}
-
-		if (isPBoom == isABoom) {
-			if (Style == style.Style) {
-				switch (Style) {
-				case ECardStyle::Single:
-				case ECardStyle::Double:
-				case ECardStyle::Triple_Zero:
-				case ECardStyle::Triple_Two:
-				case ECardStyle::Triple_One:
-				case ECardStyle::Boom:
-				case ECardStyle::Quad_Double:
-				case ECardStyle::Quad_Single:
+	if (isPBoom == isABoom) {
+		if (Style == style.Style) {
+			switch (Style) {
+			case ECardStyle::Single:
+			case ECardStyle::Double:
+			case ECardStyle::Triple_Zero:
+			case ECardStyle::Triple_Two:
+			case ECardStyle::Triple_One:
+			case ECardStyle::Boom:
+			case ECardStyle::Quad_Double:
+			case ECardStyle::Quad_Single:
+				if (StartValue > style.StartValue) {
+					return 1;
+				}
+				else {
+					return -1;
+				}
+			case ECardStyle::Single_Chain:
+			case ECardStyle::Double_Chain:
+			case ECardStyle::Triple_Chain_Zero:
+			case ECardStyle::Triple_Chain_One:
+			case ECardStyle::Triple_Chain_Two:
+				if ((EndValue - StartValue) == (style.EndValue - style.StartValue)) {
 					if (StartValue > style.StartValue) {
 						return 1;
 					}
 					else {
 						return -1;
 					}
-				case ECardStyle::Single_Chain:
-				case ECardStyle::Double_Chain:
-				case ECardStyle::Triple_Chain_Zero:
-				case ECardStyle::Triple_Chain_One:
-				case ECardStyle::Triple_Chain_Two:
-					if ((EndValue - StartValue) == (style.EndValue - style.StartValue)) {
-						if (StartValue > style.StartValue) {
-							return 1;
-						}
-						else {
-							return -1;
-						}
-					}
-					else {
-						return 0;
-					}
+				}
+				else {
+					return 0;
 				}
 			}
-			else {
-				return 0;
-			}
 		}
 		else {
-			if (isPBoom) {
-				return 1;
-			}
-			if (isABoom) {
-				return -1;
-			}
+			return 0;
 		}
-		return 0;
 	}
-	std::string CardStyle::StyleString()const {
-		switch (Style)
-		{
-		case ECardStyle::Invalid:
-			return ("Invalid");
-		case ECardStyle::Boom:
-			return("Boom");
-		case ECardStyle::Triple_Zero:
-			return("Triple_Zero");
-		case ECardStyle::Triple_Two:
-			return("Triple_Two");
-		case ECardStyle::Triple_One:
-			return("Triple_One");
-		case ECardStyle::Double:
-			return("Double");
-		case ECardStyle::Double_Chain:
-			return("Double_Chain");
-		case ECardStyle::Single:
-			return("Single");
-		case ECardStyle::Single_Chain:
-			return("Single_Chain");
-		case ECardStyle::Triple_Chain_Zero:
-			return("Triple_Chain_Zero");
-		case ECardStyle::Triple_Chain_One:
-			return("Triple_Chain_One");
-		case ECardStyle::Triple_Chain_Two:
-			return("Triple_Chain_Two");
-		case ECardStyle::Quad_Single:
-			return("Quad_Single");
-		case ECardStyle::Quad_Double:
-			return("Quad_Double");
-		default:
-			break;
+	else {
+		if (isPBoom) {
+			return 1;
 		}
-		return "";
+		if (isABoom) {
+			return -1;
+		}
 	}
-	std::string CardStyle::ToString()const {
-		if (Style == ECardStyle::Boom && StartValue > CardIndex_2) {
-			return "Joker Boom";
-		}
-		std::string r(StyleString());
+	return 0;
+}
+std::string CardStyle::StyleString()const {
+	switch (Style)
+	{
+	case ECardStyle::Invalid:
+		return ("Invalid");
+	case ECardStyle::Boom:
+		return("Boom");
+	case ECardStyle::Triple_Zero:
+		return("Triple_Zero");
+	case ECardStyle::Triple_Two:
+		return("Triple_Two");
+	case ECardStyle::Triple_One:
+		return("Triple_One");
+	case ECardStyle::Double:
+		return("Double");
+	case ECardStyle::Double_Chain:
+		return("Double_Chain");
+	case ECardStyle::Single:
+		return("Single");
+	case ECardStyle::Single_Chain:
+		return("Single_Chain");
+	case ECardStyle::Triple_Chain_Zero:
+		return("Triple_Chain_Zero");
+	case ECardStyle::Triple_Chain_One:
+		return("Triple_Chain_One");
+	case ECardStyle::Triple_Chain_Two:
+		return("Triple_Chain_Two");
+	case ECardStyle::Quad_Single:
+		return("Quad_Single");
+	case ECardStyle::Quad_Double:
+		return("Quad_Double");
+	default:
+		break;
+	}
+	return "";
+}
+std::string CardStyle::ToString()const {
+	if (Style == ECardStyle::Boom && StartValue > CardIndex_2) {
+		return "Joker Boom";
+	}
+	std::string r(StyleString());
 
-		r.push_back(' ');
-		if (EndValue == StartValue) {
-			r.append(CardNameTable[StartValue]);
-		}
-		else {
-			r.append(CardNameTable[StartValue]);
-			r.append(" - ");
-			r.append(CardNameTable[EndValue]);
-		}
-		if (Extra.size() == 0)
-			return r;
-		r.append("  [");
-		for (auto &v : Extra) {
-			r.append(CardNameTable[v]);
-		}
-		r.push_back(']');
+	r.push_back(' ');
+	if (EndValue == StartValue) {
+		r.append(CardNameTable[StartValue]);
+	}
+	else {
+		r.append(CardNameTable[StartValue]);
+		r.append(" - ");
+		r.append(CardNameTable[EndValue]);
+	}
+	if (Extra.size() == 0)
 		return r;
+	r.append("  [");
+	for (auto &v : Extra) {
+		r.append(CardNameTable[v]);
 	}
+	r.push_back(']');
+	return r;
+}
 
-	bool CardStyle::IsBigCard()const
+bool CardStyle::IsBigCard()const
+{
+	switch (Style)
 	{
-		switch (Style)
-		{
-		case ECardStyle::Boom:
-		case ECardStyle::Quad_Single:
-			return true;
-		case ECardStyle::Triple_Zero:
-		case ECardStyle::Triple_One:
-		case ECardStyle::Triple_Two:
-			return StartValue >= CardIndex_J;
-		case ECardStyle::Double:
-			return StartValue >= CardIndex_K;
-		case ECardStyle::Single:
-			return StartValue >= CardIndex_2;
-		default:
-			return EndValue >= CardIndex_J;
-			break;
-		}
-		return false;
+	case ECardStyle::Boom:
+	case ECardStyle::Quad_Single:
+		return true;
+	case ECardStyle::Triple_Zero:
+	case ECardStyle::Triple_One:
+	case ECardStyle::Triple_Two:
+		return StartValue >= CardIndex_J;
+	case ECardStyle::Double:
+		return StartValue >= CardIndex_K;
+	case ECardStyle::Single:
+		return StartValue >= CardIndex_2;
+	default:
+		return EndValue >= CardIndex_J;
+		break;
 	}
+	return false;
+}
 
 
-	CardStyle& CardStyle::operator=(const CardStyle& in) {
-		if (&in != this) {
-			Style = in.Style;
-			StartValue = in.StartValue;
-			EndValue = in.EndValue;
-			Extra = in.Extra;
-		}
-		return *this;
+CardStyle& CardStyle::operator=(const CardStyle& in) {
+	if (&in != this) {
+		Style = in.Style;
+		StartValue = in.StartValue;
+		EndValue = in.EndValue;
+		Extra = in.Extra;
 	}
+	return *this;
+}
 
-	bool CardStyle::operator==(const CardStyle & in)const
-	{
-		return Style == in.Style && StartValue == in.StartValue && EndValue == in.EndValue && Extra == in.Extra;
-	}
+bool CardStyle::operator==(const CardStyle & in)const
+{
+	return Style == in.Style && StartValue == in.StartValue && EndValue == in.EndValue && Extra == in.Extra;
+}
 
-	bool CardStyle::operator!=(const CardStyle & in)const
-	{
-		return Style != in.Style || StartValue != in.StartValue || EndValue != in.EndValue || Extra != in.Extra;
-	}
+bool CardStyle::operator!=(const CardStyle & in)const
+{
+	return Style != in.Style || StartValue != in.StartValue || EndValue != in.EndValue || Extra != in.Extra;
+}

@@ -53,15 +53,10 @@ namespace UnitTest_HandCards
 			CardVector a({ 0x28,0x16,0x18,0x36,0x1e,0x38,0x19,0x29,0x49,0x2e });
 
 			CardStyle s = CardStyle::FromCardsValue(a);
-			Assert::AreEqual(s.StartValue, uint8_t(0));
-			Assert::AreEqual(s.EndValue, uint8_t(1));
-			Assert::AreEqual(s.Style, int(ECardStyle::Triple_Chain_Zero));
 
-			CardStyle sb(ECardStyle::Triple_Chain_Zero, uint8_t(4), uint8_t(5));
+			CardStyle sb(ECardStyle::Triple_Chain_Two, uint8_t(4), uint8_t(5), {1,2});
 			int compareRet = sb.Compare(s);
-			Assert::AreEqual(compareRet, 1);
-
-
+			Assert::AreEqual(compareRet, -1);
 			CardStyle se(ECardStyle::Triple_Chain_One, uint8_t(4), uint8_t(5));
 			compareRet = se.Compare(s);
 			Assert::AreEqual(compareRet, 0);
@@ -69,14 +64,11 @@ namespace UnitTest_HandCards
 
 		TEST_METHOD(TestCardStyleCardCount)
 		{
-			uint8_t a[] = { 0x13,0x23,0x33,0x14,0x24,0x34 };
-			std::vector<uint8_t> x(a, a + 6);
-			CardStyle s0 = CardStyle::FromCardsValue(x);
-			Assert::AreEqual(s0.GetCardsCount(), 6);
+			CardStyle s0 = CardStyle::FromCardsValue({ 0x34,0x14,0x24  ,0x13,0x13,0x26,0x23,0x33,0x15,0x25,0x35,0x45,0x16,0x26,0x46,0x1f });
+			Assert::AreEqual(s0.GetCardsCount(), 16);
 
 			CardStyle s1(ECardStyle::Triple_Chain_One, uint8_t(4), uint8_t(6));
 			Assert::AreEqual(s1.GetCardsCount(), 12);
-
 
 			CardStyle s2(ECardStyle::Triple_Chain_Two, uint8_t(4), uint8_t(5));
 			Assert::AreEqual(s2.GetCardsCount(), 10);
