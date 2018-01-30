@@ -29,7 +29,7 @@ namespace Common {
 		HANDLE hFind = INVALID_HANDLE_VALUE;
 		auto ahead = std::wstring(path);
 		ahead.push_back('\\');
-		const wchar_t* DirSpec = path.append(TEXT("\\*")).c_str();                 //定义要遍历的文件夹的目录  
+		const wchar_t* DirSpec = path.append(std::wstring(L"\\*")).c_str();                 //定义要遍历的文件夹的目录  
 		DWORD dwError;
 
 		hFind = FindFirstFile(DirSpec, &FindFileData);          //找到文件夹中的第一个文件  

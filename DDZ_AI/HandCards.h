@@ -48,7 +48,7 @@ public:
 	CardVector AvailableDoubleChain_LaiZi(uint8_t cardStartIndex, int len);
 	CardVector AvailableTripleChain_LaiZi(uint8_t cardStartIndex, int len);
 	bool FindAvailableTriple_LaiZi(bool hasLaizi, uint8_t cardIndex, CardVector& triples); 
-
+	
 	CardVector RequireSingle(int count, CardVector& excludeIndex, bool hasLaiZi);
 	CardVector RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi);
 	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len);
