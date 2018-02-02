@@ -639,6 +639,39 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 					}
 				}
 			}
+			if (r.Valid())
+				return r;
+		}
+		else if (style != ECardStyle::Triple_Chain_One && ProposeCount == 8) {
+			auto quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 4);
+			if (quadIndexIter != CardCount.end()) {
+				uint8_t quadIndex = quadIndexIter - CardCount.begin();
+				auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 1);
+				auto secondExtraIter = std::find(CardCount.begin(), CardCount.end(), 2);
+				if (laiZiIndexIter != CardCount.end())
+				{
+					laiZiIndex = laiZiIndexIter - CardCount.begin();
+					uint8_t secondExtra = secondExtraIter - CardCount.begin();
+					r = QuadDoubleStyle(quadIndex, { secondExtra, laiZiIndex });
+				}
+			}
+
+			quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 3);
+			if (quadIndexIter != CardCount.end()) {
+				uint8_t quadIndex = quadIndexIter - CardCount.begin();
+				laiZiIndex = quadIndex;
+				auto firstExtraIter = std::find(CardCount.begin(), CardCount.end(), 2);
+				if (firstExtraIter != CardCount.end()) {
+					auto secondExtraIter = std::find(firstExtraIter + 1, CardCount.end(), 2);
+					if (secondExtraIter != CardCount.end()) {
+						uint8_t	firstExtra = firstExtraIter - CardCount.begin();
+						uint8_t	secondExtra = secondExtraIter - CardCount.begin();
+						r = QuadDoubleStyle(quadIndex, { firstExtra, secondExtra });
+					}
+				}
+			}
+			if (r.Valid())
+				return r;
 		}
 		else {
 			if (ProposeCount % 3 == 0) {
@@ -732,37 +765,6 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 				laiZiIndex = tripleIndexIter - CardCount.begin();
 				uint8_t extraIndex = extraIndexIter - CardCount.begin();
 				r = TripleTwoStyle(laiZiIndex, { extraIndex });
-			}
-		}
-		break;
-	}
-	case 8:
-	{
-		auto quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 4);
-		if (quadIndexIter != CardCount.end()) {
-			uint8_t quadIndex = quadIndexIter - CardCount.begin();
-			auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 1);
-			auto secondExtraIter = std::find(CardCount.begin(), CardCount.end(), 2);
-			if (laiZiIndexIter != CardCount.end())
-			{
-				laiZiIndex = laiZiIndexIter - CardCount.begin();
-				uint8_t secondExtra = secondExtraIter - CardCount.begin();
-				r = QuadDoubleStyle(quadIndex, { secondExtra, laiZiIndex });
-			}
-		}
-
-		quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 3);
-		if (quadIndexIter != CardCount.end()) {
-			uint8_t quadIndex = quadIndexIter - CardCount.begin();
-			laiZiIndex = quadIndex;
-			auto firstExtraIter = std::find(CardCount.begin(), CardCount.end(), 2);
-			if (firstExtraIter != CardCount.end()) {
-			auto secondExtraIter = std::find(firstExtraIter + 1, CardCount.end(), 2);
-			if (secondExtraIter != CardCount.end()) {
-				uint8_t	firstExtra = firstExtraIter - CardCount.begin();
-				uint8_t	secondExtra = secondExtraIter - CardCount.begin();
-				r = QuadDoubleStyle(quadIndex, { firstExtra, secondExtra });
-			}
 			}
 		}
 		break;

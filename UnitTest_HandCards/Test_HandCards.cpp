@@ -193,7 +193,8 @@ namespace UnitTest_HandCards
 		{
 			uint8_t laiziIndex = 0;
 			auto ret=CardStyle::FromCardsValueWithLaizi({0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x2e, 0x3e,0x4e,0x25,0x26,0x29}, laiziIndex, ECardStyle::Invalid);
-			Assert::AreEqual(ret.Style== ECardStyle::Boom,true);
+			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x15, 0x35 }, laiziIndex, ECardStyle::Invalid);
+			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x15, 0x35 }, laiziIndex, ECardStyle::Triple_Chain_One);
 		}
 	};
 }
