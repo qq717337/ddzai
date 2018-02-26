@@ -13,21 +13,23 @@ uint8_t HandCardsFlag::GetFlag(uint8_t cardIndex, uint8_t color)
 }
 
 uint8_t HandCardsFlag::CardValueToIndex(uint8_t cardValue) {
-	if (cardValue < 0x10) {
-		return cardValue + CardIndex_2;
+	uint8_t cardIndex = (cardValue & 0xf);
+	if (cardIndex < 3) {
+		return cardIndex + CardIndex_2;
 	}
 	else {
-		uint8_t r = (cardValue & 0xf) - 3;
+		int r = cardIndex - 3;
 		return r;
 	}
 }
 void HandCardsFlag::CardValueToColorIndex(uint8_t cardValue, uint8_t * color, uint8_t * index) {
-	if (cardValue < 0x10) {
-		*index = cardValue + CardIndex_2;
+	uint8_t cardIndex = (cardValue & 0xf);
+	if (cardIndex < 3) {
+		*index = cardIndex + CardIndex_2;
 		*color = 0;
 	}
 	else {
-		*index = (cardValue & 0xf) - 3;
+		*index = cardIndex - 3;
 		*color = ((cardValue & uint8_t(0xf0)) >> 4) - 1;
 	}
 }
@@ -36,7 +38,7 @@ uint8_t HandCardsFlag::CardColorIndexToValue(uint8_t color, uint8_t index) {
 		return index - CardIndex_2;
 	}
 	else {
-		return ((color+1) <<4) | (index + 3);
+		return ((color + 1) << 4) | (index + 3);
 	}
 }
 
@@ -347,68 +349,6 @@ CardVector  HandCardsFlag::AvailableChain(bool isBigger, uint8_t cardIndex, int 
 	return validChain;
 }
 
-std::vector<CardRange> HandCardsFlag::AvailableTripleChainRange()const {
-	std::vector<CardRange> r;
-	CardVector  chain = AvailableTripleChain();
-	if (chain.size() > 0) {
-		uint8_t head = chain[0];
-		uint8_t tail = head;
-		for (auto &v : chain) {
-			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 1));
-				head = v;
-				tail = v;
-			}
-			if (v - tail == 1) {
-				tail = v;
-			}
-		}
-		r.push_back(CardRange(head, tail + 1));
-	}
-	return r;
-}
-
-std::vector<CardRange> HandCardsFlag::AvailableDoubleChainRange()const {
-	std::vector<CardRange> r;
-	CardVector  chain = AvailableDoubleChain();
-	if (chain.size() > 0) {
-		uint8_t head = chain[0];
-		uint8_t tail = head;
-		for (auto &v : chain) {
-			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 2));
-				head = v;
-				tail = v;
-			}
-			if (v - tail == 1) {
-				tail = v;
-			}
-		}
-		r.push_back(CardRange(head, tail + 2));
-	}
-	return r;
-}
-
-std::vector<CardRange> HandCardsFlag::AvailableSingleChainRange() const {
-	std::vector<CardRange> r;
-	CardVector  chain = AvailableSingleChain();
-	if (chain.size() > 0) {
-		uint8_t head = chain[0];
-		uint8_t tail = head;
-		for (auto &v : chain) {
-			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 4));
-				head = v;
-				tail = v;
-			}
-			if (v - tail == 1) {
-				tail = v;
-			}
-		}
-		r.push_back(CardRange(head, tail + 4));
-	}
-	return r;
-}
 
 HandCardsFlag::~HandCardsFlag()
 {

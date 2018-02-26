@@ -119,8 +119,11 @@ int  CardStyle::GetCardsCount()const {
 		return 1;
 	case ECardStyle::Double:
 		return 2;
-	case ECardStyle::Boom:
+	case ECardStyle::Boom:{
+		if (StartValue == CardIndex_JokerBoom)
+			return 2;
 		return 4;
+	}
 	case ECardStyle::Quad_Single:
 		return 6;
 	case ECardStyle::Quad_Double:
@@ -192,11 +195,11 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			return CardStyle(ECardStyle::Double, v, v);
 		}
 		else {
-			if (cards[0] + cards[1] == 3) {
+			if (indexCards[0] == CardIndex_SmallJoker && indexCards[1] == CardIndex_LargeJoker) {
 				return CardStyle::JokerBoom;
 			}
 			else {
-				//logger.Error("无效的2张牌")
+				return CardStyle::Invalid;
 			}
 		}
 		break;
@@ -597,14 +600,14 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 	if (ProposeCount >= 5) {
 		r = CheckIfLaiziSingleChain(CardCount, cards, laiZiIndex);
 		if (r.Valid()) {
-			return r;
+			goto ret;
 		}
 	}
 	if (ProposeCount > 5) {
 		if (ProposeCount % 2 == 0) {
 			r = CheckIfLaiziDoubleChain(CardCount, cards, laiZiIndex);
 			if (r.Valid()) {
-				return r;
+				goto ret;
 			}
 		}
 		if (style != ECardStyle::Triple_Zero && ProposeCount == 6) {
@@ -615,6 +618,7 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 					laiZiIndex = laiZiIndexIter - CardCount.begin();
 					uint8_t quadIndex = quadIndexIter - CardCount.begin();
 					r = QuadSingleStyle(quadIndex, { laiZiIndex, laiZiIndex });
+					goto ret;
 				}
 			}
 			quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 3);
@@ -640,7 +644,7 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 				}
 			}
 			if (r.Valid())
-				return r;
+				goto ret;
 		}
 		else if (style != ECardStyle::Triple_Chain_One && ProposeCount == 8) {
 			auto quadIndexIter = std::find(CardCount.begin(), CardCount.end(), 4);
@@ -671,26 +675,26 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 				}
 			}
 			if (r.Valid())
-				return r;
+				goto ret;
 		}
 		else {
 			if (ProposeCount % 3 == 0) {
 				r = CheckIfLaiziTripleChainZero(CardCount, cards, laiZiIndex);
 				if (r.Valid()) {
-					return r;
+					goto ret;
 				}
 			}
 		}
 		if (ProposeCount % 4 == 0) {
 			r = CheckIfLaiziTripleChainOne(CardCount, cards, laiZiIndex);
 			if (r.Valid()) {
-				return r;
+				goto ret;
 			}
 		}
 		if (ProposeCount % 5 == 0) {
 			r = CheckIfLaiziTripleChainTwo(CardCount, cards, laiZiIndex);
 			if (r.Valid()) {
-				return r;
+				goto ret;
 			}
 		}
 	}
@@ -710,7 +714,7 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 			r = JokerBoom;
 		}
 		else {
-			auto	laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 1);
+			auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 1);
 			if (laiZiIndexIter != CardCount.end()) {
 				laiZiIndex = laiZiIndexIter - CardCount.begin();
 				r = DoubleStyle(laiZiIndex);
@@ -720,7 +724,7 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 	}
 	case 3:
 	{
-		auto	laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 2);
+		auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 2);
 		if (laiZiIndexIter != CardCount.end()) {
 			laiZiIndex = laiZiIndexIter - CardCount.begin();
 			r = TripleZeroStyle(laiZiIndex);
@@ -729,14 +733,12 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 	}
 	case 4:
 	{
-		auto	laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 3);
+		auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 3);
 		if (laiZiIndexIter != CardCount.end()) {
 			laiZiIndex = laiZiIndexIter - CardCount.begin();
 			r = BoomStyle(laiZiIndex);
-		}
-		if (laiZiIndex < 0)
-		{
-			auto	laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 2);
+		}else{
+			auto laiZiIndexIter = std::find(CardCount.begin(), CardCount.end(), 2);
 			if (laiZiIndexIter != CardCount.end()) {
 				laiZiIndex = laiZiIndexIter - CardCount.begin();
 				uint8_t extra = std::find(CardCount.begin(), CardCount.end(), 1) - CardCount.begin();
@@ -759,7 +761,7 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 		}
 		else {
 			auto extraIndexIter = std::find(CardCount.begin(), CardCount.end(), 2);
-			auto	tripleIndexIter = std::find(extraIndexIter + 1, CardCount.end(), 2);
+			auto tripleIndexIter = std::find(extraIndexIter + 1, CardCount.end(), 2);
 			if (extraIndexIter != CardCount.end() && tripleIndexIter != CardCount.end() && tripleIndexIter > extraIndexIter)
 			{
 				laiZiIndex = tripleIndexIter - CardCount.begin();
@@ -770,10 +772,10 @@ CardStyle CardStyle::FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIn
 		break;
 	}
 	}
-
+	ret:
 	if (laiZiIndex > 100)
 	{
-		laiZiIndex = laiZiIndex - 100;
+		laiZiIndex = laiZiIndex - 20;
 	}
 	laiZiIndex = HandCardsFlag::CardColorIndexToValue(4, laiZiIndex);
 	return r;

@@ -1,5 +1,4 @@
 #pragma once
-
 #include"stdafx.h"
 #include <vector>
 #include<string>
@@ -7,6 +6,7 @@
 #include "CardConst.h"
 #include"Range.h"
 #include"CardStyle.h"
+
 struct CardSetCompare
 {
 	bool operator()(const uint8_t& lhs, const  uint8_t& rhs)const
@@ -57,7 +57,7 @@ public:
 	void RemoveChain(uint8_t startIndex, uint8_t endIndex, uint8_t count);
 	void RemoveIndex(uint8_t cardIndex, uint8_t count);
 	void RemoveCard(uint8_t color, uint8_t cardIndex);
-	void RemoveCard(uint8_t cardValue); 
+	void RemoveCard(uint8_t cardValue);
 	void RemoveCard(const CardStyle& style);
 	void AddCard(uint8_t color, uint8_t cardIndex);
 	void AddCard(uint8_t cardValue);
@@ -72,26 +72,23 @@ public:
 	virtual CardVector AvailableDouble()const;
 	virtual CardVector AvailableSingle()const;
 	virtual CardVector AvailableChain(int len, int count)const;
-	virtual CardVector AvailableChain(bool isBigger,uint8_t cardIndex,int len, int count)const;
+	virtual CardVector AvailableChain(bool isBigger, uint8_t cardIndex, int len, int count)const;
 
-	std::vector<CardRange> AvailableTripleChainRange()const;
-	std::vector<CardRange> AvailableDoubleChainRange()const;
-	std::vector<CardRange> AvailableSingleChainRange()const;
 #pragma region inline function
 	inline int Count(int cardIndex)const {
 		return Flags[cardIndex][0] + Flags[cardIndex][1] + Flags[cardIndex][2] + Flags[cardIndex][3];
 	}
 	inline CardVector AvailableSingleChain()const {
 		return AvailableChain(5, 1);
-	}	
+	}
 	inline CardVector AvailableDoubleChain() const {
 		return AvailableChain(3, 2);
 	}
 	inline CardVector AvailableTripleChain()const {
 		return AvailableChain(2, 3);
 	}
-	inline CardVector AvailableSingleChain(bool isBigger,uint8_t cardStartIndex,int len) const {
-		return AvailableChain(isBigger,cardStartIndex, len, 1);
+	inline CardVector AvailableSingleChain(bool isBigger, uint8_t cardStartIndex, int len) const {
+		return AvailableChain(isBigger, cardStartIndex, len, 1);
 	}
 	inline CardVector AvailableDoubleChain(bool isBigger, uint8_t cardStartIndex, int len) const {
 		return AvailableChain(isBigger, cardStartIndex, len, 2);
@@ -99,7 +96,7 @@ public:
 	inline CardVector AvailableTripleChain(bool isBigger, uint8_t cardStartIndex, int len)const {
 		return AvailableChain(isBigger, cardStartIndex, len, 3);
 	}
-	inline uint8_t* Flag_Ptr() {return &Flags[0][0] ; }
+	inline uint8_t* Flag_Ptr() { return &Flags[0][0]; }
 #pragma endregion
 
 };

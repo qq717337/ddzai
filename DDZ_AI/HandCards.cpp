@@ -2,6 +2,7 @@
 #include "HandCards.h"
 #include <sstream>  
 #include <iostream> 
+#include <functional>
 
 HandCards::HandCards() :HandCardsFlag(false),
 CardsSet(std::set<uint8_t, CardSetCompare>()),
@@ -334,7 +335,7 @@ CardVector  HandCards::AvailableChain(int len, int count, bool bigger, uint8_t c
 	return validChain;
 }
 
-std::vector<CardVector> HandCards::IsolateCards(bool sub)
+std::vector<CardVector> HandCards::FindIsolateCards()const
 {
 	std::unordered_set<uint8_t> notIsolateCards;
 	auto singleChain = AvailableSingleChain();
@@ -366,25 +367,106 @@ std::vector<CardVector> HandCards::IsolateCards(bool sub)
 			isolateCards[i] = { Flags[i][0],  Flags[i][1],  Flags[i][2],  Flags[i][3] };
 		}
 	}
-	if (sub) {
-		for (i = 0; i < CARD_VALUE_LEN; ++i) {
-			for (int k = 0; k < 4; ++k) {
-				Flags[i][k] = Flags[i][k] - isolateCards[i][k];
-			}
-		}
-
-		UpdateByFlag();
-	}
 	return isolateCards;
 }
+std::vector<CardVector> HandCards::SubIsolateCards()
+{
+	auto isolateCards = FindIsolateCards();
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; ++i) {
+		for (uint8_t k = 0; k < 4; ++k) {
+			Flags[i][k] = Flags[i][k] - isolateCards[i][k];
+		}
+	}
 
-std::vector<CardStyle> HandCards::LongestStyle()
+	UpdateByFlag();
+	return isolateCards;
+}
+static CardRange GetLongestChain(std::function<std::vector<CardRange>(void)> AvailableChainRangeFunc)
+{
+	auto m_singleChains = AvailableChainRangeFunc();
+	if (m_singleChains.empty()) {
+		return CardRange(-1, -1);
+	}
+	int max_index = -1;
+	int max_v = 0;
+	for (int i = 0; i < m_singleChains.size(); ++i) {
+		CardRange v = m_singleChains[i];
+		if (v.Length() > max_v) {
+			max_v = v.Length();
+			max_index = i;
+		}
+	}
+	return m_singleChains[max_index];
+}
+CardStyle HandCards::GetMaxCountStyle(bool useLaiZi)const
+{
+	auto inputList = CardVector(CardsSet.begin(), CardsSet.end());
+	if (useLaiZi) {
+		inputList.push_back(0x50);
+		uint8_t index = 0;
+		auto desStyle = CardStyle::FromCardsValueWithLaizi(inputList, index, ECardStyle::Invalid);
+		if (desStyle.Valid())
+			return desStyle;
+	}
+	else {
+		auto desStyle = CardStyle::FromCardsValue(inputList);
+		if (desStyle.Valid())
+			return desStyle;
+	}
+	auto rangeFunc = [this, useLaiZi]()->std::vector<CardRange> {return AvailableSingleChainRange(useLaiZi); };
+	auto r = GetLongestChain(rangeFunc);
+	if (r.Start >= 0) {
+		return CardStyle::SingleChainStyle(r.Start, r.End);
+	}
+	r = GetLongestChain([this, useLaiZi]()->std::vector<CardRange> {return AvailableDoubleChainRange(useLaiZi); });
+	if (r.Start >= 0) {
+		return CardStyle::DoubleChainStyle(r.Start, r.End);
+	}
+	r = GetLongestChain([this, useLaiZi]()->std::vector<CardRange> {return AvailableTripleChainRange(useLaiZi); });
+	if (r.Start >= 0) {
+		return CardStyle::TripleChainZeroStyle(r.Start, r.End);
+	}
+	auto _boom = AvailableBoom();
+	auto _triple = AvailableTriple();
+	auto _double = AvailableDouble();
+	auto _single = AvailableSingle();
+
+	if (_boom.size() != 0) {
+		return CardStyle::BoomStyle(*(_boom.end() - 1));
+	}
+	if (_triple.size() != 0) {
+		if (useLaiZi)
+			return CardStyle::BoomStyle(*(_triple.end() - 1));
+		else
+			return CardStyle::TripleZeroStyle(*(_triple.end() - 1));
+	}
+	if (_double.size() != 0) {
+		if (useLaiZi)
+			return CardStyle::TripleZeroStyle(*(_double.end() - 1));
+		else
+			return CardStyle::DoubleStyle(*(_double.end() - 1));
+	}
+	if (_single.size() != 0) {
+		if (useLaiZi) {
+			if (*(_single.end() - 1) >= CardIndex_SmallJoker) {
+				return CardStyle::JokerBoom;
+			}
+			else {
+				return CardStyle::DoubleStyle(*(_single.end() - 1));
+			}
+		}
+		else
+			return CardStyle::SingleStyle(*(_single.end() - 1));
+	}
+	return CardStyle::Invalid;
+}
+std::vector<CardStyle> HandCards::LongestStyle(bool useLaiZi)const
 {
 	std::vector<CardStyle> r;
+	auto _tripleChain = AvailableTripleChainRange(useLaiZi);
+	auto _doubleChain = AvailableDoubleChainRange(useLaiZi);
+	auto _singleChain = AvailableSingleChainRange(useLaiZi);
 	auto _booms = AvailableBoom();
-	auto _tripleChain = AvailableTripleChainRange();
-	auto _doubleChain = AvailableDoubleChainRange();
-	auto _singleChain = AvailableSingleChainRange();
 	auto _triple = PerfectTriple(CardIndex_3 - 1);
 	auto _double = PerfectDouble(CardIndex_3 - 1);
 	auto _single = PerfectSingle(CardIndex_3 - 1);
@@ -453,7 +535,6 @@ std::vector<CardStyle> HandCards::LongestStyle()
 			{
 				r.push_back(CardStyle::TripleZeroStyle(t));
 			}
-
 		}
 	}
 	if (r.size() == 0)
@@ -485,7 +566,7 @@ std::vector<CardStyle> HandCards::LongestStyle()
 	return r;
 }
 
-CardStyle HandCards::MinValueStyle()
+CardStyle HandCards::MinValueStyle(bool useLaiZi)const
 {
 	CardStyle r = CardStyle::FromCardsValue(CardVector(this->CardsSet.begin(), this->CardsSet.end()));
 	if (r.Valid())
@@ -903,10 +984,10 @@ std::vector<uint8_t> HandCards::GetCardsByStyle(const CardStyle & style) const
 			}
 		}
 	}
-	if (cardsValue[CardIndex_SmallJoker] == 1) {
+	if (cardsValue[CardIndex_SmallJoker] == 1 && CardCount[CardIndex_SmallJoker] == 1) {
 		r.push_back(0x01);
 	}
-	if (cardsValue[CardIndex_LargeJoker] == 1) {
+	if (cardsValue[CardIndex_LargeJoker] == 1 && CardCount[CardIndex_LargeJoker] == 1) {
 		r.push_back(0x02);
 	}
 	return r;
@@ -946,7 +1027,7 @@ if (tripleChains.empty() && hasLaiZi) {\
 }
 
 
-CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi)
+CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi)const
 {
 	auto all = AvailableDouble();
 	CardVector exclude;
@@ -976,10 +1057,10 @@ CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool ha
 	}
 }
 
-CardVector HandCards::RequireSingle(int count, CardVector& excludeIndex, bool hasLaiZi)
+CardVector HandCards::RequireSingle(int count, CardVector& excludeIndex, bool hasLaiZi)const
 {
 	CardVector isoSingle;
-	auto isolate = IsolateCards();
+	auto isolate = FindIsolateCards();
 	for (int i = 0; i < isolate.size(); ++i) {
 		auto v = isolate[i];
 		if (v[0] + v[1] + v[2] + v[3] == 1) {
@@ -989,7 +1070,7 @@ CardVector HandCards::RequireSingle(int count, CardVector& excludeIndex, bool ha
 	return isoSingle;
 }
 
-std::vector<CardVector> HandCards::ListTripleChainExtra(const CardVector & extra, int len)
+std::vector<CardVector> HandCards::ListTripleChainExtra(const CardVector & extra, int len)const
 {
 	if (len == 2) {
 		return { { extra[0],extra[1] },{ extra[1],extra[2] } ,{ extra[0],extra[2] } };
@@ -1000,7 +1081,7 @@ std::vector<CardVector> HandCards::ListTripleChainExtra(const CardVector & extra
 	return std::vector<CardVector>();
 }
 
-bool HandCards::FindAvailableTriple_LaiZi(bool hasLaizi, uint8_t cardIndex, CardVector & triples)
+bool HandCards::FindAvailableTriple_LaiZi(bool hasLaizi, uint8_t cardIndex, CardVector & triples)const
 {
 	CardVector doubles;
 	for (int i = cardIndex + 1; i <= CardIndex_2; ++i) {
@@ -1011,20 +1092,20 @@ bool HandCards::FindAvailableTriple_LaiZi(bool hasLaizi, uint8_t cardIndex, Card
 			doubles.push_back(i);
 		}
 	}
-	bool useLaiZi = hasLaizi&& triples.empty() && !doubles.empty();
+	bool useLaiZi = hasLaizi && triples.empty() && !doubles.empty();
 	if (triples.empty() && hasLaizi) {
 		triples.insert(triples.end(), doubles.begin(), doubles.end());
 	}
 	return useLaiZi;
 }
 
-std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi)
+std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi)const
 {
 	std::vector<CardStyle> r;
 	switch (lastStyle.Style)
 	{
 	case ECardStyle::Invalid:
-		return LongestStyle();
+		return { GetMaxCountStyle(hasLaiZi) };
 	case ECardStyle::Boom: {
 		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		if (booms.empty() && hasLaiZi) {
@@ -1083,7 +1164,9 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 			perfectDoubles = AvailableSingle(true, lastStyle.StartValue);
 		}
 		for (auto & v : perfectDoubles) {
-			r.push_back(std::move(CardStyle::DoubleStyle(v)));
+			if (v <= CardIndex_2) {
+				r.push_back(std::move(CardStyle::DoubleStyle(v)));
+			}
 		}
 		break;
 	}
@@ -1218,6 +1301,9 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 		CardVector booms;
 		if (hasLaiZi) {
 			booms = AvailableTriple();
+			if (CardCount[CardIndex_SmallJoker] == 1 || CardCount[CardIndex_LargeJoker] == 1) {
+				booms.push_back(CardIndex_JokerBoom);
+			}
 		}
 		else {
 			booms = AvailableBoom();
@@ -1228,7 +1314,7 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	}
 	return r;
 }
-CardVector HandCards::AvailableChain_LaiZi(int len, int count, uint8_t cardStartIndex)
+CardVector HandCards::AvailableChain_LaiZi(int len, int count, int8_t cardStartIndex)const
 {
 	CardVector r;
 	int cardSum = 0;
@@ -1252,17 +1338,92 @@ CardVector HandCards::AvailableChain_LaiZi(int len, int count, uint8_t cardStart
 	return r;
 }
 
-CardVector HandCards::AvailableSingleChain_LaiZi(uint8_t cardStartIndex, int len)
+CardVector HandCards::AvailableSingleChain_LaiZi(int8_t cardStartIndex, int len)const
 {
 	return AvailableChain_LaiZi(len, 1, cardStartIndex);
 }
 
-CardVector HandCards::AvailableDoubleChain_LaiZi(uint8_t cardStartIndex, int len)
+CardVector HandCards::AvailableDoubleChain_LaiZi(int8_t cardStartIndex, int len)const
 {
 	return AvailableChain_LaiZi(len, 2, cardStartIndex);
 }
 
-CardVector HandCards::AvailableTripleChain_LaiZi(uint8_t cardStartIndex, int len)
+CardVector HandCards::AvailableTripleChain_LaiZi(int8_t cardStartIndex, int len)const
 {
 	return AvailableChain_LaiZi(len, 3, cardStartIndex);
+}
+
+std::vector<CardRange> HandCards::AvailableTripleChainRange(bool hasLaiZi)const {
+	std::vector<CardRange> r;
+	CardVector  chain;
+	if (hasLaiZi)
+		chain = AvailableTripleChain_LaiZi(-1, 2);
+	else
+		chain = AvailableTripleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 1));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 1));
+	}
+	return r;
+}
+
+std::vector<CardRange> HandCards::AvailableDoubleChainRange(bool hasLaiZi)const {
+	std::vector<CardRange> r;
+	CardVector  chain;
+	if (hasLaiZi)
+		chain = AvailableDoubleChain_LaiZi(-1, 3);
+	else
+		chain = AvailableDoubleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 2));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 2));
+	}
+	return r;
+}
+
+std::vector<CardRange> HandCards::AvailableSingleChainRange(bool hasLaiZi) const {
+	std::vector<CardRange> r;
+	CardVector  chain;
+	if (hasLaiZi)
+		chain = AvailableSingleChain_LaiZi(-1, 5);
+	else
+		chain = AvailableSingleChain();
+	if (chain.size() > 0) {
+		uint8_t head = chain[0];
+		uint8_t tail = head;
+		for (auto &v : chain) {
+			if (v - tail > 1) {
+				r.push_back(CardRange(head, tail + 4));
+				head = v;
+				tail = v;
+			}
+			if (v - tail == 1) {
+				tail = v;
+			}
+		}
+		r.push_back(CardRange(head, tail + 4));
+	}
+	return r;
 }

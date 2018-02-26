@@ -83,7 +83,7 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 	}
 
 	for (int i = 0; i < PlayerCardSet.size(); ++i) {
-		auto isolate = PlayerCardSet[i]->IsolateCards();
+		auto isolate = PlayerCardSet[i]->FindIsolateCards();
 		auto singleChain = PlayerCardSet[i]->AvailableSingleChain();
 		firstChainIndex[i] = -1;
 		if (singleChain.size() > 0) {

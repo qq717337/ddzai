@@ -54,7 +54,7 @@ namespace UnitTest_HandCards
 
 			CardStyle s = CardStyle::FromCardsValue(a);
 
-			CardStyle sb(ECardStyle::Triple_Chain_Two, uint8_t(4), uint8_t(5), {1,2});
+			CardStyle sb(ECardStyle::Triple_Chain_Two, uint8_t(4), uint8_t(5), { 1,2 });
 			int compareRet = sb.Compare(s);
 			Assert::AreEqual(compareRet, -1);
 			CardStyle se(ECardStyle::Triple_Chain_One, uint8_t(4), uint8_t(5));
@@ -119,7 +119,7 @@ namespace UnitTest_HandCards
 		{
 			HandCards newHandCards(std::vector<uint8_t>{ 0x13, 0x23, 0x34, 0x35, 0x16, 0x27, 0x1f, 0x2 }, false);
 
-			auto avChain3 = newHandCards.IsolateCards();
+			auto avChain3 = newHandCards.FindIsolateCards();
 		}
 		TEST_METHOD(TestOptimizedCard)
 		{
@@ -169,7 +169,7 @@ namespace UnitTest_HandCards
 		{
 			HandCards newHandCards(std::vector<uint8_t>{ 0x13, 0x23, 0x34, 0x35, 0x16, 0x27, 0x1f, 0x2 }, false);
 
-			auto avChain3 = newHandCards.IsolateCards();
+			auto avChain3 = newHandCards.FindIsolateCards();
 			HandCardsMemnto* men = new HandCardsMemnto(newHandCards);
 			Recorder<HandCards>::Push(men);
 			auto menCopy = new HandCards();
@@ -184,15 +184,19 @@ namespace UnitTest_HandCards
 
 		TEST_METHOD(TestTips)
 		{
-			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x36,0x17,0x18,0x1f,0x2f });
+			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x18,0x1f,0x2f });
 			auto tips = v.FindAvailableTake(CardStyle::DoubleStyle(CardIndex_3), true);
-			auto tips2 = v.MinValueStyle();
+			auto tips2 = v.MinValueStyle(false);
+			auto tips3 = v.GetMaxCountStyle(true);
 			Assert::AreEqual(tips.empty(), false);
 		}
+
 		TEST_METHOD(TestLaiZi)
 		{
 			uint8_t laiziIndex = 0;
-			auto ret=CardStyle::FromCardsValueWithLaizi({0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x2e, 0x3e,0x4e,0x25,0x26,0x29}, laiziIndex, ECardStyle::Invalid);
+			auto ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x2e, 0x3e,0x4e,0x25,0x26,0x29 }, laiziIndex, ECardStyle::Invalid);
+			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x2e, 0x3e,0x4e,0x4d,0x26,0x29 }, laiziIndex, ECardStyle::Invalid);
+			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x2e, 0x3e,0x4e,0x4c,0x26,0x29 }, laiziIndex, ECardStyle::Invalid);
 			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x15, 0x35 }, laiziIndex, ECardStyle::Invalid);
 			ret = CardStyle::FromCardsValueWithLaizi({ 0x1c,0x2c,0x3c,0x1d,0x2d,0x5f ,0x15, 0x35 }, laiziIndex, ECardStyle::Triple_Chain_One);
 		}
