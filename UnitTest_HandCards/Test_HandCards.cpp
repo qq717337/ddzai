@@ -184,9 +184,9 @@ namespace UnitTest_HandCards
 
 		TEST_METHOD(TestTips)
 		{
-			HandCards v(CardVector{ 0x13,0x24,0x34,0x15,0x25,0x35,0x18,0x1f,0x2f });
+			HandCards v(CardVector{0x1 });
 			auto tips = v.FindAvailableTake(CardStyle::DoubleStyle(CardIndex_3), true);
-			auto tips2 = v.MinValueStyle(false);
+			auto tips2 = v.MinValueStyle(true);
 			auto tips3 = v.GetMaxCountStyle(true);
 			Assert::AreEqual(tips.empty(), false);
 		}

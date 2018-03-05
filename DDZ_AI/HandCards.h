@@ -59,7 +59,7 @@ public:
 	CardStyle GetMaxCountStyle(bool useLaiZi)const;
 	std::vector<CardStyle> LongestStyle(bool useLaiZi)const;
 	//按照最小值取风格
-	CardStyle MinValueStyle(bool useLaiZi)const;
+	std::vector<CardStyle> MinValueStyle(bool useLaiZi)const;
 	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi)const;
 
 	bool CanTake(const CardStyle& lastStyle)const;

@@ -566,11 +566,28 @@ std::vector<CardStyle> HandCards::LongestStyle(bool useLaiZi)const
 	return r;
 }
 
-CardStyle HandCards::MinValueStyle(bool useLaiZi)const
+std::vector< CardStyle> HandCards::MinValueStyle(bool useLaiZi)const
 {
-	CardStyle r = CardStyle::FromCardsValue(CardVector(this->CardsSet.begin(), this->CardsSet.end()));
-	if (r.Valid())
-		return r;
+	std::vector< CardStyle> r;
+	auto inputList = CardVector(CardsSet.begin(), CardsSet.end());
+	if (useLaiZi) {
+		inputList.push_back(0x50);
+		uint8_t index = 0;
+		auto desStyle = CardStyle::FromCardsValueWithLaizi(inputList, index, ECardStyle::Invalid);
+
+		if (desStyle.Valid()) {
+			r.emplace_back(desStyle);
+			return r;
+		}
+	}
+	else {
+		auto desStyle = CardStyle::FromCardsValue(inputList);
+
+		if (desStyle.Valid()) {
+			r.emplace_back(desStyle);
+			return r;
+		}
+	}
 
 	auto _booms = AvailableBoom();
 	auto _tripleChain = AvailableTripleChainRange();
@@ -591,31 +608,70 @@ CardStyle HandCards::MinValueStyle(bool useLaiZi)const
 
 	if (tripleChainLen > 0 && _tripleChain[0].Start < minStartIndex) {
 		minStartIndex = _tripleChain[0].Start;
-		r = CardStyle::TripleChainZeroStyle(_tripleChain[0].Start, _tripleChain[0].End);
+		r.emplace_back(CardStyle::TripleChainZeroStyle(_tripleChain[0].Start, _tripleChain[0].End));
 	}
 	if (doubleChainLen > 0 && _doubleChain[0].Start < minStartIndex) {
 		minStartIndex = _doubleChain[0].Start;
-		r = CardStyle::DoubleChainStyle(_doubleChain[0].Start, _doubleChain[0].End);
+		r.emplace_back(CardStyle::DoubleChainStyle(_doubleChain[0].Start, _doubleChain[0].End));
 	}
 	if (singleChainLen > 0 && _singleChain[0].Start < minStartIndex) {
 		minStartIndex = _singleChain[0].Start;
-		r = CardStyle::SingleChainStyle(_singleChain[0].Start, _singleChain[0].End);
+		r.emplace_back(CardStyle::SingleChainStyle(_singleChain[0].Start, _singleChain[0].End));
 	}
 	if (tripleLen > 0 && _triple[0] < minStartIndex) {
 		minStartIndex = _triple[0];
-		r = CardStyle::TripleZeroStyle(_triple[0]);
+		r.emplace_back(CardStyle::TripleZeroStyle(_triple[0]));
 	}
 	if (doubleLen > 0 && _double[0] < minStartIndex) {
 		minStartIndex = _double[0];
-		r = CardStyle::DoubleStyle(_double[0]);
+		r.emplace_back(CardStyle::DoubleStyle(_double[0]));
 	}
 	if (singleLen > 0 && _single[0] < minStartIndex) {
 		minStartIndex = _single[0];
-		r = CardStyle::SingleStyle(_single[0]);
+		r.emplace_back(CardStyle::SingleStyle(_single[0]));
 	}
-	if (!r.Valid() && _booms.size() > 0) {
-		r = CardStyle::BoomStyle(_booms[0]);
+	if (!r.empty() && _booms.size() > 0) {
+		r.emplace_back(CardStyle::BoomStyle(_booms[0]));
 	}
+
+	if (useLaiZi)
+	{
+		for (int i = 0; i < r.size(); ++i)
+		{
+			auto& v = r[i];
+			if (v.GetCardsCount() == CardsSet.size())
+			{
+				switch (v.Style)
+				{
+				case ECardStyle::Single:
+				{
+					if (v.StartValue >= CardIndex_SmallJoker)
+					{
+						r[i] = CardStyle::JokerBoom;
+					}
+					else
+					{
+						r[i] = CardStyle::DoubleStyle(v.StartValue);
+					}
+					break;
+				}
+				case ECardStyle::Double:
+				{
+					r[i] = CardStyle::TripleZeroStyle(v.StartValue);
+					break;
+				}
+				case ECardStyle::Triple_Zero:
+				{
+					r[i] = CardStyle::BoomStyle(v.StartValue);
+					break;
+				}
+				case ECardStyle::Boom:
+					break;
+				}
+			}
+		}
+	}
+	
 	return r;
 }
 
@@ -1110,7 +1166,7 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		if (booms.empty() && hasLaiZi) {
 			booms = AvailableTriple(true, lastStyle.StartValue);
-			if (CardCount[CardIndex_JokerBoom] + CardCount[CardIndex_SmallJoker] == 1) {
+			if (CardCount[CardIndex_LargeJoker] + CardCount[CardIndex_SmallJoker] == 1) {
 				booms.push_back(CardIndex_JokerBoom);
 			}
 		}
