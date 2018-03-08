@@ -591,7 +591,10 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 	}
 	if (SingleChain.size() > 0) {
 		for (auto v : SingleChain) {
-			if (v.Length() > 5) {
+			if(v.Length() == 6) {
+				singleIsolateCards.insert(v.Start);
+			}
+			if (v.Length() > 6) {
 				singleIsolateCards.insert(v.Start);
 				singleIsolateCards.insert(v.End);
 			}
@@ -620,15 +623,15 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 				doubleIsolateCards.insert(index);
 			}
 		}
-		if (SingleChain.size() > 0) {
-			for (auto v : SingleChain) {
-				if (v.Length() <= 6) {
-					for (index = SingleChain[0].Start; index <= SingleChain[0].End; ++index) {
-						singleIsolateCards.insert(index);
-					}
-				}
-			}
-		}
+		//if (SingleChain.size() > 0) {
+		//	for (auto v : SingleChain) {
+		//		if (v.Length() <= 6) {
+		//			for (index = SingleChain[0].Start; index <= SingleChain[0].End; ++index) {
+		//				singleIsolateCards.insert(index);
+		//			}
+		//		}
+		//	}
+		//}
 	}
 	// CommonRandom.NextInt(0, swapOtherIndex.size())
 	size_t ls = singleIsolateCards.size();

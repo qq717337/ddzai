@@ -91,12 +91,11 @@ namespace UnitTest_HandCards
 
 			Assert::AreEqual(set.LeftCount(2), size_t(10));
 
-			auto& extraCards = set.RandomFillLeft();
+			set.RandomFillLeft();
 			for (int i = 0; i < 3; ++i) {
 				int leftCount = set.LeftCount(i);
 				Assert::AreEqual(leftCount, 0);
 			}
-			Assert::AreEqual(extraCards.size(), size_t(3));
 
 			auto str = set.ToString();
 
@@ -140,7 +139,7 @@ namespace UnitTest_HandCards
 		TEST_METHOD(TestSmoothCard)
 		{
 			SmoothCard *opt = new SmoothCard();
-			opt->Optimized(nullptr, 3, 3);
+			opt->Optimized(nullptr, 2, 0);
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;

@@ -39,7 +39,7 @@ namespace UnitTest_Split
 		TEST_METHOD(TestSplitTwoSingleChain)
 		{
 			CardSet set;
-			auto& extraCards = set.RandomFillLeft();
+			set.RandomFillLeft();
 			std::shared_ptr< HandCards >cards = std::make_shared<HandCards>(set.PlayerCardSet[0]->Data());
 			//HandCards *cards = new HandCards(std::vector<uint8_t>{0x33, 0x44, 0x15, 0x45, 0x26, 0x46,0x37, 0x47, 0x18, 0x38, 0x49, 0x1a, 0x1b, 0x2c, 0x2d, 0x4d, 0x3d, 0x1d }, true);
 			auto s = cards->ToString();
@@ -65,7 +65,7 @@ namespace UnitTest_Split
 		TEST_METHOD(TestSplitStrategy)
 		{
 			CardSet set;
-			auto& extraCards = set.RandomFillLeft();
+			set.RandomFillLeft();
 			//HandCards *cards = set.PlayerCardSet[0];
 			//auto s = cards->ToString();
 			//Logger::WriteMessage(s.c_str());
@@ -119,7 +119,7 @@ namespace UnitTest_Split
 			opt->Optimized(nullptr);
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
-			opt->PlayerCardSet[0]->AddCards(opt->ExtraCard);
+			opt->PlayerCardSet[0]->AddCards(opt->ExtraCard.ToCardValues());
 			opt->PlayerCardSet[0]->UpdateByFlag();
 			opt->PlayerCardSet[1]->UpdateByFlag();
 			opt->PlayerCardSet[2]->UpdateByFlag();

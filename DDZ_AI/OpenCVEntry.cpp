@@ -154,7 +154,7 @@ void OpenCVEntry::ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, C
 void OpenCVEntry::ShowCard(CardSet * cardSet, std::vector<TextInfo> infos)
 {
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
-	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard, infos);
+	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard.ToCardValues(), infos);
 }
 
 void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)

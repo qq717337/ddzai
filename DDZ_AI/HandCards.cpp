@@ -864,7 +864,7 @@ CardVector HandCards::GetCardsValue(uint8_t cardIndex, int count)const
 	for (int i = 0; i < 4; ++i) {
 		if (Flags[cardIndex][i] == 1) {
 			r.push_back(CardColorIndexToValue(i, cardIndex));
-			sum++;
+			++sum;
 		}
 		else {
 			continue;

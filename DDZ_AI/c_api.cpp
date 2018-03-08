@@ -16,7 +16,7 @@ APP_C_EXPORT void DealSmoothCard(uint8_t * playCard0, uint8_t * playCard1, uint8
 	std::memcpy(playCard1,c1.begin()._Ptr, c1.size());
 	auto c2 = opt->PlayerCardSet[2]->ToCardValues();
 	std::memcpy( playCard2,c2.begin()._Ptr, c2.size());
-	auto& d = opt->ExtraCard;
+	auto& d = opt->ExtraCard.ToCardValues();
 	std::memcpy( deskCard,d.begin()._Ptr, d.size());
 }
 //如果出现异常则返回-1

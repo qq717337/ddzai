@@ -2,11 +2,12 @@
 #include "CardSet.h"
 #include <iostream>
 #include <algorithm>
-CardSet::CardSet() :player_num(3), PlayerCardSet(3), DeskCardSet(true)
+CardSet::CardSet() :player_num(3), PlayerCardSet(3)
 {
 	for (int i = 0; i < player_num; ++i) {
 		PlayerCardSet[i] = new HandCards();
 	}
+	DeskCardSet.Reset(true);
 }
 
 CardSet::~CardSet()
@@ -80,40 +81,37 @@ size_t CardSet::LeftCount(int playerId)
 	return (54 - 3) / player_num - PlayerCardSet[playerId]->Size();
 }
 //∑µªÿ £”‡µƒ3’≈≈∆
-const CardVector& CardSet::RandomFillLeft()
+void CardSet::RandomFillLeft()
 {
 	Update();
-	ExtraCard.reserve(64);
-	ExtraCard.clear();
 	for (uint8_t i = 0; i <= CardIndex_2; i++) {
 		int count = 0;
 		for (uint8_t k = 0; k < 4; k++) {
 			if (DeskCardSet.GetFlag(i, k) == 1) {
-				ExtraCard.push_back(((k + 1) << 4) + i + 3);
+				ExtraCard.AddCard(((k + 1) << 4) + i + 3);
 			}
 		}
 	}
 	if (DeskCardSet.GetFlag(CardIndex_SmallJoker, 0) == 1) {
-		ExtraCard.push_back(0x01);
+		ExtraCard.AddCard(0x01);
 	}
 	if (DeskCardSet.GetFlag(CardIndex_LargeJoker, 0) == 1) {
-		ExtraCard.push_back(0x02);
+		ExtraCard.AddCard(0x02);
 	}
+	ExtraCard.UpdateByFlag();
 	extern std::default_random_engine DefaultRandomEngine;
-	std::shuffle(ExtraCard.begin(), ExtraCard.end(), DefaultRandomEngine);
-	auto iter_pos = ExtraCard.begin();
+	auto newCard = std::vector<uint8_t>(ExtraCard.Data().begin(), ExtraCard.Data().end());
+	std::shuffle(newCard.begin(), newCard.end(), DefaultRandomEngine);
+	auto iter_pos = newCard.begin();
 	for (int i = 0; i < player_num; ++i) {
 		size_t leftCount = LeftCount(i);
 		for (int j = 0; j < leftCount; ++j) {
 			PlayerCardSet[i]->AddCard(*iter_pos);
+			ExtraCard.RemoveCard(*iter_pos);
 			++iter_pos;
 		}
 	}
-	if (iter_pos != ExtraCard.end()) {
-		ExtraCard.erase(ExtraCard.begin(), iter_pos);
-	}
 	Update();
-	return ExtraCard;
 }
 
 std::string CardSet::ToString()
@@ -126,8 +124,9 @@ std::string CardSet::ToString()
 		auto player = PlayerCardSet[i]->ToString();
 		ostr << player << "\n\t";
 	}
-	if (ExtraCard.size() == 3) {
-		ostr << "Extra ={0x" << std::hex << int(ExtraCard[0]) << ",0x" << int(ExtraCard[1]) << ",0x" << int(ExtraCard[2]) << "}";
+	if (ExtraCard.Size() == 3) {
+		auto cardValues = ExtraCard.ToCardValues();
+		ostr << "Extra ={0x" << std::hex << int(cardValues[0]) << ",0x" << int(cardValues[1]) << ",0x" << int(cardValues[2]) << "}";
 	}
 	return ostr.str();
 }
@@ -140,8 +139,9 @@ std::string CardSet::ToString2()
 		auto player = PlayerCardSet[i]->ToString();
 		ostr << player << "#";
 	}
-	if (ExtraCard.size() == 3) {
-		ostr << "{" << std::hex << int(ExtraCard[0]) << "," << int(ExtraCard[1]) << "," << int(ExtraCard[2]) << "}";
+	if (ExtraCard.Size() == 3) {
+		auto cardValues = ExtraCard.ToCardValues();
+		ostr << "{" << std::hex << int(cardValues[0]) << "," << int(cardValues[1]) << "," << int(cardValues[2]) << "}";
 	}
 	return ostr.str();
 }
@@ -157,4 +157,5 @@ void CardSet::Update()
 	for (auto i : PlayerCardSet) {
 		i->UpdateByFlag();
 	}
+	ExtraCard.UpdateByFlag();
 }
