@@ -7,13 +7,13 @@
 
 
 namespace EIdentity {
-	enum EIdentity_ {
+	enum EIdentity_ :uint8_t{
 		Lord = 0,
 		Farmer1 = 1,
 		Farmer2 = 2,
 	};
 };
-enum ECardIndex {
+enum ECardIndex :uint8_t {
 	CardIndex_3 = 0,
 	CardIndex_4 = 1,
 	CardIndex_5 = 2,
@@ -34,8 +34,8 @@ const int CardIndex_JokerBoom = CardIndex_SmallJoker;
 extern std::string CardNameTable[CARD_VALUE_LEN];
 extern std::string IdentityNameTable[3];
 
-namespace ECardStyle {
-	enum ECardStyle_ {
+namespace ECardStyle  {
+	enum ECardStyle_ :uint8_t{
 		Invalid = 0,
 		Single = 1,
 		Double = 2,
@@ -52,8 +52,8 @@ namespace ECardStyle {
 		Triple_Chain_Two = 232,
 	};
 }
-namespace ESituationSafeLevel {
-	enum ESituationSafeLevel_ {
+namespace ESituationSafeLevel  {
+	enum ESituationSafeLevel_:uint8_t {
 		AllPlayerMinStepGreater,
 		AllPlayerMinStepWithOutBoomGreater,
 		AllPlayerBoomCountLess,

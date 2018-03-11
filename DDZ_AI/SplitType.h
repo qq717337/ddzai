@@ -63,13 +63,13 @@ public:
 	~SplitType();
 	SplitType(const SplitType& rhs);
 	SplitType&operator=(const SplitType& rhs);
-	inline bool SplitType::operator==(const SplitType & rhs) const
+	inline bool operator==(const SplitType & rhs) const
 	{
 		return(rhs.m_isSplitBoom==m_isSplitBoom&& rhs.Boom == Boom && rhs.Single == Single && rhs.Double == Double && rhs.Triple == Triple &&
 			rhs.SingleChain == SingleChain && rhs.DoubleChain == DoubleChain && rhs.TripleChain == TripleChain);
 	}
 
-	inline bool SplitType::operator!=(const SplitType & rhs) const
+	inline bool operator!=(const SplitType & rhs) const
 	{
 		return(rhs.m_isSplitBoom != m_isSplitBoom && rhs.Boom != Boom || rhs.Single != Single || rhs.Double != Double || rhs.Triple != Triple ||
 			rhs.SingleChain != SingleChain || rhs.DoubleChain != DoubleChain || rhs.TripleChain != TripleChain);

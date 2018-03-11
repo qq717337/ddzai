@@ -291,6 +291,24 @@
     <ClInclude Include="c_api.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="TableHistory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Move.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StateInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UCTNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UCTSearch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -396,6 +414,24 @@
       <Filter>源文件\Robot</Filter>
     </ClCompile>
     <ClCompile Include="c_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TableHistory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Move.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StateInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UCTNode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Position.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UCTSearch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

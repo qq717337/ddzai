@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <set>
 #include "random.h"
 inline std::unordered_map<uint8_t, int> cardCountMap(CardVector & cardIndex) {
 	std::unordered_map<uint8_t, int>m;
@@ -23,8 +24,8 @@ inline T randomChoice(const std::vector<T>& stl) {
 template<typename T>
 inline T randomChoice(const std::set<T>& stl) {
 	auto index = CommonRandom.NextInt(0, stl.size());
+	auto iter = stl.begin();
 	do {
-		auto iter = stl.begin();
 		++iter;
 		--index;
 	} while (index > 0);

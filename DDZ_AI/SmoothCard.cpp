@@ -56,26 +56,27 @@ void SmoothCard::ExchangeSet(MinStepSplitStrategy* splitStrategy, HandCards* add
 			}
 			_ASSERT(cc == swapCount);
 		}
-		void SmoothCard::Optimized(DecorateDealStrategy * strategy, int firstEpch, int secondEpch)
+		void SmoothCard::Optimized(DecorateDealStrategy * strategy, std::vector <int>Epch)
 		{
 			ResetPlayerCard(0);
 			if (strategy != nullptr)
 				strategy->PreDeal();
 
 			RandomFillLeft();
-			ProcessDesk();
-			Process(firstEpch);
-
-#if _DEBUG
-			auto firstTime = ToString();
-#endif
-			if (secondEpch != 0)
-				Process(secondEpch);
+			for (auto v : Epch) {
+				if (v > 0) {
+					Process(v);
+				}
+				else {
+					ProcessDesk();
+				}
 #if _DEBUG
 			auto secondTime = ToString();
 #endif
-
-			ProcessDesk();
+			}
+			if (PlayerCardSet[0]->Size() != PlayerCardSet[1]->Size() || PlayerCardSet[0]->Size() != PlayerCardSet[2]->Size()) {
+				throw std::runtime_error("返回的张数不一致");
+		}
 		}
 		void SmoothCard::Process(int swapCount)
 		{

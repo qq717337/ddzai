@@ -176,6 +176,7 @@
     <ClInclude Include="HandleNotTake.h" />
     <ClInclude Include="HandleResult.h" />
     <ClInclude Include="HandleTwoStepPlay.h" />
+    <ClInclude Include="Move.h" />
     <ClInclude Include="OpenCVEntry.h" />
     <ClInclude Include="PlayStrategyHandle.h" />
     <ClInclude Include="CardConst.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="LordPlayStrategy.h" />
     <ClInclude Include="MinStepSplitStrategy.h" />
     <ClInclude Include="PlayStrategyBase.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="PriorityTakeSplitStrategy.h" />
     <ClInclude Include="rapidjson\allocators.h" />
     <ClInclude Include="rapidjson\cursorstreamwrapper.h" />
@@ -236,9 +238,13 @@
     <ClInclude Include="SplitStrategy.h" />
     <ClInclude Include="SplitStrategyBase.h" />
     <ClInclude Include="SplitType.h" />
+    <ClInclude Include="StateInfo.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TableHistory.h" />
     <ClInclude Include="TakeCardSplitStrategy.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UCTNode.h" />
+    <ClInclude Include="UCTSearch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="c_api.cpp" />
@@ -255,6 +261,7 @@
     <ClCompile Include="HandleNotTake.cpp" />
     <ClCompile Include="HandleResult.cpp" />
     <ClCompile Include="HandleTwoStepPlay.cpp" />
+    <ClCompile Include="Move.cpp" />
     <ClCompile Include="OpenCVEntry.cpp" />
     <ClCompile Include="PlayStrategyHandle.cpp" />
     <ClCompile Include="CardConst.cpp" />
@@ -267,6 +274,7 @@
     <ClCompile Include="LordPlayStrategy.cpp" />
     <ClCompile Include="MinStepSplitStrategy.cpp" />
     <ClCompile Include="PlayStrategyBase.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="PriorityTakeSplitStrategy.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="OptimizedCard.cpp" />
@@ -274,13 +282,17 @@
     <ClCompile Include="SplitStrategy.cpp" />
     <ClCompile Include="SplitStrategyBase.cpp" />
     <ClCompile Include="SplitType.cpp" />
+    <ClCompile Include="StateInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TableHistory.cpp" />
     <ClCompile Include="TakeCardSplitStrategy.cpp" />
+    <ClCompile Include="UCTNode.cpp" />
+    <ClCompile Include="UCTSearch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DDZ_AI.rc" />
