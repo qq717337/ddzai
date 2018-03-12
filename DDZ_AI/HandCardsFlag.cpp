@@ -154,7 +154,7 @@ void HandCardsFlag::AddCard(uint8_t cardValue)
 	uint8_t index, color;
 	CardValueToColorIndex(cardValue, &color, &index);
 
-	_ASSERT_EXPR(Flags[index][color] == 0, " value is expect 0");
+    _ASSERT(Flags[index][color] == 0);
 	Flags[index][color] = 1;
 }
 

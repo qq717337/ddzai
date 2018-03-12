@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LORDPLAYSTRATEGY_H_
+#define _LORDPLAYSTRATEGY_H_
 #include "PlayStrategyBase.h"
 #include "PlayStrategyHandle.h"
 #include <memory>
@@ -22,3 +23,4 @@ public:
 	~LordPlayStrategy();
 };
 
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _RECORDER_H_
+#define _RECORDER_H_
 #include <stack>
 #include <map>
 #include <string>
@@ -88,3 +89,4 @@ public:
 	virtual void Restore(HandCards* ref) override;
 };
 
+#endif

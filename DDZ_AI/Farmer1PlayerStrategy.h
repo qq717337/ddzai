@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _FARMER1PLAYERSTRATEGY_H_
+#define _FARMER1PLAYERSTRATEGY_H_
 #include "PlayStrategyBase.h"
 #include<memory>
 class Farmer1PlayerStrategy :
@@ -24,3 +25,4 @@ public:
 	virtual void Init()override;
 };
 
+#endif

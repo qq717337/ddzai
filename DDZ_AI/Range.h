@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _RANGE_H_
+#define _RANGE_H_
 template<class Type>
 struct Range {
 public:
@@ -19,3 +20,4 @@ public:
 	}
 };
 typedef  Range<uint8_t> CardRange;
+#endif

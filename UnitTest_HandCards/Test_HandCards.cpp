@@ -138,12 +138,20 @@ namespace UnitTest_HandCards
 
 		TEST_METHOD(TestSmoothCard)
 		{
+			x:
+			try {
 			SmoothCard *opt = new SmoothCard();
-			opt->Optimized(nullptr, 2, 0);
+			opt->Optimized(nullptr, { 0, 2 ,0});
 			std::string s = opt->ToString2();
 			Logger::WriteMessage(s.c_str());
 			const std::string name = "D:\\UnityProject\\DDZCardImage\\Card.exe " + s;
 			system(name.c_str());
+			delete opt;
+			}
+			catch(std::runtime_error e){
+				Logger::WriteMessage("生成出错");
+				goto x;
+			}
 		}
 
 		TEST_METHOD(TestSplitType)

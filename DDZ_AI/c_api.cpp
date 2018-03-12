@@ -8,16 +8,16 @@ APP_C_EXPORT void DealSmoothCard(uint8_t * playCard0, uint8_t * playCard1, uint8
 {
 	srand((unsigned)time(NULL));
 	SmoothCard *opt = new SmoothCard();
-	opt->Optimized(nullptr, { 0,2, 0 });
+    opt->Optimized(nullptr, {3, 3});
 	
 	auto c0=opt->PlayerCardSet[0]->ToCardValues();
-	std::memcpy( playCard0,c0.begin()._Ptr, c0.size());
+    std::memcpy( playCard0,&c0[0], c0.size());
 	auto c1 = opt->PlayerCardSet[1]->ToCardValues();
-	std::memcpy(playCard1,c1.begin()._Ptr, c1.size());
+    std::memcpy(playCard1,&c1[0], c1.size());
 	auto c2 = opt->PlayerCardSet[2]->ToCardValues();
-	std::memcpy( playCard2,c2.begin()._Ptr, c2.size());
-	auto d = opt->ExtraCard.ToCardValues();
-	std::memcpy( deskCard,d.begin()._Ptr, d.size());
+    std::memcpy( playCard2,&c2[0], c2.size());
+    auto d = opt->ExtraCard.ToCardValues();
+    std::memcpy( deskCard,&d[0], d.size());
 }
 //如果出现异常则返回-1
 APP_C_EXPORT uint8_t RobotPlay(uint8_t* ret, uint8_t len0, uint8_t len1, uint8_t len2, uint8_t * playCard0, uint8_t *playCard1, uint8_t *playCard2, uint8_t lastPlayCardLen, uint8_t* lastPlayCards, uint8_t lastPlayIdentity, uint8_t curPlayIdentity)
@@ -44,7 +44,7 @@ APP_C_EXPORT uint8_t RobotPlay(uint8_t* ret, uint8_t len0, uint8_t len1, uint8_t
 	}
 	auto cards = table.GetHandCard(EIdentity::EIdentity_(curPlayIdentity))->GetCardsByStyle(thisStyle);
 	retLen = cards.size();
-	std::memcpy(ret,cards.begin()._Ptr, cards.size());
+    std::memcpy(ret,&cards[0], cards.size());
 	return retLen;
 	API_END()
 }

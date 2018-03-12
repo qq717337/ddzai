@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLENOTTAKE_H_
+#define _HANDLENOTTAKE_H_
 #include "PlayStrategyHandle.h"
 class HandleNotTake :
 	public PlayStrategyHandle
@@ -10,3 +11,4 @@ public:
 	HandleNotTake(const HandleNotTake&) = delete;
 };
 
+#endif

@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "GameTable.h"
-#include "rapidjson\document.h"
-#include "rapidjson\writer.h"
-#include "rapidjson\reader.h"
-#include "rapidjson\filereadstream.h"
+
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/reader.h"
+#include "rapidjson/filereadstream.h"
 #include<thread>
 
 GameTable::GameTable(const CardSet& cardSet) :debug_step(0)

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _RANDOM_H_
+#define _RANDOM_H_
 
 #include <cstdint>
 
@@ -67,3 +68,4 @@ private:
 	/*! \brief Cache distribution for [0.0, 1.0) */
 	std::uniform_real_distribution<double> distribution_zero_to_one_;
 };
+#endif

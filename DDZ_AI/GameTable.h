@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _GAMETABLE_H_
+#define _GAMETABLE_H_
 #include "stdafx.h"
 #include <vector>
 #include "LordPlayStrategy.h"
@@ -33,7 +34,7 @@ public:
 	const HandCards* GetHandCard(EIdentity::EIdentity_ identity)const;
 	HandCards* GetHandCard(EIdentity::EIdentity_ identity);
 	uint8_t BiggestCardValue(EIdentity::EIdentity_ identity, int count);
-	const PlayStrategyBase* GetPlayStrategy(EIdentity::EIdentity_ identity) const;
+    const PlayStrategyBase* GetPlayStrategy(EIdentity::EIdentity_ identity) const;
 	static const bool ShouldAskLord(const SplitType& splitInfo, const HandCards& cards);
 
 	int debug_step;
@@ -53,3 +54,4 @@ public:
 	void LoadTable(const std::string &f);
 };
 
+#endif

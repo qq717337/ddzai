@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _COMMON_ALGORITHM_H_
+#define _COMMON_ALGORITHM_H_
 #include <unordered_map>
 #include <set>
 #include "random.h"
@@ -24,8 +25,8 @@ inline T randomChoice(const std::vector<T>& stl) {
 template<typename T>
 inline T randomChoice(const std::set<T>& stl) {
 	auto index = CommonRandom.NextInt(0, stl.size());
-	auto iter = stl.begin();
-	do {
+    auto iter = stl.begin();
+    do {
 		++iter;
 		--index;
 	} while (index > 0);
@@ -65,3 +66,4 @@ inline void perm(size_t randomCount, T *value) {
 	for (size_t i = randomCount - 1; i >= 1; --i)
 		std::swap(value[i], value[rand() % i]);
 }
+#endif

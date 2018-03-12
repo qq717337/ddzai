@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _CARDSET_H_
+#define _CARDSET_H_
 #include <set>
 #include <memory>
 #include<string>
@@ -44,4 +45,4 @@ public:
 #pragma endregion
 
 };
-
+#endif

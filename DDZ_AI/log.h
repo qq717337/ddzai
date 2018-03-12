@@ -1,13 +1,15 @@
-#pragma once
+#ifndef _LOG_H_
+#define _LOG_H_
 #include <cstdio>
 #include<cstdlib>
 #include <cstdarg>
 #include<cstring>
+#ifdef USE_LOG4CPP
 #include <log4cpp/Category.hh>
 #include <log4cpp/Appender.hh>
 #include <log4cpp/FileAppender.hh>
 #include <log4cpp/OstreamAppender.hh>
-
+#endif
 #ifndef		CHECK
 #define CHECK(condition)								\
 	if(!(condition))Log::Fatal("Check failed: " #condition \
@@ -40,6 +42,8 @@ private:
 	//static getAppender 
 	// static log4cpp::Appender* appender = new log4cpp::FileAppender("default", "D:\\CommondCode\\DDZ_AI\Log\\1.log");
 public:
+
+#ifdef USE_LOG4CPP
 	static void InfoF(const std::string& s) {
 		static log4cpp::Appender* syslogAppender = new log4cpp::OstreamAppender("syslogdummy", &std::cout);
 		static log4cpp::Appender* appender = new log4cpp::FileAppender("default", "D:\\CommondCode\\DDZ_AI\\Log\\1.log");
@@ -50,6 +54,7 @@ public:
 		}
 		root.info(s);
 	}
+#endif
 	static void ResetLogLevel(LogLevel level) {
 		GetLevel() = level;
 	}
@@ -86,3 +91,4 @@ public:
 		va_end(val);
 	}
 };
+#endif

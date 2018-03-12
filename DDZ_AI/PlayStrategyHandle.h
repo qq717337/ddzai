@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _PLAYSTRATEGYHANDLE_H_
+#define _PLAYSTRATEGYHANDLE_H_
 #include "CardStyle.h"
 class PlayStrategyBase;
 class SplitStrategy;
@@ -14,3 +15,4 @@ public:
 	virtual bool Handle(PlayStrategyBase* playStrategy, SplitStrategy * splitStrategy, CardStyle & result) = 0;
 	virtual ~PlayStrategyHandle();
 };
+#endif

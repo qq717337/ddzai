@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _OPTIMIZEDCARD_H_
+#define _OPTIMIZEDCARD_H_
 #include<vector>
 #include<set>
 #include<string>
@@ -20,3 +21,4 @@ public:
 	virtual ~OptimizedCard();
 };
 
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SPLITTYPE_H_
+#define _SPLITTYPE_H_
 #include <vector>
 #include <functional>
 #include "Range.h"
@@ -63,13 +64,13 @@ public:
 	~SplitType();
 	SplitType(const SplitType& rhs);
 	SplitType&operator=(const SplitType& rhs);
-	inline bool operator==(const SplitType & rhs) const
+    inline bool operator==(const SplitType & rhs) const
 	{
 		return(rhs.m_isSplitBoom==m_isSplitBoom&& rhs.Boom == Boom && rhs.Single == Single && rhs.Double == Double && rhs.Triple == Triple &&
 			rhs.SingleChain == SingleChain && rhs.DoubleChain == DoubleChain && rhs.TripleChain == TripleChain);
 	}
 
-	inline bool operator!=(const SplitType & rhs) const
+    inline bool operator!=(const SplitType & rhs) const
 	{
 		return(rhs.m_isSplitBoom != m_isSplitBoom && rhs.Boom != Boom || rhs.Single != Single || rhs.Double != Double || rhs.Triple != Triple ||
 			rhs.SingleChain != SingleChain || rhs.DoubleChain != DoubleChain || rhs.TripleChain != TripleChain);
@@ -88,9 +89,9 @@ public:
 
 	inline static const CardStyle* MaxEndValueStyle(const std::vector<CardStyle>& inStyles) {
 		int maxStyle = 0;
-		return std::max_element(inStyles.cbegin(), inStyles.cend(), [](CardStyle x, CardStyle y) {
+        return &(*std::max_element(inStyles.cbegin(), inStyles.cend(), [](CardStyle x, CardStyle y) {
 			return x.EndValue < y.EndValue;
-		})._Ptr;
+        }));
 	}
 
 	void Backup()const; 
@@ -98,3 +99,4 @@ public:
 	void Restore()const;
 };
 
+#endif

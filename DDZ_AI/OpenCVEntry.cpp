@@ -90,7 +90,7 @@ OpenCVEntry::OpenCVEntry(const wchar_t* cardImagePath) :m_cardPath(cardImagePath
 #ifdef _WIN32
 	Common::GetFilesWindows(m_cardPath, filesName);
 #else
-	Common::GetFiles(m_cardPath, filesName);
+    Common::GetFiles( m_cardPath, filesName);
 #endif
 	for (auto & v : filesName) {
 		cv::Mat m = cv::imread(v.second);

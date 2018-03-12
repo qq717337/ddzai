@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include "log.h"
 #include <cstdio>
@@ -9,7 +10,14 @@
 #include <algorithm>
 #include <cmath>
 #include<map>
+#include <inttypes.h>
+#ifdef _WIN64
 #include <io.h>
+#endif
+#ifdef __linux__
+#include <QDir>
+#include <QFileInfoList>
+#endif
 
 namespace Common {
 
@@ -22,6 +30,7 @@ namespace Common {
 	inline static T Min(const T& a, const T& b) {
 		return a < b ? a : b;
 	}
+#ifdef _WIN64
 	inline static void GetFiles(std::string path, std::map<std::string, std::string>& files)
 	{
 		long   hFile = 0;
@@ -45,7 +54,36 @@ namespace Common {
 			_findclose(hFile);
 		}
 	}
-	
+#endif
+#ifdef __linux__
+    inline static void GetFiles(std::wstring path, std::map<std::string, std::string>& files)
+    {
+        QDir dir(QString::fromStdWString( path));
+         if(!dir.exists())
+         {
+            return;
+         }
+        dir.setFilter(QDir::Files | QDir::NoSymLinks);
+        QFileInfoList list =dir.entryInfoList();
+
+         int file_count =list.count();
+         if(file_count <=0)
+         {
+            return;
+         }
+         QStringList string_list;
+         for(int i=0; i < list.count(); i++)
+         {
+            QFileInfo file_info = list.at(i);
+            QString suffix = file_info.suffix();
+            if(QString::compare(suffix, QString("png"),Qt::CaseInsensitive) == 0)
+            {
+               QString absolute_file_path= file_info.absoluteFilePath();
+               string_list.append(absolute_file_path);
+            }
+         }
+    }
+#endif
 	inline static std::string& Trim(std::string& str) {
 		if (str.size() <= 0) {
 			return str;
@@ -417,3 +455,4 @@ namespace Common {
 
 }  // namespace Common
 
+#endif

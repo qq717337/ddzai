@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLEOPTIMIUMTAKE_H_
+#define _HANDLEOPTIMIUMTAKE_H_
 #include "PlayStrategyHandle.h"
 //最佳接法，不处理炸弹，炸弹单独在HandleBoomTake里面处理
 class HandleOptimiumTake :
@@ -11,3 +12,4 @@ public:public:
 	HandleOptimiumTake(const HandleOptimiumTake&) = delete;
 };
 
+#endif

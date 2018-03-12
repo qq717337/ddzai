@@ -1178,8 +1178,9 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	case ECardStyle::Triple_One: {//如Triple不为0，则不将癞子用于组Triple
 		CardVector triples;
 		bool useLaiZi = FindAvailableTriple_LaiZi(hasLaiZi, lastStyle.StartValue, triples);
-		for (auto & t : triples) {
-			auto extras = RequireSingle(1, CardVector{ t }, hasLaiZi && !useLaiZi);
+        for (auto & t : triples) {
+            auto in=CardVector{ t };
+            auto extras = RequireSingle(1,in , hasLaiZi && !useLaiZi);
 			for (auto & v : extras) {
 				r.push_back(std::move(CardStyle::TripleOneStyle(t, { v })));
 			}
@@ -1190,7 +1191,8 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 		CardVector triples;
 		bool useLaiZi = FindAvailableTriple_LaiZi(hasLaiZi, lastStyle.StartValue, triples);
 		for (auto & t : triples) {
-			auto extras = RequireDouble(1, CardVector{ t }, hasLaiZi && !useLaiZi);
+            auto in=CardVector{ t };
+            auto extras = RequireDouble(1, in, hasLaiZi && !useLaiZi);
 			for (auto & v : extras) {
 				r.push_back(std::move(CardStyle::TripleTwoStyle(t, { v })));
 			}

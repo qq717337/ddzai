@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLEBOOMTAKE_H_
+#define _HANDLEBOOMTAKE_H_
 #include "PlayStrategyHandle.h"
 class HandleBoomTake :
 	public PlayStrategyHandle
@@ -10,3 +11,4 @@ public:
 	HandleBoomTake(const HandleBoomTake&) = delete;
 };
 
+#endif

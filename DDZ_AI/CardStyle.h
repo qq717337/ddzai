@@ -1,10 +1,11 @@
-#pragma once
+#ifndef _CARDSTYLE_H_
+#define _CARDSTYLE_H_
 #include <vector>
 #include <set>
 #include<unordered_map>
 #include <algorithm>
 #include"CardConst.h"
-
+#include "stdafx.h"
 class CardStyle
 {
 private:
@@ -39,25 +40,26 @@ public:
 	static CardStyle DoubleChainStyle(uint8_t startValue, uint8_t endValue);
 	static CardStyle TripleChainZeroStyle(uint8_t startValue, uint8_t endValue);
 	static CardStyle TripleChainOneStyle(uint8_t startValue, uint8_t endValue, const CardVector &extra);
-	static CardStyle TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector &extra); 
-	
+	static CardStyle TripleChainTwoStyle(uint8_t startValue, uint8_t endValue, const CardVector &extra);
+
 	static CardVector GetCardCount(CardVector cards);
-	static CardStyle FromCardsValue(const CardVector &cards); 
+	static CardStyle FromCardsValue(const CardVector &cards);
 	static CardStyle FromCardsValueWithLaizi(CardVector cards, uint8_t & laiZiIndex, ECardStyle::ECardStyle_ style);
-	
+
 
 	static CardStyle CheckIfLaiziSingleChain(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
 	static CardStyle CheckIfLaiziDoubleChain(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
 	static CardStyle CheckIfLaiziTripleChainZero(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
-	 static CardStyle CheckIfLaiziTripleChainOne(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
-	 static CardStyle CheckIfLaiziTripleChainTwo(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
+	static CardStyle CheckIfLaiziTripleChainOne(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
+	static CardStyle CheckIfLaiziTripleChainTwo(CardVector& cardCount, CardVector& cards, uint8_t& laiZi);
 
 	int Compare(const CardStyle& other)const;
 	std::string  ToString()const;
-	const static CardStyle Invalid ;
+	const static CardStyle Invalid;
 	const static CardStyle JokerBoom;
 	inline int Length()const { return EndValue - StartValue + 1; }
-	inline bool Valid()const { return Style!=ECardStyle::Invalid; }
+	inline bool Valid()const { return Style != ECardStyle::Invalid; }
 	// «∑Ò «¥Û≈∆
 	bool IsBigCard()const;
 };
+#endif

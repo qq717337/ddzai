@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLELASTSHOTTAKE_H_
+#define _HANDLELASTSHOTTAKE_H_
 #include "PlayStrategyHandle.h"
 
 class HandleLastShotPlay :
@@ -10,3 +11,4 @@ public:
 	HandleLastShotPlay(const HandleLastShotPlay&) = delete;
 };
 
+#endif

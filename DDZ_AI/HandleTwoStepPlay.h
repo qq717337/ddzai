@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLETWOSTEPPLAY_H_
+#define _HANDLETWOSTEPPLAY_H_
 #include "PlayStrategyHandle.h"
 class HandleTwoStepPlay :
 	public PlayStrategyHandle
@@ -10,3 +11,4 @@ public:
 	HandleTwoStepPlay(const HandleTwoStepPlay&) = delete;
 };
 
+#endif

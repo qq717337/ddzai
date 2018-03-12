@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLEMINVALUEPLAY_H_
+#define _HANDLEMINVALUEPLAY_H_
 #include "PlayStrategyHandle.h"
 
 //处理出牌阶段最小的值出发
@@ -12,3 +13,4 @@ public:
 	HandleMinValuePlay(const HandleMinValuePlay&) = delete;
 };
 
+#endif

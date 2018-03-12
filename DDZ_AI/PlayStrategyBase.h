@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _PLAYSTRATEGYBASE_H_
+#define _PLAYSTRATEGYBASE_H_
 #include "HandCards.h"
 #include<memory>
 /*
@@ -68,3 +69,4 @@ public:
 		return m_realAvoidStyle;
 	}
 };
+#endif

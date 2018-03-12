@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _HANDCARDS_H_
+#define _HANDCARDS_H_
+
 #include "HandCardsFlag.h"
 #include <set>
 #include <string>
@@ -63,7 +65,7 @@ public:
 	std::vector<CardStyle> FindAvailableTake(CardStyle & lastStyle, bool hasLaiZi)const;
 
 	bool CanTake(const CardStyle& lastStyle)const;
-	bool CanTake(const CardStyle & lastStyle, CardStyle &retStyle)const;
+    bool CanTake(const CardStyle & lastStyle, CardStyle &retStyle)const;
 	CardVector GetCardsValue(uint8_t cardIndex, int count)const;
 	CardStyle FindLessCardStyle(const CardStyle& style)const;
 	std::vector<uint8_t> GetCardsValueByStyle(const CardStyle& style)const;
@@ -87,4 +89,4 @@ public:
 };
 
 
-
+#endif

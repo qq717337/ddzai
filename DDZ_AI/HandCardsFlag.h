@@ -1,5 +1,6 @@
-#pragma once
-#include"stdafx.h"
+#ifndef _HANDCARDSFLAG_H_
+#define _HANDCARDSFLAG_H_
+
 #include <vector>
 #include<string>
 #include <memory>
@@ -101,3 +102,4 @@ public:
 
 };
 
+#endif

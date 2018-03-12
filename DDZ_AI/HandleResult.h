@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLERESULT_H_
+#define _HANDLERESULT_H_
 #include"CardStyle.h"
 class HandleResult
 {
@@ -26,4 +27,4 @@ private:
 	}
 	CardStyle m_resultStyle;
 };
-
+#endif

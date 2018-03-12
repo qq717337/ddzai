@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MINSTEPSPLITSTRATEGY_H_
+#define _MINSTEPSPLITSTRATEGY_H_
 #include "SplitStrategy.h"
 #include <functional>
 class MinStepSplitStrategy :public SplitStrategy
@@ -24,3 +25,4 @@ public:
 	~MinStepSplitStrategy();
 };
 
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _DECORATEDEALSTRATEGY_H_
+#define _DECORATEDEALSTRATEGY_H_
 #include"CardSet.h"
 
 class DecorateDealStrategy
@@ -29,3 +30,4 @@ public:
 	SuperiorDealStrategy(CardSet* card, int playerId);
 	virtual ~SuperiorDealStrategy();
 };
+#endif

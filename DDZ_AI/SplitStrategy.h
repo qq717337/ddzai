@@ -1,6 +1,8 @@
-#pragma once
+#ifndef _SPLITSTRATEGY_H_
+#define _SPLITSTRATEGY_H_
 #include "SplitStrategyBase.h"
 #include "HandleResult.h"
+#include "stdafx.h"
 #include <functional>
 //每一个继承的子类负责额外的Split信息，例如在地主出牌且自己的牌比较多的时候，
 //采取MinStepSplitStrategy ,接牌的时候采用另外的拆分策略，需要把需要接的牌给传进去
@@ -34,3 +36,4 @@ public:
 	SplitStrategy(std::shared_ptr< HandCards>cards);
 	virtual ~SplitStrategy();
 };
+#endif

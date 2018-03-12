@@ -65,7 +65,8 @@ void CardSet::DealIndex(int playerIndex, uint8_t cardIndex, int count)
 			++dealCount;
 		}
 	}
-	_ASSERTE(dealCount == count);
+
+    _ASSERT(dealCount == count);
 }
 
 void CardSet::DealCard(int playerIndex, uint8_t cardValue)

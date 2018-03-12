@@ -591,7 +591,7 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 	}
 	if (SingleChain.size() > 0) {
 		for (auto v : SingleChain) {
-			if (v.Length() == 6) {
+			if(v.Length() == 6) {
 				singleIsolateCards.insert(v.Start);
 			}
 			if (v.Length() > 6) {
@@ -731,12 +731,8 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 					outDoubleIndex.push_back(doubleSlice[randDoubleIndex[0]]);
 				}
 			}
-			if (randTripleIndex.empty()) {
-				throw std::runtime_error("既没有单也没有双，找不到了");
-			}
-			else {
-				outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
-			}
+
+			outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
 		}
 	}
 	return true;

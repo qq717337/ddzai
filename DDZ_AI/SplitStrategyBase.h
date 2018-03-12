@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SPLITSTRATEGYBASE_H_
+#define _SPLITSTRATEGYBASE_H_
 #include"SplitType.h"
 #include "HandCards.h"
 #include"Recorder.h"
@@ -74,4 +75,4 @@ public:
 #pragma endregion
 
 };
-
+#endif

@@ -1,7 +1,8 @@
-#pragma once
+#ifndef _OPENCVENTRY_H_
+#define _OPENCVENTRY_H_
 #include "stdafx.h"
-#include <opencv2\highgui.hpp>
-#include<opencv2\photo\photo.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/photo.hpp>
 #include<vector>
 #include<string>
 #include<map>
@@ -47,3 +48,4 @@ public:
 	const cv::Mat GetCardImage(uint8_t cardValue, int rotate = -1);
 };
 
+#endif

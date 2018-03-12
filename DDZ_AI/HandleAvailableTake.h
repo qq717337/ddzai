@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _HANDLEAVAILABLETAKE_H_
+#define _HANDLEAVAILABLETAKE_H_
 #include "PlayStrategyHandle.h"
 class HandleAvailableTake :
 	public PlayStrategyHandle
@@ -10,3 +11,4 @@ public:
 	HandleAvailableTake(const HandleAvailableTake&) = delete;
 };
 
+#endif

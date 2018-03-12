@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _FARMER2PLAYERSTRATEGY_H_
+#define _FARMER2PLAYERSTRATEGY_H_
 #include "PlayStrategyBase.h"
 class Farmer2PlayerStrategy :
 	public PlayStrategyBase
@@ -21,3 +22,4 @@ public:
 	virtual void Init()override;
 };
 
+#endif

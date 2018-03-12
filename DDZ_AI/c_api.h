@@ -15,7 +15,7 @@
 #define APP_C_EXPORT APP_EXTERN_C
 #endif
 
-static char* LastErrorMsg() { static __declspec(thread)  char err_msg[512] = "Everything is fine"; return err_msg; }
+static char* LastErrorMsg() { static  char err_msg[512] = "Everything is fine"; return err_msg; }
 
 #pragma warning(disable : 4996)
 inline void SetLastError(const char* msg) {
