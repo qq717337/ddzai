@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #ifdef _WIN32
 #include "common_windows.h"
 #else
@@ -13,7 +13,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int extraCardX = 1280 / 2 - 120;
 	int	extraCardY = 720 / 2 - 50;
 	for (auto v : extraCards) {
-		cv::Mat	copyContent = GetCardImage(v);
+		cv::Mat	copyContent = ShowCardInternal(v);
 		auto mat3 = mBack(cv::Rect(extraCardX, extraCardY, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		extraCardX += 40;
@@ -21,7 +21,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int p0X = 280;
 	int p0Y = 540;
 	for (auto v : PlayerCards0) {
-		cv::Mat	copyContent = GetCardImage(v);
+		cv::Mat	copyContent = ShowCardInternal(v);
 		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p0X += 40;
@@ -30,7 +30,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int p1X = 1280 - 60 * 2 - 54;
 	int p1Y = 80;
 	for (auto v : PlayerCards1) {
-		cv::Mat	copyContent = GetCardImage(v, cv::ROTATE_90_CLOCKWISE);
+		cv::Mat	copyContent = ShowCardInternal(v, cv::ROTATE_90_CLOCKWISE);
 		auto mat3 = mBack(cv::Rect(p1X, p1Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p1Y += 30;
@@ -39,7 +39,7 @@ cv::Mat OpenCVEntry::showCardInternal(CardVector PlayerCards0, CardVector Player
 	int p2X = 60;
 	int	p2Y = 80;
 	for (auto v : PlayerCards2) {
-		cv::Mat	copyContent = GetCardImage(v, cv::ROTATE_90_COUNTERCLOCKWISE);
+		cv::Mat	copyContent = ShowCardInternal(v, cv::ROTATE_90_COUNTERCLOCKWISE);
 		auto mat3 = mBack(cv::Rect(p2X, p2Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p2Y += 30;
@@ -55,7 +55,7 @@ cv::Mat OpenCVEntry::showPlayInternal(CardVector PlayerCards0, CardVector Player
 	int	p0Y = 100;
 
 	for (auto v : lastPlayCards) {
-		cv::Mat	copyContent = GetCardImage(v);
+		cv::Mat	copyContent = ShowCardInternal(v);
 		auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
 		copyContent.copyTo(mat3);
 		p0X += 40;
@@ -64,7 +64,7 @@ cv::Mat OpenCVEntry::showPlayInternal(CardVector PlayerCards0, CardVector Player
 		p0X = 1280 / 2 - (outPlayCards.size() - 1) * 40;
 		p0Y = 350;
 		for (auto v : outPlayCards) {
-			cv::Mat	copyContent = GetCardImage(v);
+			cv::Mat	copyContent = ShowCardInternal(v);
 			auto mat3 = mBack(cv::Rect(p0X, p0Y, copyContent.cols, copyContent.rows));
 			copyContent.copyTo(mat3);
 			p0X += 40;
@@ -90,7 +90,7 @@ OpenCVEntry::OpenCVEntry(const wchar_t* cardImagePath) :m_cardPath(cardImagePath
 #ifdef _WIN32
 	Common::GetFilesWindows(m_cardPath, filesName);
 #else
-    Common::GetFiles( m_cardPath, filesName);
+	Common::GetFiles(m_cardPath, filesName);
 #endif
 	for (auto & v : filesName) {
 		cv::Mat m = cv::imread(v.second);
@@ -123,6 +123,19 @@ std::string OpenCVEntry::GetCardName(uint8_t cardValue)
 	return std::string(m_colorCollection[color]).append(m_valueCollection[value - 1].c_str());
 }
 
+cv::Mat OpenCVEntry::ShowCardInternal(CardSet *cardSet, std::vector<OpenCVEntry::TextInfo> infos)
+{
+	auto PlayerCards0 = cardSet->PlayerCardSet[0]->ToCardValues();
+	auto PlayerCards1 = cardSet->PlayerCardSet[1]->ToCardValues();
+	auto PlayerCards2 = cardSet->PlayerCardSet[2]->ToCardValues();
+	auto extraCards = cardSet->ExtraCard.ToCardValues();
+	auto mBack = showCardInternal(PlayerCards0, PlayerCards1, PlayerCards2, extraCards);
+	for (auto& info : infos) {
+		cv::putText(mBack, info.text, info.pos, 0, info.size, info.color);
+	}
+	return mBack;
+}
+
 void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 {
 	auto test = cvLoadImage(img1.c_str());
@@ -134,7 +147,7 @@ void OpenCVEntry::Show(const cv::String& img1, const cv::String& img2)
 	CvFont font2;
 	cvInitFont(&font2, CV_FONT_ITALIC, 0.5, 0.5, 0, 1);
 
-	cvPutText(test, "ÖÐÎÄÐÐ²»ÐÐ hello ", CvPoint(10, 10), &font2, cvScalar(1, 0.5, 0, 0.7));
+	cvPutText(test, "ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ hello ", CvPoint(10, 10), &font2, cvScalar(1, 0.5, 0, 0.7));
 	cvShowImage("opencv_demo", test);
 
 	cv::imshow("fs", mat1);
@@ -155,6 +168,11 @@ void OpenCVEntry::ShowCard(CardSet * cardSet, std::vector<TextInfo> infos)
 {
 	Show("C:\\Users\\liu\\Pictures\\Saved Pictures\\1.jpg", "C:\\Users\\liu\\Pictures\\Saved Pictures\\2.jpg");
 	ShowCard(cardSet->PlayerCardSet[0]->ToCardValues(), cardSet->PlayerCardSet[1]->ToCardValues(), cardSet->PlayerCardSet[2]->ToCardValues(), cardSet->ExtraCard.ToCardValues(), infos);
+}
+
+void OpenCVEntry::WriteCard(cv::String name, CardSet* cardSet, std::vector<TextInfo> infos) {
+	auto mBack = ShowCardInternal(cardSet, infos);
+	cv::imwrite(name, mBack);
 }
 
 void OpenCVEntry::ShowPlay(CardSet * cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards)
@@ -192,7 +210,7 @@ OpenCVEntry::~OpenCVEntry()
 {
 }
 
-const cv::Mat OpenCVEntry::GetCardImage(uint8_t cardValue, int rotate)
+const cv::Mat OpenCVEntry::ShowCardInternal(uint8_t cardValue, int rotate)
 {
 	if (rotate>-1) {
 		cv::Mat src = image_map[GetCardName(cardValue)];

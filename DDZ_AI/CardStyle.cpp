@@ -859,9 +859,10 @@ CardStyle CardStyle::CheckIfLaiziTripleChainZero(CardVector & cardCount, CardVec
 			if (cardCount[i] == 2)
 			{
 				laiZi = i;
+				++ChainCount;
 			}
 		}
-		if (ChainCount == chainLen - 1)
+		if (ChainCount == chainLen)
 		{
 			return TripleChainZeroStyle(StartIndex, StartIndex + chainLen - 1);
 		}
@@ -871,7 +872,8 @@ CardStyle CardStyle::CheckIfLaiziTripleChainZero(CardVector & cardCount, CardVec
 
 CardStyle CardStyle::CheckIfLaiziTripleChainOne(CardVector & cardCount, CardVector & cards, uint8_t & laiZi)
 {
-	int chainLen = (cards.size() + 1) / 4;
+	auto newCards = cards;
+	int chainLen = (newCards.size() + 1) / 4;
 	auto StartIndexIter = cardCount.begin();
 	int StartIndex = -1;
 	while (StartIndex <= ECardIndex::CardIndex_A - 1)
@@ -902,34 +904,27 @@ CardStyle CardStyle::CheckIfLaiziTripleChainOne(CardVector & cardCount, CardVect
 
 			if (ChainCount == chainLen)
 			{
-				cards.erase(std::remove_if(cards.begin(), cards.end(), [StartIndex, chainLen](uint8_t x)->bool
+				newCards.erase(std::remove_if(newCards.begin(), newCards.end(), [StartIndex, chainLen](uint8_t x)->bool
 				{
 					auto index = HandCardsFlag::CardValueToIndex(x);
 					return index >= StartIndex && index < StartIndex + chainLen;
-				}), cards.end());
-				for (auto v : SingleCards) {
-					cards.push_back(HandCardsFlag::CardColorIndexToValue(3, v));
-				}
-				cards.push_back(0x5f);
+				}), newCards.end());
 				laiZi = ECardIndex::CardIndex_2;
 
 				CardVector extra;
-				for (auto v : cards) {
+				for (auto v : newCards) {
 					extra.push_back(HandCardsFlag::CardValueToIndex(v));
 				}
 				return TripleChainOneStyle(StartIndex, StartIndex + chainLen - 1, extra);
 			}
-			if (ChainCount == chainLen - 1) {
-				cards.erase(std::remove_if(cards.begin(), cards.end(), [StartIndex, chainLen](uint8_t x)->bool
+			if (ChainCount == chainLen - 1 && DoubleCards.size() == 1) {
+				newCards.erase(std::remove_if(newCards.begin(), newCards.end(), [StartIndex, chainLen](uint8_t x)->bool
 				{
 					auto index = HandCardsFlag::CardValueToIndex(x);
 					return index >= StartIndex && index < StartIndex + chainLen;
-				}), cards.end());
-				for (auto v : SingleCards) {
-					cards.push_back(HandCardsFlag::CardColorIndexToValue(3, v));
-				}
+				}), newCards.end());
 				CardVector extra;
-				for (auto v : cards) {
+				for (auto v : newCards) {
 					extra.push_back(HandCardsFlag::CardValueToIndex(v));
 				}
 				laiZi = DoubleCards[0];

@@ -591,7 +591,7 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 	}
 	if (SingleChain.size() > 0) {
 		for (auto v : SingleChain) {
-			if(v.Length() == 6) {
+			if (v.Length() == 6) {
 				singleIsolateCards.insert(v.Start);
 			}
 			if (v.Length() > 6) {
@@ -731,8 +731,12 @@ bool SplitType::RequireFromAll(size_t requireCount, CardVector & outSingleIndex,
 					outDoubleIndex.push_back(doubleSlice[randDoubleIndex[0]]);
 				}
 			}
-
-			outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
+			if (randTripleIndex.size() > 0) {
+				outTripleIndex.push_back(tripleSlice[randTripleIndex[0]]);
+			}
+			else {
+				throw std::runtime_error("没有三张可以替换");
+			}
 		}
 	}
 	return true;

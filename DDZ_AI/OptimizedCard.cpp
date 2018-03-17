@@ -72,7 +72,9 @@ OptimizedCard::OptimizedCard()
 
 void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCount)
 {
+	begin:
 	ResetPlayerCard(preRandomCount);
+
 	if (strategy != NULL)
 		strategy->PreDeal();
 	RandomFillLeft();
@@ -99,7 +101,7 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 		isolateCardCount += isolateCardIndex[i].size();
 	}
 	if (isolateCardCount > 3) {
-		Optimized(strategy, preRandomCount);
+		goto begin;
 	}else
 	{
 		SwapWithEmpty(0, 1);
@@ -108,7 +110,6 @@ void OptimizedCard::Optimized(DecorateDealStrategy * strategy, int preRandomCoun
 		SwapWithEmpty(1, 2);
 		SwapWithEmpty(2, 0);
 		SwapWithEmpty(2, 1);
-		return;
 	}
 }
 

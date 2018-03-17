@@ -31,14 +31,14 @@ if (vector_variable.size() == 0 || itFinder == vector_variable.end()) {\
     vector_variable.push_back(std::move(same_object));\
 }
 #ifdef __linux__
-#define  _ASSERTE(x) Q_ASSERT(x)
 #define  _ASSERT(x) Q_ASSERT(x)
 #endif
 
 #if USE_LOG4CPP
 #define DEBUG_LOG(text) Log::InfoF(text)
 #else
-#define DEBUG_LOG(text)
+#include <QDebug>
+#define DEBUG_LOG(text) qDebug()<<(QString::fromStdString( text));
 #endif
 
 #endif // STDAFX_H

@@ -25,18 +25,20 @@ public:
 private:
 	std::wstring m_cardPath;
 	std::map<std::string, cv::Mat>image_map;
-
 	cv::Mat showCardInternal(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards);
 	cv::Mat showPlayInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 public:
+
 	OpenCVEntry(const wchar_t* cardImagePath);
 	std::string GetCardName(uint8_t cardValue);
-	const cv::Mat GetCardImage(std::map<std::string, cv::Mat>& map, uint8_t cardValue) {
+	const cv::Mat ShowCardInternal(std::map<std::string, cv::Mat>& map, uint8_t cardValue) {
 		return  map[GetCardName(cardValue)];
 	}
+	cv::Mat ShowCardInternal(CardSet* cardSet, std::vector<TextInfo> infos = {});
 	void Show(const cv::String& img1, const cv::String& img2);
 	void ShowCard(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards, std::vector<TextInfo> infos = {});
 	void ShowCard(CardSet* cardSet, std::vector<TextInfo> infos = {});
+	void WriteCard(cv::String name, CardSet* cardSet, std::vector<TextInfo> infos = {});
 
 	void ShowPlay(CardSet* cardSet, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 	void ShowPlay(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
@@ -45,7 +47,7 @@ public:
 	void Wait(int delay);
 	void DestroyAllWindow();
 	~OpenCVEntry();
-	const cv::Mat GetCardImage(uint8_t cardValue, int rotate = -1);
+	const cv::Mat ShowCardInternal(uint8_t cardValue, int rotate = -1);
 };
 
 #endif

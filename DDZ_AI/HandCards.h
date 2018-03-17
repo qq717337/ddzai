@@ -55,6 +55,7 @@ public:
 	CardVector RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi)const;
 	std::vector<CardVector> ListTripleChainExtra(const CardVector & extra, int len)const;
 	std::vector<CardVector> FindIsolateCards()const;
+	CardVector FindIsolateCardsIndex()const;
 	std::vector<CardVector> SubIsolateCards();
 
 	//取最长的风格

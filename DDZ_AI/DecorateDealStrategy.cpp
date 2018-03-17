@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DecorateDealStrategy.h"
 #include<algorithm>
-DecorateDealStrategy::DecorateDealStrategy(CardSet * card):_Card(card)
+DecorateDealStrategy::DecorateDealStrategy(CardSet * card) :_Card(card)
 {
 }
 
@@ -12,18 +12,24 @@ DecorateDealStrategy::~DecorateDealStrategy()
 void MultiBoomDealStrategy::PreDeal()
 {
 	int64_t choiceStartPlayer = CommonRandom.NextInt(0, 3);
+	_Card->Update();
 	auto booms = _Card->DeskCardSet.AvailableBoom();
 	extern std::default_random_engine DefaultRandomEngine;
 	std::shuffle(booms.begin(), booms.end(), DefaultRandomEngine);
 	auto iter = booms.begin();
 	for (int i = 0; i < BoomCount; ++i) {
-		_Card->DealIndex(choiceStartPlayer % 3, *iter,4);
+		if (*iter >= CardIndex_JokerBoom) {
+			_Card->DealJokerBoom(choiceStartPlayer % 3);
+		}
+		else {
+			_Card->DealIndex(choiceStartPlayer % 3, *iter, 4);
+		}
 		++choiceStartPlayer;
 		++iter;
 	}
 }
 
-MultiBoomDealStrategy::MultiBoomDealStrategy(CardSet * card,int boomCount) :DecorateDealStrategy(card),BoomCount(boomCount) {
+MultiBoomDealStrategy::MultiBoomDealStrategy(CardSet * card, int boomCount) :DecorateDealStrategy(card), BoomCount(boomCount) {
 
 }
 
@@ -32,7 +38,7 @@ MultiBoomDealStrategy::~MultiBoomDealStrategy()
 }
 
 void SuperiorDealStrategy::PreDeal()
-{	
+{
 	int64_t choiceStartPlayer = CommonRandom.NextInt(0, 5);
 	switch (choiceStartPlayer)
 	{
@@ -50,7 +56,7 @@ void SuperiorDealStrategy::PreDeal()
 		break;
 	case 4:
 		int64_t boomIndex = CommonRandom.NextInt(CardIndex_3, CardIndex_2);
-		_Card->DealIndex(PlayerId, boomIndex,4);
+		_Card->DealIndex(PlayerId, boomIndex, 4);
 		break;
 	}
 }

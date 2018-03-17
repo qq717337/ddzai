@@ -32,7 +32,7 @@ public:
 
 	inline void DealJokerBoom(int playerIndex) {
 		DealIndex(playerIndex, CardIndex_SmallJoker);
-		DealIndex(playerIndex, CardIndex_SmallJoker);
+		DealIndex(playerIndex, CardIndex_LargeJoker);
 	}
 
 	inline bool HasSmallJoker() {

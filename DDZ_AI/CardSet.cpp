@@ -33,6 +33,10 @@ uint8_t* CardSet::NewCards()
 
 void CardSet::ResetPlayerCard(int randomDealCount) {
 	DeskCardSet.Reset(true);
+	ExtraCard.Reset(false);
+	for (auto i : PlayerCardSet) {
+		i->Reset(false);
+	}
 	for (auto & v : PlayerCardSet) {
 		v->Reset(false);
 	}
@@ -66,7 +70,7 @@ void CardSet::DealIndex(int playerIndex, uint8_t cardIndex, int count)
 		}
 	}
 
-    _ASSERT(dealCount == count);
+	_ASSERT(dealCount == count);
 }
 
 void CardSet::DealCard(int playerIndex, uint8_t cardValue)
@@ -85,33 +89,21 @@ size_t CardSet::LeftCount(int playerId)
 void CardSet::RandomFillLeft()
 {
 	Update();
-	for (uint8_t i = 0; i <= CardIndex_2; i++) {
-		int count = 0;
-		for (uint8_t k = 0; k < 4; k++) {
-			if (DeskCardSet.GetFlag(i, k) == 1) {
-				ExtraCard.AddCard(((k + 1) << 4) + i + 3);
-			}
-		}
-	}
-	if (DeskCardSet.GetFlag(CardIndex_SmallJoker, 0) == 1) {
-		ExtraCard.AddCard(0x01);
-	}
-	if (DeskCardSet.GetFlag(CardIndex_LargeJoker, 0) == 1) {
-		ExtraCard.AddCard(0x02);
-	}
-	ExtraCard.UpdateByFlag();
 	extern std::default_random_engine DefaultRandomEngine;
-	auto newCard = std::vector<uint8_t>(ExtraCard.Data().begin(), ExtraCard.Data().end());
+	auto newCard = std::vector<uint8_t>(DeskCardSet.Data().begin(), DeskCardSet.Data().end());
 	std::shuffle(newCard.begin(), newCard.end(), DefaultRandomEngine);
 	auto iter_pos = newCard.begin();
 	for (int i = 0; i < player_num; ++i) {
 		size_t leftCount = LeftCount(i);
 		for (int j = 0; j < leftCount; ++j) {
 			PlayerCardSet[i]->AddCard(*iter_pos);
-			ExtraCard.RemoveCard(*iter_pos);
 			++iter_pos;
 		}
 	}
+	for (; iter_pos < newCard.end(); ++iter_pos) {
+		ExtraCard.AddCard(*iter_pos);
+	}
+	DeskCardSet.Reset(false);
 	Update();
 }
 
@@ -159,4 +151,5 @@ void CardSet::Update()
 		i->UpdateByFlag();
 	}
 	ExtraCard.UpdateByFlag();
+	DeskCardSet.UpdateByFlag();
 }

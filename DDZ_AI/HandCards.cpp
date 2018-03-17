@@ -117,7 +117,7 @@ void HandCards::Reset(bool createNewCard)
 
 void HandCards::Reset(const CardVector & cardValues)
 {
-	CardsSet = std::set<uint8_t, CardSetCompare>(cardValues.begin(), cardValues.end());
+	Reset(false);
 
 	int  j = 0;
 	for (auto &v : cardValues) {
@@ -368,6 +368,36 @@ std::vector<CardVector> HandCards::FindIsolateCards()const
 		}
 	}
 	return isolateCards;
+}
+CardVector HandCards::FindIsolateCardsIndex() const
+{
+	std::unordered_set<uint8_t> notIsolateCards;
+	auto singleChain = AvailableSingleChain();
+	int i;
+	for (auto &v : singleChain) {
+		for (i = 0; i < 5; i++) {
+			notIsolateCards.insert(v + i);
+		}
+	}
+	auto doubleChain = AvailableDoubleChain();
+	for (auto & v : doubleChain) {
+		for (i = 0; i < 3; i++) {
+			notIsolateCards.insert(v + i);
+		}
+	}
+	auto  tripleChain = AvailableTripleChain();
+	for (auto &v : tripleChain) {
+		for (i = 0; i < 2; i++) {
+			notIsolateCards.insert(v + i);
+		}
+	}
+	CardVector isolateCardsIndex;
+	for (uint8_t i = 0; i < CARD_VALUE_LEN; ++i) {
+		if (notIsolateCards.find(i) != notIsolateCards.end()) { //非孤立元素包含当前index
+			isolateCardsIndex.push_back(i);
+		}
+	}
+	return isolateCardsIndex;
 }
 std::vector<CardVector> HandCards::SubIsolateCards()
 {
@@ -671,7 +701,7 @@ std::vector< CardStyle> HandCards::MinValueStyle(bool useLaiZi)const
 			}
 		}
 	}
-	
+
 	return r;
 }
 
@@ -1085,6 +1115,19 @@ if (tripleChains.empty() && hasLaiZi) {\
 
 CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi)const
 {
+	auto isoDouble = FindIsolateCardsIndex();
+	std::remove_if(isoDouble.begin(), isoDouble.end(), [this](uint8_t x) ->bool {return  CardCount[x] != 2; });
+	auto singleChain = AvailableSingleChain();
+	for (auto v : singleChain) {
+		if (CardCount[v] == 3) {
+			isoDouble.push_back(v);
+		}
+	}
+	std::remove_if(isoDouble.begin(), isoDouble.end(), [this, excludeIndex](uint8_t x)->bool {return  std::find(excludeIndex.begin(), excludeIndex.end(), x) != excludeIndex.end(); });
+
+	if (isoDouble.size() >= count)
+		return isoDouble;
+
 	auto all = AvailableDouble();
 	CardVector exclude;
 	std::set_difference(all.begin(), all.end(), excludeIndex.begin(), excludeIndex.end(), std::back_inserter(exclude));
@@ -1116,13 +1159,39 @@ CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool ha
 CardVector HandCards::RequireSingle(int count, CardVector& excludeIndex, bool hasLaiZi)const
 {
 	CardVector isoSingle;
-	auto isolate = FindIsolateCards();
-	for (int i = 0; i < isolate.size(); ++i) {
-		auto v = isolate[i];
-		if (v[0] + v[1] + v[2] + v[3] == 1) {
-			isoSingle.push_back(i);
+	auto isolate = FindIsolateCardsIndex();
+	for (auto isolateIndex : isolate) {
+		if (CardCount[isolateIndex] == 1) {
+			isoSingle.push_back(isolateIndex);
 		}
 	}
+	auto singleChain = AvailableSingleChain();
+	for (auto v : singleChain) {
+		if (CardCount[v] == 2) {
+			isoSingle.push_back(v);
+		}
+	}
+	auto doubleChain = AvailableDoubleChain();
+	for (auto v : doubleChain) {
+		if (CardCount[v] == 3) {
+			isoSingle.push_back(v);
+		}
+	}
+
+	if (isoSingle.empty()) {
+		for (auto isolateIndex : isolate) {
+			if (CardCount[isolateIndex] == 2) {
+				isoSingle.push_back(isolateIndex);
+			}
+		}
+	}
+
+	if (isoSingle.empty()) {
+		auto r = PerfectSingle(-1);
+		std::remove_if(r.begin(), r.end(), [this, excludeIndex](uint8_t x)->bool {return  std::find(excludeIndex.begin(), excludeIndex.end(), x) != excludeIndex.end(); });
+		return r;
+	}
+	std::remove_if(isoSingle.begin(), isoSingle.end(), [this, excludeIndex](uint8_t x)->bool {return  std::find(excludeIndex.begin(), excludeIndex.end(), x) != excludeIndex.end(); });
 	return isoSingle;
 }
 
@@ -1178,11 +1247,16 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	case ECardStyle::Triple_One: {//如Triple不为0，则不将癞子用于组Triple
 		CardVector triples;
 		bool useLaiZi = FindAvailableTriple_LaiZi(hasLaiZi, lastStyle.StartValue, triples);
-        for (auto & t : triples) {
-            auto in=CardVector{ t };
-            auto extras = RequireSingle(1,in , hasLaiZi && !useLaiZi);
-			for (auto & v : extras) {
-				r.push_back(std::move(CardStyle::TripleOneStyle(t, { v })));
+		for (auto & t : triples) {
+			auto in = CardVector{ t };
+			auto extras = RequireSingle(1, in, hasLaiZi && !useLaiZi);
+			if (extras.empty()) {
+				r.emplace_back(CardStyle::TripleZeroStyle(t));
+			}
+			else {
+				for (auto & v : extras) {
+					r.emplace_back(CardStyle::TripleOneStyle(t, { v }));
+				}
 			}
 		}
 		break;
@@ -1191,10 +1265,15 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 		CardVector triples;
 		bool useLaiZi = FindAvailableTriple_LaiZi(hasLaiZi, lastStyle.StartValue, triples);
 		for (auto & t : triples) {
-            auto in=CardVector{ t };
-            auto extras = RequireDouble(1, in, hasLaiZi && !useLaiZi);
-			for (auto & v : extras) {
-				r.push_back(std::move(CardStyle::TripleTwoStyle(t, { v })));
+			auto in = CardVector{ t };
+			auto extras = RequireDouble(1, in, hasLaiZi && !useLaiZi);
+			if (extras.empty()) {
+				r.emplace_back(CardStyle::TripleZeroStyle(t));
+			}
+			else {
+				for (auto & v : extras) {
+					r.push_back(std::move(CardStyle::TripleTwoStyle(t, { v })));
+				}
 			}
 		}
 		break;
@@ -1423,7 +1502,7 @@ std::vector<CardRange> HandCards::AvailableTripleChainRange(bool hasLaiZi)const 
 		uint8_t tail = head;
 		for (auto &v : chain) {
 			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 1));
+				r.emplace_back(head, tail + 1);
 				head = v;
 				tail = v;
 			}
@@ -1431,7 +1510,31 @@ std::vector<CardRange> HandCards::AvailableTripleChainRange(bool hasLaiZi)const 
 				tail = v;
 			}
 		}
-		r.push_back(CardRange(head, tail + 1));
+		if (head == tail) {
+			r.emplace_back(head, head + 1);
+		}
+		else {
+			auto first = head;
+			auto end = tail + 1;
+
+			if (CardCount[head] == 2) {
+				first += 1;
+			}
+			if (CardCount[end] == 2) {
+				end -= 1;
+			}
+			int zeroCount = 0;
+			for (int i = head; i <= end; ++i) {
+				if (CardCount[i] == 2) {
+					++zeroCount;
+				}
+				if (zeroCount == 2) {
+					end = i - 1;
+					break;
+				}
+			}
+			r.emplace_back(first, end);
+		}
 	}
 	return r;
 }
@@ -1448,7 +1551,7 @@ std::vector<CardRange> HandCards::AvailableDoubleChainRange(bool hasLaiZi)const 
 		uint8_t tail = head;
 		for (auto &v : chain) {
 			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 2));
+				r.emplace_back(head, tail + 2);
 				head = v;
 				tail = v;
 			}
@@ -1456,7 +1559,31 @@ std::vector<CardRange> HandCards::AvailableDoubleChainRange(bool hasLaiZi)const 
 				tail = v;
 			}
 		}
-		r.push_back(CardRange(head, tail + 2));
+		if (head == tail) {
+			r.emplace_back(head, head + 2);
+		}
+		else {
+			auto first = head;
+			auto end = tail + 2;
+
+			if (CardCount[head] == 1) {
+				first += 1;
+			}
+			if (CardCount[end] == 1) {
+				end -= 1;
+			}
+			int zeroCount = 0;
+			for (int i = head; i <= end; ++i) {
+				if (CardCount[i] == 1) {
+					++zeroCount;
+				}
+				if (zeroCount == 2) {
+					end = i - 1;
+					break;
+				}
+			}
+			r.emplace_back(first, end);
+		}
 	}
 	return r;
 }
@@ -1473,7 +1600,7 @@ std::vector<CardRange> HandCards::AvailableSingleChainRange(bool hasLaiZi) const
 		uint8_t tail = head;
 		for (auto &v : chain) {
 			if (v - tail > 1) {
-				r.push_back(CardRange(head, tail + 4));
+				r.emplace_back(head, tail + 4);
 				head = v;
 				tail = v;
 			}
@@ -1481,7 +1608,31 @@ std::vector<CardRange> HandCards::AvailableSingleChainRange(bool hasLaiZi) const
 				tail = v;
 			}
 		}
-		r.push_back(CardRange(head, tail + 4));
+		if (head == tail) {
+			r.emplace_back(head, head + 4);
+		}
+		else {
+			auto first = head;
+			auto end = tail + 4;
+
+			if (CardCount[head] == 0) {
+				first += 1;
+			}
+			if (CardCount[end] == 0) {
+				end -= 1;
+			}
+			int zeroCount = 0;
+			for (int i = head; i <= end; ++i) {
+				if (CardCount[i] == 0) {
+					++zeroCount;
+				}
+				if (zeroCount == 2) {
+					end = i - 1;
+					break;
+				}
+			}
+			r.emplace_back(first, end);
+		}
 	}
 	return r;
 }
