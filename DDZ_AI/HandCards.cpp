@@ -444,15 +444,12 @@ std::vector<CardStyle> HandCards::FindLeastCardPlay(bool useLaiZi)const
 			return { desStyle };
 	}
 	std::vector<CardStyle> r;
-	auto _booms = AvailableBoom();
-	auto _triple = AvailableTriple();
-	auto _double = AvailableDouble();
-	auto _single = AvailableSingle();
 
 	auto _singleChain = AvailableSingleChainRange(useLaiZi);
 	auto _doubleChain = AvailableDoubleChainRange(useLaiZi);
 	auto _tripleChain = AvailableTripleChainRange(useLaiZi);
 
+	auto _booms = AvailableBoom();
 	std::remove_if(_tripleChain.begin(), _tripleChain.end(), [_booms](CardRange& x)->bool {
 		for (auto b : _booms) {
 			if (b >= x.Start && b <= x.End) {
@@ -521,7 +518,7 @@ std::vector<CardStyle> HandCards::FindLeastCardPlay(bool useLaiZi)const
 		r.emplace_back(CardStyle::BoomStyle(_booms[0]));
 	}
 
-	std::stable_sort(r.begin(), r.end(), [](CardStyle& a, CardStyle& b)->bool {
+	std::stable_sort(r.begin(), r.end(), [](const CardStyle a, const CardStyle b)->bool {
 		if (a.Style == ECardStyle::Boom) {
 			if (b.Style == ECardStyle::Boom) {
 				return  a.StartValue < b.StartValue;
