@@ -40,6 +40,7 @@ MultiBoomDealStrategy::~MultiBoomDealStrategy()
 void SuperiorDealStrategy::PreDeal()
 {
 	int64_t choiceStartPlayer = CommonRandom.NextInt(0, 5);
+    _Card->Update();
 	switch (choiceStartPlayer)
 	{
 	case 0:

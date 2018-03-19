@@ -25,9 +25,9 @@ public:
 private:
 	std::wstring m_cardPath;
 	std::map<std::string, cv::Mat>image_map;
-	cv::Mat showCardInternal(CardVector  PlayerCards0, CardVector  PlayerCards1, CardVector  PlayerCards2, CardVector  extraCards);
-	cv::Mat showPlayInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 public:
+    cv::Mat showCardInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, CardVector extraCards);
+    cv::Mat showPlayInternal(CardVector PlayerCards0, CardVector PlayerCards1, CardVector PlayerCards2, int lastIdentity, int playerIdentity, CardVector lastPlayCards, CardVector outPlayCards);
 
 	OpenCVEntry(const wchar_t* cardImagePath);
 	std::string GetCardName(uint8_t cardValue);

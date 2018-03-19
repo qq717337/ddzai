@@ -11,13 +11,8 @@
 #include <cmath>
 #include<map>
 #include <inttypes.h>
-#ifdef _WIN64
-#include <io.h>
-#endif
-#ifdef __linux__
 #include <QDir>
 #include <QFileInfoList>
-#endif
 
 namespace Common {
 
@@ -30,7 +25,7 @@ namespace Common {
 	inline static T Min(const T& a, const T& b) {
 		return a < b ? a : b;
 	}
-#ifdef _WIN64
+#ifdef __windows__
 	inline static void GetFiles(std::string path, std::map<std::string, std::string>& files)
 	{
 		long   hFile = 0;
@@ -72,15 +67,24 @@ namespace Common {
             return;
          }
          QStringList string_list;
+         QStringList name_list;
          for(int i=0; i < list.count(); i++)
          {
             QFileInfo file_info = list.at(i);
             QString suffix = file_info.suffix();
-            if(QString::compare(suffix, QString("png"),Qt::CaseInsensitive) == 0)
+            //if(QString::compare(suffix, QString("png"),Qt::CaseInsensitive) == 0)
             {
                QString absolute_file_path= file_info.absoluteFilePath();
+               QString file_name=file_info.fileName();
+                 file_name= file_name.remove(file_name.size()-4,4);
+               name_list.append(file_name);
                string_list.append(absolute_file_path);
             }
+         }
+         for(int i=0;i<string_list.size();++i){
+             auto a=QString(name_list[i]).toStdString();
+             auto b=QString(string_list[i]).toStdString();
+             files.emplace(std::make_pair(a,b));
          }
     }
 #endif

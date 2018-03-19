@@ -286,7 +286,7 @@ void SplitStrategyBase::SplitSingleChainTruncBoom(bool once)
 	}
 
 	auto iter = std::find(m_booms.begin(), m_booms.end(), boomIndex);
-	_ASSERTE(iter != m_booms.end());
+    _ASSERT(iter != m_booms.end());
 	m_booms.erase(iter);
 	m_cards->UpdateByFlag();
 }

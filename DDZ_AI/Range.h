@@ -6,7 +6,7 @@ public:
 	Type Start;
 	Type End;
 	inline Type Length()const {
-		_ASSERTE(End >= Start);
+        _ASSERT(End >= Start);
 		return End - Start + 1;
 	}
 	Range() {

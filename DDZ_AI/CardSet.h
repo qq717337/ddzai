@@ -15,6 +15,7 @@ public:
 	HandCards DeskCardSet;
 	std::vector<HandCards*>PlayerCardSet;
 	CardSet();
+    CardSet(const CardSet& rhs);
 	virtual ~CardSet();
 	void Update();
 	size_t LeftCount(int playerId);

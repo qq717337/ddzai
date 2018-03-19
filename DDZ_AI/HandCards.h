@@ -59,7 +59,7 @@ public:
 	std::vector<CardVector> SubIsolateCards();
 
 	//取最长的风格
-	CardStyle GetMaxCountStyle(bool useLaiZi)const;
+	std::vector<CardStyle> FindLeastCardPlay(bool useLaiZi)const;
 	std::vector<CardStyle> LongestStyle(bool useLaiZi)const;
 	//按照最小值取风格
 	std::vector<CardStyle> MinValueStyle(bool useLaiZi)const;

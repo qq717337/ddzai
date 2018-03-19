@@ -7,7 +7,17 @@ CardSet::CardSet() :player_num(3), PlayerCardSet(3)
 	for (int i = 0; i < player_num; ++i) {
 		PlayerCardSet[i] = new HandCards();
 	}
-	DeskCardSet.Reset(true);
+    DeskCardSet.Reset(true);
+}
+
+CardSet::CardSet(const CardSet &rhs):
+    DeskCardSet(rhs.DeskCardSet),
+    ExtraCard(rhs.ExtraCard),
+    PlayerCardSet(3)
+{
+    for (int i = 0; i < 3; ++i) {
+        PlayerCardSet[i] = new HandCards(*rhs.PlayerCardSet[i]);
+    }
 }
 
 CardSet::~CardSet()
@@ -85,7 +95,7 @@ size_t CardSet::LeftCount(int playerId)
 {
 	return (54 - 3) / player_num - PlayerCardSet[playerId]->Size();
 }
-//·µ»ØÊ£ÓàµÄ3ÕÅÅÆ
+//ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½
 void CardSet::RandomFillLeft()
 {
 	Update();

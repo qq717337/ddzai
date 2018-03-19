@@ -180,8 +180,9 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 				isChain = false;
 			}
 		}
-		if (isChain)
-			return CardStyle::SingleChainStyle(*indexCards.begin(), *(indexCards.end() - 1));
+		auto tailValue = *(indexCards.end() - 1);
+		if (isChain && tailValue < CardIndex_2)
+			return CardStyle::SingleChainStyle(*indexCards.begin(), tailValue);
 
 	}
 	switch (length) {
@@ -426,15 +427,17 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			if (max - min == 5) {
 				return CardStyle::DoubleChainStyle(min, max);
 			}
-		}
-		auto min = *tripleChain.begin();
-		auto max = *(--tripleChain.end());
+        }
 		if (tripleChain.size() == 4) {
+            auto min = *tripleChain.begin();
+            auto max = *(--tripleChain.end());
 			if (max - min == 3 && max < CardIndex_2) {
 				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		if (tripleChain.size() == 3 && extra.size() == 3) {
+            auto min = *tripleChain.begin();
+            auto max = *(--tripleChain.end());
 			if (max - min == 2 && max < CardIndex_2) {
 				return CardStyle::TripleChainOneStyle(min, max, extra);
 			}
@@ -471,15 +474,17 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			if (kv.second == 2) {
 				extra.push_back(kv.first);
 			}
-		}
-		auto min = *tripleChain.begin();
-		auto max = *(--tripleChain.end());
+        }
 		if (tripleChain.size() == 5) {
+            auto min = *tripleChain.begin();
+            auto max = *(--tripleChain.end());
 			if (max - min == 4 && max < CardIndex_2) {
 				return CardStyle::TripleChainZeroStyle(min, max);
 			}
 		}
 		if (tripleChain.size() == 3 && extra.size() == 3) {
+            auto min = *tripleChain.begin();
+            auto max = *(--tripleChain.end());
 			if (max - min == 2 && max < CardIndex_2) {
 				return CardStyle::TripleChainTwoStyle(min, max, extra);
 			}
@@ -540,13 +545,15 @@ CardStyle CardStyle::FromCardsValue(const CardVector &cards) {
 			{
 				doubleChain.push_back(kv.first);
 			}
-		}
-		auto min = *doubleChain.begin();
-		auto max = *(--doubleChain.end());
+        }
 
-		if (doubleChain.size() == 9 && max - min == 8 && max < CardIndex_2)
+        if (doubleChain.size() == 9)
 		{
-			return CardStyle::DoubleChainStyle(min, max);
+            auto min = *doubleChain.begin();
+            auto max = *(--doubleChain.end());
+            if(max - min == 8 && max < CardIndex_2){
+                return CardStyle::DoubleChainStyle(min, max);
+            }
 		}
 		break;
 	}
