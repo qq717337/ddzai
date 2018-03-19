@@ -11,9 +11,11 @@
 #include <cmath>
 #include<map>
 #include <inttypes.h>
+
+#ifdef __linux__
 #include <QDir>
 #include <QFileInfoList>
-
+#endif
 namespace Common {
 
 	template<typename T>
