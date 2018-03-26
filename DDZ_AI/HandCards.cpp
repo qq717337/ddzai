@@ -449,7 +449,7 @@ std::vector<CardStyle> HandCards::FindLeastCardPlay(bool useLaiZi)const
 	auto _doubleChain = AvailableDoubleChainRange(useLaiZi);
 	auto _tripleChain = AvailableTripleChainRange(useLaiZi);
 
-	auto _booms = AvailableBoom();
+	auto _booms = AvailableBoom(); 
 	std::remove_if(_tripleChain.begin(), _tripleChain.end(), [_booms](CardRange& x)->bool {
 		for (auto b : _booms) {
 			if (b >= x.Start && b <= x.End) {
@@ -1214,7 +1214,6 @@ if (tripleChains.empty() && hasLaiZi) {\
 	tripleChains= AvailableTripleChain_LaiZi(lastStyle.StartValue,lastStyle.Length());\
 }
 
-
 CardVector HandCards::RequireDouble(int count, CardVector& excludeIndex, bool hasLaiZi)const
 {
 	auto isoDouble = FindIsolateCardsIndex();
@@ -1330,7 +1329,8 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 {
 	std::vector<CardStyle> r;
 
-	if (lastStyle.Style != ECardStyle::Invalid) {
+	auto booms = AvailableBoom(true, lastStyle.StartValue);
+	if (lastStyle.Style != ECardStyle::Invalid && booms.size()==0) {
 		int cardSize = Size() + (hasLaiZi ? 1 : 0);
 		if (cardSize < lastStyle.GetCardsCount()) {
 			return r;
@@ -1341,7 +1341,6 @@ std::vector<CardStyle> HandCards::FindAvailableTake(CardStyle & lastStyle, bool 
 	case ECardStyle::Invalid:
 		return { FindLeastCardPlay(hasLaiZi) };
 	case ECardStyle::Boom: {
-		auto booms = AvailableBoom(true, lastStyle.StartValue);
 		if (booms.empty() && hasLaiZi) {
 			booms = AvailableTriple(true, lastStyle.StartValue);
 			if (CardCount[CardIndex_LargeJoker] + CardCount[CardIndex_SmallJoker] == 1) {
